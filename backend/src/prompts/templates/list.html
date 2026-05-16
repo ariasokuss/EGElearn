@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1>Prompts</h1>
+    <div class="page-header-sub">{{ count_label }}</div>
+  </div>
+  <a class="btn btn-primary" href="/admin/prompts/new">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Prompt
+  </a>
+</div>
+
+<div class="tabs">
+  <a class="tab {{ 'active' if not current_service }}" href="/admin/prompts">All Prompts</a>
+  {% for s in services %}
+  <a class="tab {{ 'active' if s == current_service }}" href="/admin/prompts?service={{ s }}">{{ s|title }}</a>
+  {% endfor %}
+</div>
+
+{% if prompts %}
+<ul class="prompt-list">
+  {% for p in prompts %}
+  <li class="prompt-list-item">
+    <div class="prompt-list-link">
+      <div class="prompt-list-main">
+        <a href="/admin/prompts/{{ p.id }}/edit" class="prompt-list-key">
+          {{ p.key }}
+        </a>
+        <div class="prompt-list-preview">{{ p.description }}</div>
+        <div class="prompt-list-meta">
+          <span class="badge badge-service">{{ p.service }}</span>
+          <span class="badge badge-version">v{{ p.version }}</span>
+          {% if p.is_active %}
+          <span class="badge badge-active">Active</span>
+          {% else %}
+          <span class="badge badge-inactive">Inactive</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="prompt-list-actions">
+        <a href="/admin/prompts/{{ p.id }}/edit" class="prompt-list-action" title="Edit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </a>
+        <a href="/admin/prompts/{{ p.id }}/versions" class="prompt-list-action" title="History">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="empty-state">
+  <p>No prompts yet</p>
+  <a class="btn btn-primary" href="/admin/prompts/new">Create your first prompt</a>
+</div>
+{% endif %}
+
+{% endblock %}

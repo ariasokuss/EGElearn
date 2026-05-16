@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} | NovaLearn</title>
+  <link rel="stylesheet" href="/admin/usage/static/style.css?v=activity-ledger-20260505">
+  <style>
+    .ref-hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+    .ref-hero h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+    .ref-hero .meta { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; color: var(--muted); font-size: 13px; margin-top: 6px; }
+    .ref-hero .meta strong { color: var(--text); font-weight: 500; }
+    .ref-hero .link-row { margin-top: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ref-hero .link-row code {
+      font-family: 'IBM Plex Mono', Menlo, monospace;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+    }
+    .ref-hero .back { color: var(--muted); text-decoration: none; font-size: 12px; }
+    .ref-hero .back:hover { color: var(--text); }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .pill.is-on  { background: #eef5f0; color: #2e5b3e; border: 1px solid #cfe1d4; }
+    .pill.is-off { background: #f5f1ee; color: #87807a; border: 1px solid var(--line); }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .panel-head h2 { margin: 0; font-size: 14px; font-weight: 500; color: var(--muted); }
+    .panel-head .count { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .visitor-id { font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 12px; color: var(--muted); }
+    .landing-cell { color: var(--text); font-size: 13px; }
+    .landing-cell.muted { color: var(--muted); }
+    .pending { color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo">NL</div>
+      <nav class="nav-links">
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/usage') else '' }}" href="/admin/usage">Usage</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/prompts') else '' }}" href="/admin/prompts">Prompts</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/past-papers') else '' }}" href="/admin/past-papers">Papers</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/security') else '' }}" href="/admin/security">Security</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/referrals') else '' }}" href="/admin/referrals">Referrals</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <div>
+          <a class="back" href="/admin/referrals" style="font-size:12px; color: var(--muted); text-decoration: none;">← All referrals</a>
+        </div>
+        <div class="stamp">Updated {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</div>
+      </header>
+
+      <section class="ref-hero">
+        <div>
+          <h1>{{ detail.source.code }}</h1>
+          <div class="meta">
+            <span><strong>{{ detail.source.label or 'no label' }}</strong></span>
+            <span>·</span>
+            <span>owner <strong>{{ detail.source.owner_email }}</strong></span>
+            <span>·</span>
+            <span>created {{ detail.source.created_at.strftime('%Y-%m-%d') }}</span>
+          </div>
+          <div class="link-row">
+            <code>https://novalearn.ai?ref={{ detail.source.code }}</code>
+          </div>
+        </div>
+        <div>
+          <span class="pill {{ 'is-on' if detail.source.is_active else 'is-off' }}">
+            {{ 'active' if detail.source.is_active else 'paused' }}
+          </span>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <h2>Visits</h2>
+          <div class="value">{{ detail.source.visits_count }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Unique visitors</h2>
+          <div class="value">{{ detail.source.unique_visitors }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Registrations</h2>
+          <div class="value">{{ detail.source.registrations }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Purchases</h2>
+          <div class="value">{{ detail.source.purchases }}</div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Attributed users</h2>
+          <span class="count">{{ detail.attributions|length }}</span>
+        </div>
+        {% if detail.attributions %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Registered</th>
+                <th>Purchased</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in detail.attributions %}
+              <tr>
+                <td class="email">{{ a.email }}</td>
+                <td>{{ a.registered_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                  {% if a.purchased_at %}
+                    {{ a.purchased_at.strftime('%Y-%m-%d %H:%M') }}
+                  {% else %}
+                    <span class="pending">— not yet</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty">No registrations yet.</div>
+        {% endif %}
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Recent visits</h2>
+          <span class="count">last {{ detail.recent_visits|length }}</span>
+        </div>
+        {% if detail.recent_visits %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>Landing page</th>
+                <th>Visitor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in detail.recent_visits %}
+              <tr>
+                <td>{{ v.visited_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td class="landing-cell {{ '' if v.landing_page else 'muted' }}">{{ v.landing_page or '—' }}</td>
+                <td>
+                  {% if v.visitor_email %}
+                    <span class="email">{{ v.visitor_email }}</span>
+                  {% else %}
+                    <span class="pending">anonymous</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty">No visits recorded.</div>
+        {% endif %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — NovaLearn Admin</title>
+<link rel="stylesheet" href="/admin/prompts/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="logo">NL</div>
+    <nav class="nav-links">
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/usage') else '' }}" href="/admin/usage">Usage</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/prompts') else '' }}" href="/admin/prompts">Prompts</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/past-papers') else '' }}" href="/admin/past-papers">Papers</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/security') else '' }}" href="/admin/security">Security</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/referrals') else '' }}" href="/admin/referrals">Referrals</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div class="page-header">
+        <div>
+          <h1>Blocked IPs</h1>
+          <div class="page-header-sub">{{ entries|length }} IP{{ 's' if entries|length != 1 else '' }} blocked</div>
+        </div>
+      </div>
+
+      {% if entries %}
+      <ul class="prompt-list">
+        {% for e in entries %}
+        <li class="prompt-list-item">
+          <div class="prompt-list-link">
+            <div class="prompt-list-main">
+              <div class="prompt-list-key">{{ e.ip }}</div>
+              <div class="prompt-list-preview">{{ e.reason or '—' }}</div>
+              <div class="prompt-list-meta">
+                <span class="badge badge-inactive">blocked {{ e.blocked_at.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+              </div>
+            </div>
+            <div class="prompt-list-actions">
+              <form method="post" action="/admin/security/{{ e.id }}/unban">
+                <button type="submit" class="btn btn-sm btn-danger" title="Unban">
+                  Unban
+                </button>
+              </form>
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="empty-state">
+        <p>No blocked IPs</p>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

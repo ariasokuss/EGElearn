@@ -1,0 +1,61 @@
+stages:
+  - test
+  - deploy
+
+default:
+  interruptible: true
+
+variables:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  UV_CACHE_DIR: "$CI_PROJECT_DIR/.uv-cache"
+  UV_LINK_MODE: copy
+
+cache:
+  key:
+    files:
+      - uv.lock
+  paths:
+    - .uv-cache/
+
+test:
+  stage: test
+  image: python:3.12-slim
+  tags:
+    - novalearn
+    - dev
+  before_script:
+    - pip install uv
+    - uv sync --frozen --group dev
+  script:
+    - uv run pytest -q
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"
+    - if: $CI_COMMIT_BRANCH == "dev"
+
+deploy:
+  stage: deploy
+  image: oven/bun:slim
+  tags:
+    - novalearn
+    - dev
+  needs:
+    - test
+  retry:
+    max: 2
+    when:
+      - script_failure
+  timeout: 10m
+  environment:
+    name: dev-api
+    url: https://dev-api.novalearn.ai
+  before_script:
+    - bun install -g @railway/cli
+  script:
+    - railway --version
+    - |
+      railway up --detach \
+        --project "$RAILWAY_PROJECT_ID" \
+        --environment development \
+        --service backend-dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"

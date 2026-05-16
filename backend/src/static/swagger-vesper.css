@@ -1,0 +1,499 @@
+/* ============================================================
+   Vesper Dark — Swagger UI Theme
+   Palette from VS Code "Vesper" by Raunaq Singh
+   ============================================================ */
+
+/* ── Palette ────────────────────────────────────────────────── */
+:root {
+  --v-bg:       #101010;
+  --v-s1:       #181818;
+  --v-s2:       #1E1E1E;
+  --v-s3:       #262626;
+  --v-border:   #282828;
+  --v-border-l: #333;
+  --v-fg:       #D5CEC0;
+  --v-fg2:      #A0A0A0;
+  --v-muted:    #575757;
+  --v-accent:   #FFC799;
+  --v-link:     #FFC799;
+  --v-green:    #6BC46D;
+  --v-amber:    #FFC799;
+  --v-blue:     #82AAFF;
+  --v-red:      #EF6B73;
+  --v-purple:   #C792EA;
+  --v-cyan:     #89DDFF;
+  --v-orange:   #F78C6C;
+  --v-yellow:   #FFCB6B;
+  --v-mono:     "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+html                          { background: var(--v-bg) !important; }
+body                          { background: var(--v-bg) !important; margin: 0; }
+
+.swagger-ui,
+.swagger-ui .wrapper          { background: var(--v-bg) !important; }
+
+/* Nuke every default background */
+.swagger-ui .opblock,
+.swagger-ui .opblock .opblock-summary,
+.swagger-ui .opblock-body,
+.swagger-ui .opblock-body .opblock-section,
+.swagger-ui .opblock-description-wrapper,
+.swagger-ui .responses-wrapper,
+.swagger-ui .responses-inner,
+.swagger-ui .response,
+.swagger-ui .model-box,
+.swagger-ui section.models,
+.swagger-ui section.models .model-container,
+.swagger-ui .scheme-container,
+.swagger-ui .information-container,
+.swagger-ui .loading-container { background: transparent !important; }
+
+/* ── Typography ─────────────────────────────────────────────── */
+.swagger-ui,
+.swagger-ui .info .title,
+.swagger-ui .info .title small pre,
+.swagger-ui .opblock-tag,
+.swagger-ui .opblock-tag small,
+.swagger-ui .opblock-summary-path,
+.swagger-ui .opblock-summary-path span,
+.swagger-ui .opblock-summary-path a,
+.swagger-ui .opblock-summary-description,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-description-wrapper h4,
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type,
+.swagger-ui .parameter__in,
+.swagger-ui .parameters-col_description p,
+.swagger-ui .response-col_status,
+.swagger-ui .response-col_description,
+.swagger-ui .response-col_links,
+.swagger-ui table thead tr td,
+.swagger-ui table thead tr th,
+.swagger-ui table tbody tr td,
+.swagger-ui .model,
+.swagger-ui .model-title,
+.swagger-ui section.models h4,
+.swagger-ui .servers > label,
+.swagger-ui .auth-wrapper,
+.swagger-ui .auth-container,
+.swagger-ui .dialog-ux .modal-ux-header h3,
+.swagger-ui .dialog-ux .modal-ux-content,
+.swagger-ui .dialog-ux .modal-ux-content p,
+.swagger-ui .responses-table thead td,
+.swagger-ui .tab li,
+.swagger-ui .loading-container .loading::after,
+.swagger-ui h1, .swagger-ui h2, .swagger-ui h3, .swagger-ui h4, .swagger-ui h5,
+.swagger-ui p, .swagger-ui label,
+.swagger-ui span:not(.microlight span),
+.swagger-ui div:not(.microlight):not(pre.microlight) {
+  color: var(--v-fg) !important;
+}
+
+/* Let syntax-highlighted spans inside code blocks keep their inline color */
+.swagger-ui .microlight span,
+.swagger-ui pre.microlight span,
+.swagger-ui .highlight-code .microlight span {
+  color: inherit;
+}
+
+.swagger-ui .opblock-summary-description,
+.swagger-ui .opblock-tag small,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-description-wrapper h4,
+.swagger-ui .response-col_description,
+.swagger-ui table thead tr td,
+.swagger-ui table thead tr th,
+.swagger-ui .tab li:not(.active),
+.swagger-ui .info p,
+.swagger-ui .info li,
+.swagger-ui .info table td {
+  color: var(--v-fg2) !important;
+}
+
+.swagger-ui .info a,
+.swagger-ui .markdown a,
+.swagger-ui .renderedMarkdown a {
+  color: var(--v-link) !important;
+}
+
+/* ── Version badge ──────────────────────────────────────────── */
+.swagger-ui .info .title small.version-stamp {
+  background: var(--v-accent) !important;
+  color: var(--v-bg) !important;
+  border-radius: 4px !important;
+  border: none !important;
+  font-weight: 700;
+}
+
+/* ── Scheme container / auth bar ────────────────────────────── */
+.swagger-ui .scheme-container {
+  background: var(--v-s1) !important;
+  border-bottom: 1px solid var(--v-border) !important;
+  box-shadow: none !important;
+}
+
+/* ── Tag section headers ────────────────────────────────────── */
+.swagger-ui .opblock-tag {
+  border-bottom: 1px solid var(--v-border) !important;
+}
+
+.swagger-ui .opblock-tag:hover {
+  background: var(--v-s1) !important;
+}
+
+.swagger-ui .opblock-tag a.nostyle,
+.swagger-ui .opblock-tag a.nostyle span {
+  color: var(--v-fg) !important;
+}
+
+/* ── SVG icons ──────────────────────────────────────────────── */
+.swagger-ui svg.arrow,
+.swagger-ui button.model-box-control svg,
+.swagger-ui .expand-operation svg,
+.swagger-ui svg:not(:root) {
+  fill: var(--v-muted) !important;
+}
+
+/* ── Operation blocks ───────────────────────────────────────── */
+.swagger-ui .opblock {
+  border-radius: 8px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  margin: 0 0 8px !important;
+  box-shadow: none !important;
+}
+
+/* -- method badge shared -- */
+.swagger-ui .opblock .opblock-summary-method {
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  border-radius: 4px !important;
+  min-width: 70px !important;
+  padding: 6px 0 !important;
+  text-align: center !important;
+  color: var(--v-bg) !important;
+}
+
+/* -- collapsed summary row -- */
+.swagger-ui .opblock .opblock-summary {
+  padding: 8px 16px !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* GET */
+.swagger-ui .opblock.opblock-get                                  { background: rgba(107, 196, 109, 0.06) !important; border-color: rgba(107, 196, 109, 0.35) !important; }
+.swagger-ui .opblock.opblock-get .opblock-summary-method           { background: var(--v-green) !important; }
+.swagger-ui .opblock.opblock-get .opblock-summary                  { border-color: transparent !important; }
+
+/* POST */
+.swagger-ui .opblock.opblock-post                                 { background: rgba(255, 199, 153, 0.06) !important; border-color: rgba(255, 199, 153, 0.35) !important; }
+.swagger-ui .opblock.opblock-post .opblock-summary-method          { background: var(--v-amber) !important; }
+.swagger-ui .opblock.opblock-post .opblock-summary                 { border-color: transparent !important; }
+
+/* PUT */
+.swagger-ui .opblock.opblock-put                                  { background: rgba(130, 170, 255, 0.06) !important; border-color: rgba(130, 170, 255, 0.35) !important; }
+.swagger-ui .opblock.opblock-put .opblock-summary-method           { background: var(--v-blue) !important; }
+.swagger-ui .opblock.opblock-put .opblock-summary                  { border-color: transparent !important; }
+
+/* DELETE */
+.swagger-ui .opblock.opblock-delete                               { background: rgba(239, 107, 115, 0.06) !important; border-color: rgba(239, 107, 115, 0.35) !important; }
+.swagger-ui .opblock.opblock-delete .opblock-summary-method        { background: var(--v-red) !important; }
+.swagger-ui .opblock.opblock-delete .opblock-summary               { border-color: transparent !important; }
+
+/* PATCH */
+.swagger-ui .opblock.opblock-patch                                { background: rgba(199, 146, 234, 0.06) !important; border-color: rgba(199, 146, 234, 0.35) !important; }
+.swagger-ui .opblock.opblock-patch .opblock-summary-method         { background: var(--v-purple) !important; }
+.swagger-ui .opblock.opblock-patch .opblock-summary                { border-color: transparent !important; }
+
+/* OPTIONS / HEAD */
+.swagger-ui .opblock.opblock-options,
+.swagger-ui .opblock.opblock-head                                 { background: rgba(137, 221, 255, 0.06) !important; border-color: rgba(137, 221, 255, 0.35) !important; }
+.swagger-ui .opblock.opblock-options .opblock-summary-method,
+.swagger-ui .opblock.opblock-head .opblock-summary-method          { background: var(--v-cyan) !important; }
+
+/* Deprecated */
+.swagger-ui .opblock.opblock-deprecated                           { opacity: 0.5; border-color: var(--v-muted) !important; }
+.swagger-ui .opblock.opblock-deprecated .opblock-summary-method    { background: var(--v-muted) !important; }
+
+/* ── Expanded operation body ────────────────────────────────── */
+.swagger-ui .opblock-body {
+  background: var(--v-s1) !important;
+  padding: 0 !important;
+}
+
+.swagger-ui .opblock-body > div {
+  background: var(--v-s1) !important;
+}
+
+.swagger-ui .opblock-body pre,
+.swagger-ui .opblock-body pre.microlight,
+.swagger-ui .highlight-code,
+.swagger-ui .highlight-code > .microlight,
+.swagger-ui .microlight {
+  background: var(--v-s2) !important;
+  color: var(--v-fg) !important;
+  border: 1px solid var(--v-border) !important;
+  border-radius: 6px !important;
+  padding: 14px !important;
+  font-family: var(--v-mono) !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+/* ── Parameters ─────────────────────────────────────────────── */
+.swagger-ui .parameter__name.required::after,
+.swagger-ui .parameter__name.required span {
+  color: var(--v-red) !important;
+}
+
+.swagger-ui .parameters-col_description input[type="text"] {
+  background: var(--v-s2) !important;
+  color: var(--v-fg) !important;
+  border: 1px solid var(--v-border-l) !important;
+  border-radius: 4px !important;
+}
+
+/* ── Inputs / selects / textarea ────────────────────────────── */
+.swagger-ui input[type="text"],
+.swagger-ui input[type="password"],
+.swagger-ui input[type="search"],
+.swagger-ui input[type="email"],
+.swagger-ui input[type="file"],
+.swagger-ui textarea,
+.swagger-ui select {
+  background: var(--v-s2) !important;
+  color: var(--v-fg) !important;
+  border: 1px solid var(--v-border-l) !important;
+  border-radius: 4px !important;
+  padding: 6px 10px !important;
+}
+
+.swagger-ui input:focus,
+.swagger-ui textarea:focus,
+.swagger-ui select:focus {
+  border-color: var(--v-accent) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(255, 199, 153, 0.15) !important;
+}
+
+.swagger-ui select { appearance: auto; }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.swagger-ui .btn {
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease !important;
+}
+
+.swagger-ui .btn.execute {
+  background: var(--v-accent) !important;
+  color: var(--v-bg) !important;
+  border-color: var(--v-accent) !important;
+}
+
+.swagger-ui .btn.execute:hover { opacity: 0.85; }
+
+.swagger-ui .btn.cancel {
+  background: transparent !important;
+  color: var(--v-red) !important;
+  border-color: var(--v-red) !important;
+}
+
+.swagger-ui .btn.authorize {
+  color: var(--v-green) !important;
+  border-color: var(--v-green) !important;
+  background: transparent !important;
+}
+.swagger-ui .btn.authorize svg { fill: var(--v-green) !important; }
+
+.swagger-ui .btn-group .btn {
+  background: var(--v-s3) !important;
+  color: var(--v-fg) !important;
+  border-color: var(--v-border-l) !important;
+}
+
+.swagger-ui .try-out__btn {
+  color: var(--v-accent) !important;
+  border-color: var(--v-accent) !important;
+  background: transparent !important;
+}
+
+/* ── Models / Schemas ───────────────────────────────────────── */
+.swagger-ui section.models {
+  border: 1px solid var(--v-border) !important;
+  border-radius: 8px !important;
+}
+
+.swagger-ui section.models .model-container {
+  background: var(--v-s1) !important;
+  margin: 2px 0 !important;
+  border-radius: 4px !important;
+}
+
+.swagger-ui .model .property,
+.swagger-ui .model .property.primitive {
+  color: var(--v-accent) !important;
+}
+
+.swagger-ui span.model-toggle::after { filter: invert(0.7); }
+
+/* ── Tabs (Example Value | Schema) ──────────────────────────── */
+.swagger-ui .tab li {
+  color: var(--v-muted) !important;
+  cursor: pointer;
+}
+.swagger-ui .tab li.active {
+  color: var(--v-fg) !important;
+}
+
+/* ── Modal dialogs ──────────────────────────────────────────── */
+.swagger-ui .dialog-ux .backdrop-ux { background: rgba(0, 0, 0, 0.7) !important; }
+.swagger-ui .dialog-ux .modal-ux {
+  background: var(--v-s2) !important;
+  border: 1px solid var(--v-border-l) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6) !important;
+}
+.swagger-ui .dialog-ux .modal-ux-header {
+  border-bottom: 1px solid var(--v-border) !important;
+}
+
+/* ── Syntax highlighting (microlight tokens + vesper injected spans) ─ */
+.swagger-ui .microlight .string  { color: var(--v-green)  !important; }
+.swagger-ui .microlight .number  { color: var(--v-orange) !important; }
+.swagger-ui .microlight .keyword { color: var(--v-purple) !important; }
+
+/* Vesper injected highlights — must beat the blanket color rule */
+.swagger-ui .microlight span[style],
+.swagger-ui pre.microlight span[style],
+.swagger-ui .highlight-code .microlight span[style] {
+  color: unset; /* let inline style win */
+}
+
+/* ── Markdown in descriptions ───────────────────────────────── */
+.swagger-ui .markdown code,
+.swagger-ui .renderedMarkdown code {
+  background: var(--v-s3) !important;
+  color: var(--v-accent) !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  font-family: var(--v-mono) !important;
+  font-size: 0.9em !important;
+}
+
+/* ── Copy-to-clipboard ──────────────────────────────────────── */
+.swagger-ui .copy-to-clipboard {
+  background: var(--v-s3) !important;
+  border-radius: 4px !important;
+}
+.swagger-ui .copy-to-clipboard button { background: transparent !important; }
+
+/* ── Topbar (if visible) ────────────────────────────────────── */
+.swagger-ui .topbar {
+  background: var(--v-s1) !important;
+  border-bottom: 1px solid var(--v-border) !important;
+}
+.swagger-ui .topbar a { color: var(--v-accent) !important; }
+.swagger-ui .topbar .download-url-wrapper input[type="text"] {
+  background: var(--v-bg) !important;
+  color: var(--v-fg) !important;
+  border: 1px solid var(--v-border-l) !important;
+}
+.swagger-ui .topbar .download-url-wrapper .download-url-button {
+  background: var(--v-accent) !important;
+  color: var(--v-bg) !important;
+}
+
+/* ── Filter bar ─────────────────────────────────────────────── */
+.swagger-ui .filter-container .filter input {
+  background: var(--v-s2) !important;
+  color: var(--v-fg) !important;
+  border: 1px solid var(--v-border-l) !important;
+}
+
+/* ── Server selector ────────────────────────────────────────── */
+.swagger-ui .servers > label select {
+  background: var(--v-s2) !important;
+  color: var(--v-fg) !important;
+}
+
+/* ── Response media-type selector ───────────────────────────── */
+.swagger-ui .response-control-media-type--accept-controller select {
+  background: var(--v-s2) !important;
+  color: var(--v-fg) !important;
+}
+
+/* ── Tables ─────────────────────────────────────────────────── */
+.swagger-ui table thead tr td,
+.swagger-ui table thead tr th {
+  border-bottom: 1px solid var(--v-border) !important;
+}
+.swagger-ui table tbody tr td {
+  border-bottom: 1px solid var(--v-border) !important;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+.swagger-ui ::-webkit-scrollbar         { width: 8px; height: 8px; }
+.swagger-ui ::-webkit-scrollbar-track   { background: var(--v-bg); }
+.swagger-ui ::-webkit-scrollbar-thumb   { background: var(--v-border-l); border-radius: 4px; }
+.swagger-ui ::-webkit-scrollbar-thumb:hover { background: var(--v-muted); }
+
+/* ── Nuclear background kill ─────────────────────────────────
+   Swagger UI sets inline background-color on opblock wrappers
+   via React style props. Only way to beat inline styles is
+   !important on very broad selectors.
+   ───────────────────────────────────────────────────────────── */
+.swagger-ui .opblock-body,
+.swagger-ui .opblock-body > div,
+.swagger-ui .opblock-body > .opblock-section,
+.swagger-ui .opblock-body > .opblock-section > div,
+.swagger-ui .opblock-section-header,
+.swagger-ui .opblock .opblock-section-header,
+.swagger-ui .opblock-get .opblock-section-header,
+.swagger-ui .opblock-post .opblock-section-header,
+.swagger-ui .opblock-put .opblock-section-header,
+.swagger-ui .opblock-delete .opblock-section-header,
+.swagger-ui .opblock-patch .opblock-section-header,
+.swagger-ui .opblock .tab-header,
+.swagger-ui .opblock-body .opblock-description-wrapper,
+.swagger-ui .responses-wrapper,
+.swagger-ui .responses-inner,
+.swagger-ui .request-body-wrapper,
+.swagger-ui .body-param,
+.swagger-ui .execute-wrapper,
+.swagger-ui .response,
+.swagger-ui .responses-table,
+.swagger-ui .response-col_description__inner,
+.swagger-ui .opblock-body pre.body-param__text {
+  background: var(--v-s1) !important;
+}
+
+/* parameters + request body header bar */
+.swagger-ui .opblock .opblock-section-header {
+  background: var(--v-s2) !important;
+  box-shadow: none !important;
+}
+
+.swagger-ui .opblock .opblock-section-header h4,
+.swagger-ui .opblock .opblock-section-header label {
+  color: var(--v-fg) !important;
+}
+
+/* request body textarea */
+.swagger-ui .body-param textarea,
+.swagger-ui textarea.body-param__text {
+  background: var(--v-s2) !important;
+  color: var(--v-fg) !important;
+  border: 1px solid var(--v-border-l) !important;
+  font-family: var(--v-mono) !important;
+}
+
+/* ── Global border reset ────────────────────────────────────── */
+.swagger-ui *,
+.swagger-ui *::before,
+.swagger-ui *::after {
+  border-color: var(--v-border) !important;
+}

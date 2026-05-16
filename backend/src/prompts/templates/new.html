@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a class="back-link" href="/admin/prompts">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  Back to prompts
+</a>
+
+<div class="page-header">
+  <h1>New Prompt</h1>
+</div>
+
+<div class="card"><div class="card-body">
+  <form method="post" action="/admin/prompts">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Service</label>
+        <input type="text" name="service" placeholder="chat, lessons, tests, clusterization..." required>
+        <div class="hint">Which microservice owns this prompt</div>
+      </div>
+      <div class="form-group">
+        <label>Key</label>
+        <input type="text" name="key" placeholder="summarize-document" required>
+        <div class="hint">Unique identifier within the service</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" name="description" placeholder="What this prompt does and when it's used...">
+    </div>
+    <div class="form-group">
+      <label>Variables</label>
+      <input type="text" name="variables" placeholder="user_name, context, language">
+      <div class="hint">Comma-separated placeholder names used in the prompt</div>
+    </div>
+    <div class="form-group">
+      <label>Content</label>
+      <textarea name="content" placeholder="You are a helpful assistant that..." required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Prompt</button>
+  </form>
+</div></div>
+
+{% endblock %}

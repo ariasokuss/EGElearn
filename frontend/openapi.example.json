@@ -1,0 +1,531 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "novalearn-api",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/files/folders": {
+      "get": {
+        "tags": ["files"],
+        "summary": "List all folders",
+        "operationId": "listFolders",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "$ref": "#/components/schemas/FolderOut" },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      },
+      "post": {
+        "tags": ["files"],
+        "summary": "Create a folder",
+        "operationId": "createFolder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FolderCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderOut" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/files/folders/{folder_id}": {
+      "patch": {
+        "tags": ["files"],
+        "summary": "Rename a folder",
+        "operationId": "renameFolder",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "folder_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FolderCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderOut" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["files"],
+        "summary": "Delete a folder and all its documents",
+        "operationId": "deleteFolder",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "folder_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat/stream-test": {
+      "get": {
+        "tags": ["chat"],
+        "summary": "Stream Test",
+        "description": "Test streaming: returns tokens one by one with 100ms delay.",
+        "operationId": "streamTest",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/api/v1/chat/message": {
+      "post": {
+        "tags": ["chat"],
+        "summary": "Post Chat Message",
+        "operationId": "postChatMessage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChatMessageRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/chat/documents/{document_id}/pdf": {
+      "get": {
+        "tags": ["chat"],
+        "summary": "Get Document Pdf",
+        "operationId": "getChatDocumentPdf",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat/documents": {
+      "get": {
+        "tags": ["chat"],
+        "summary": "List Folder Documents",
+        "operationId": "listChatDocuments",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "folder_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "minLength": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListFolderDocumentsResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat/conversations": {
+      "get": {
+        "tags": ["chat"],
+        "summary": "List Conversations",
+        "operationId": "listConversations",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "folder_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "minLength": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListConversationsResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat/conversations/{conversation_id}/messages": {
+      "get": {
+        "tags": ["chat"],
+        "summary": "Get Conversation Messages",
+        "operationId": "getConversationMessages",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string" }, { "type": "null" }]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetMessagesResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat/conversations/{conversation_id}": {
+      "delete": {
+        "tags": ["chat"],
+        "summary": "Delete Conversation",
+        "operationId": "deleteConversation",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FolderCreate": {
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": ["name"],
+        "title": "FolderCreate"
+      },
+      "FolderOut": {
+        "properties": {
+          "id": { "type": "string", "format": "uuid", "title": "Id" },
+          "name": { "type": "string", "title": "Name" },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          },
+          "created_at": { "type": "string", "format": "date-time", "title": "Created At" },
+          "updated_at": { "type": "string", "format": "date-time", "title": "Updated At" },
+          "document_count": { "type": "integer", "title": "Document Count" }
+        },
+        "type": "object",
+        "required": ["id", "name", "created_at", "updated_at", "document_count"],
+        "title": "FolderOut"
+      },
+      "ChatMessageRequest": {
+        "properties": {
+          "conversation_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Conversation Id"
+          },
+          "folder_id": { "type": "string", "minLength": 1, "title": "Folder Id" },
+          "message": { "type": "string", "maxLength": 5000, "minLength": 1, "title": "Message" },
+          "current_document_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Current Document Id"
+          },
+          "current_page": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Current Page"
+          },
+          "total_pages": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Total Pages"
+          },
+          "model": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Model"
+          },
+          "reasoning": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Reasoning"
+          }
+        },
+        "type": "object",
+        "required": ["folder_id", "message"],
+        "title": "ChatMessageRequest"
+      },
+      "ConversationSummary": {
+        "properties": {
+          "id": { "type": "string", "title": "Id" },
+          "title": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Title"
+          },
+          "created_at": { "type": "string", "format": "date-time", "title": "Created At" },
+          "updated_at": { "type": "string", "format": "date-time", "title": "Updated At" },
+          "message_count": { "type": "integer", "title": "Message Count" },
+          "last_message_preview": { "type": "string", "title": "Last Message Preview" }
+        },
+        "type": "object",
+        "required": ["id", "created_at", "updated_at", "message_count", "last_message_preview"],
+        "title": "ConversationSummary"
+      },
+      "ListConversationsResponse": {
+        "properties": {
+          "conversations": {
+            "items": { "$ref": "#/components/schemas/ConversationSummary" },
+            "type": "array",
+            "title": "Conversations"
+          }
+        },
+        "type": "object",
+        "required": ["conversations"],
+        "title": "ListConversationsResponse"
+      },
+      "MessageSchema": {
+        "properties": {
+          "id": { "type": "string", "title": "Id" },
+          "role": { "type": "string", "title": "Role" },
+          "content": { "type": "string", "title": "Content" },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metadata"
+          },
+          "created_at": { "type": "string", "format": "date-time", "title": "Created At" }
+        },
+        "type": "object",
+        "required": ["id", "role", "content", "metadata", "created_at"],
+        "title": "MessageSchema"
+      },
+      "GetMessagesResponse": {
+        "properties": {
+          "messages": {
+            "items": { "$ref": "#/components/schemas/MessageSchema" },
+            "type": "array",
+            "title": "Messages"
+          },
+          "has_more": { "type": "boolean", "title": "Has More" },
+          "next_cursor": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Next Cursor"
+          }
+        },
+        "type": "object",
+        "required": ["messages", "has_more"],
+        "title": "GetMessagesResponse"
+      },
+      "FolderDocumentRead": {
+        "properties": {
+          "id": { "type": "string", "title": "Id" },
+          "name": { "type": "string", "title": "Name" },
+          "page_count": { "type": "integer", "title": "Page Count" }
+        },
+        "type": "object",
+        "required": ["id", "name", "page_count"],
+        "title": "FolderDocumentRead"
+      },
+      "ListFolderDocumentsResponse": {
+        "properties": {
+          "documents": {
+            "items": { "$ref": "#/components/schemas/FolderDocumentRead" },
+            "type": "array",
+            "title": "Documents"
+          }
+        },
+        "type": "object",
+        "required": ["documents"],
+        "title": "ListFolderDocumentsResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

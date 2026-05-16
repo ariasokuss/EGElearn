@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NovaLearn Inspector — Lessons</title>
+    <link rel="stylesheet" href="/api/v1/inspector/assets/styles.css">
+    <script src="/api/v1/inspector/assets/app.js" defer></script>
+  </head>
+  <body data-page="lessons">
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Inspector</p>
+          <h1>Lessons</h1>
+        </div>
+        <div class="topbar-actions">
+          <a class="button ghost" href="../inspector/dashboard">Dashboard</a>
+          <div class="session-chip" id="sessionLabel">User</div>
+          <button id="signOutButton" type="button" class="button ghost">Sign out</button>
+        </div>
+      </header>
+
+      <div id="flash" class="flash" hidden></div>
+
+      <main class="page-grid">
+        <section class="panel stack wide-panel">
+          <div class="section-heading split">
+            <div>
+              <p class="eyebrow">Learning</p>
+              <h2>Available lessons</h2>
+            </div>
+            <button id="refreshButton" type="button" class="button ghost">Refresh</button>
+          </div>
+          <div id="lessonsEmpty" class="empty-state">
+            <h3>No lessons yet</h3>
+            <p>Lessons are created by the learning pipeline and stored in the database.</p>
+          </div>
+          <div id="lessonsList" class="card-grid"></div>
+        </section>
+        <section class="panel stack wide-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Ingest</p>
+            <h2>Upload lesson</h2>
+          </div>
+          <form id="uploadLessonForm" class="stack">
+            <label class="field">
+              <span>Markdown file (.md)</span>
+              <input id="lessonFileInput" name="file" type="file" accept=".md,text/markdown" required>
+            </label>
+            <label class="field">
+              <span>Name <span class="muted" style="font-size:0.82rem">(optional — defaults to filename)</span></span>
+              <input id="lessonNameInput" name="name" type="text" placeholder="e.g. Lesson 1.1.2">
+            </label>
+            <button id="uploadLessonButton" type="submit" class="button accent">Upload &amp; Parse</button>
+          </form>
+          <div id="uploadResult" hidden class="detail-card" style="margin-top:0.2rem;">
+            <p class="eyebrow" style="margin-bottom:0.5rem">Upload result</p>
+            <div id="uploadResultContent" class="stack"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,104 @@
+stages:
+  - verify
+  - deploy
+
+variables:
+  NPM_CONFIG_FETCH_RETRIES: "5"
+  NPM_CONFIG_FETCH_RETRY_FACTOR: "2"
+  NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: "2000"
+  NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: "60000"
+
+default:
+  interruptible: true
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+
+verify_seo:
+  stage: verify
+  image: node:20-alpine
+  tags:
+    - novalearn
+    - dev
+  timeout: 15m
+  only:
+    - dev
+    - main
+  script:
+    - |
+      n=0
+      until [ "$n" -ge 4 ]; do
+        npm ci --cache .npm --prefer-offline --no-audit && break
+        n=$((n + 1))
+        echo "npm ci failed ($n/4), retrying in $((n * 5))s..."
+        sleep $((n * 5))
+      done
+      [ "$n" -lt 4 ] || (echo "npm ci failed after retries"; exit 1)
+    - if [ "$CI_COMMIT_BRANCH" = "main" ]; then export NEXT_PUBLIC_APP_URL="https://novalearn.ai"; else export NEXT_PUBLIC_APP_URL="https://dev.novalearn.ai"; fi
+    - npm run build
+    - npm run seo:validate
+
+deploy_dev:
+  stage: deploy
+  image: node:20-alpine
+  tags:
+    - novalearn
+    - dev
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+  timeout: 15m
+  only:
+    - dev
+  script:
+    - |
+      n=0
+      until [ "$n" -ge 4 ]; do
+        npm install -g vercel --no-audit --prefer-online && break
+        n=$((n + 1))
+        echo "vercel install failed ($n/4), retrying in $((n * 5))s..."
+        sleep $((n * 5))
+      done
+      [ "$n" -lt 4 ] || (echo "vercel install failed after retries"; exit 1)
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - vercel build --prod --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+  environment:
+    name: dev
+    url: https://dev.novalearn.ai
+
+deploy_production:
+  stage: deploy
+  image: node:20-alpine
+  tags:
+    - novalearn
+    - dev
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+  timeout: 15m
+  only:
+    - main
+  script:
+    - |
+      n=0
+      until [ "$n" -ge 4 ]; do
+        npm install -g vercel --no-audit --prefer-online && break
+        n=$((n + 1))
+        echo "vercel install failed ($n/4), retrying in $((n * 5))s..."
+        sleep $((n * 5))
+      done
+      [ "$n" -lt 4 ] || (echo "vercel install failed after retries"; exit 1)
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - vercel build --prod --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+  environment:
+    name: production
+    url: https://novalearn.ai

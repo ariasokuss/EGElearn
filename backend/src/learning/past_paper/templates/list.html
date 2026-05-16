@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Past Papers</h1>
+    <div class="page-header-sub">{{ papers|length }} paper{{ '' if papers|length == 1 else 's' }} in the admin library</div>
+  </div>
+  <a class="btn btn-primary" href="/admin/past-papers/new">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Upload past paper
+  </a>
+</div>
+
+{% if papers %}
+<ul class="paper-list">
+  {% for p in papers %}
+  <li class="paper-list-item">
+    <div class="paper-list-row" data-paper-id="{{ p.id }}">
+      <div>
+        <a href="/admin/past-papers/{{ p.id }}" class="paper-list-name">{{ p.name }}</a>
+        <div class="paper-list-meta">{{ p.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+      </div>
+      <span class="badge badge-{{ p.status }}" data-status-badge>
+        {% if p.status == 'processing' %}
+          <span class="status-pill"><span class="spinner"></span>{{ p.processing_phase or 'processing' }}</span>
+        {% else %}
+          {{ p.status }}
+        {% endif %}
+      </span>
+      <span class="paper-list-col">{{ p.total_questions }} q</span>
+      <span class="badge {% if p.is_canonical %}badge-canonical{% else %}badge-inactive{% endif %}">
+        {% if p.is_canonical %}Hashed{% else %}—{% endif %}
+      </span>
+      <a class="btn btn-sm" href="/admin/past-papers/{{ p.id }}">View</a>
+      <form method="post" action="/admin/past-papers/{{ p.id }}/delete" onsubmit="return confirm('Delete this paper?');" style="display:inline;">
+        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+      </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="empty-state">
+  <p>No past papers uploaded yet.</p>
+  <a class="btn btn-primary" href="/admin/past-papers/new">Upload your first paper</a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block body_end %}
+<script>
+  (function () {
+    document.querySelectorAll('.paper-list-row[data-paper-id]').forEach(function (row) {
+      const badge = row.querySelector('[data-status-badge]');
+      if (!badge) return;
+      const text = badge.textContent.trim().toLowerCase();
+      if (text === 'ready' || text === 'failed') return;
+      const id = row.getAttribute('data-paper-id');
+      const es = new EventSource(`/admin/past-papers/${id}/status-stream`);
+      es.addEventListener('status', function (ev) {
+        try {
+          const p = JSON.parse(ev.data);
+          renderBadge(badge, p.status, p.processing_phase);
+        } catch (_) {}
+      });
+      es.addEventListener('end', function (ev) {
+        try {
+          const p = JSON.parse(ev.data);
+          renderBadge(badge, p.status, p.processing_phase);
+        } catch (_) {}
+        es.close();
+      });
+      es.addEventListener('error', function () { es.close(); });
+    });
+
+    function renderBadge(el, status, phase) {
+      el.className = 'badge badge-' + status;
+      el.setAttribute('data-status-badge', '');
+      if (status === 'processing') {
+        el.innerHTML = '<span class="status-pill"><span class="spinner"></span>' + escape(phase || 'processing') + '</span>';
+      } else {
+        el.textContent = status;
+      }
+    }
+    function escape(s) { return String(s).replace(/[<>&]/g, function (c) { return ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]; }); }
+  })();
+
+  // Detect newly-uploaded papers by polling the list page itself every 4s.
+  // If the server's set of paper IDs differs from what we currently show,
+  // soft-reload the page so the new rows appear.
+  (function () {
+    const currentIds = new Set();
+    document.querySelectorAll('.paper-list-row[data-paper-id]').forEach(function (row) {
+      currentIds.add(row.getAttribute('data-paper-id'));
+    });
+
+    async function poll() {
+      try {
+        const resp = await fetch('/admin/past-papers', { headers: { 'Accept': 'text/html' }, cache: 'no-store' });
+        if (!resp.ok) return;
+        const html = await resp.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const fresh = new Set();
+        doc.querySelectorAll('.paper-list-row[data-paper-id]').forEach(function (row) {
+          fresh.add(row.getAttribute('data-paper-id'));
+        });
+        // reload if any difference: new ids appeared OR ids disappeared
+        if (fresh.size !== currentIds.size) {
+          window.location.reload();
+          return;
+        }
+        for (const id of fresh) {
+          if (!currentIds.has(id)) { window.location.reload(); return; }
+        }
+      } catch (_) {}
+    }
+
+    setInterval(poll, 4000);
+  })();
+</script>
+{% endblock %}

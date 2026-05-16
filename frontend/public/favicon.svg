@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .n { fill: #000; }
+    @media (prefers-color-scheme: dark) {
+      .n { fill: #fff; }
+    }
+  </style>
+  <text class="n" x="16" y="24" font-family="Georgia, serif" font-size="22" font-style="italic" font-weight="bold" text-anchor="middle">N</text>
+</svg>

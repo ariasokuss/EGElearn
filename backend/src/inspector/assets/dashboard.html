@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NovaLearn Inspector Dashboard</title>
+    <link rel="stylesheet" href="/api/v1/inspector/assets/styles.css">
+    <script src="/api/v1/inspector/assets/app.js" defer></script>
+  </head>
+  <body data-page="dashboard">
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Inspector</p>
+          <h1>Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <a class="button ghost" href="./lessons" id="lessonsLink">Lessons</a>
+          <a class="button ghost" href="./chat" id="chatLink">Chat</a>
+          <div class="session-chip" id="sessionLabel">User</div>
+          <button id="signOutButton" type="button" class="button ghost">Sign out</button>
+        </div>
+      </header>
+
+      <div id="flash" class="flash" hidden></div>
+
+      <main class="page-grid">
+        <section class="panel stack">
+          <div class="section-heading">
+            <p class="eyebrow">Overview</p>
+            <h2>Workspace totals</h2>
+          </div>
+          <div id="summaryMetrics" class="metric-grid"></div>
+        </section>
+
+        <section class="panel stack">
+          <div class="section-heading split">
+            <div>
+              <p class="eyebrow">Control</p>
+              <h2>Create folder</h2>
+            </div>
+            <button id="refreshButton" type="button" class="button ghost">Refresh</button>
+          </div>
+          <form id="createFolderForm" class="stack">
+            <label class="field">
+              <span>Folder name</span>
+              <input id="folderNameInput" name="name" type="text" maxlength="255" placeholder="Organic chemistry" required>
+            </label>
+            <button type="submit" class="button accent">Create folder</button>
+          </form>
+        </section>
+
+        <section class="panel stack wide-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Folders</p>
+            <h2>Open a workspace</h2>
+          </div>
+          <div id="folderEmpty" class="empty-state">
+            <h3>No folders yet</h3>
+            <p>Create one above to start uploading documents.</p>
+          </div>
+          <div id="foldersList" class="card-grid"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

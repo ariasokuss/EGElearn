@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} | NovaLearn</title>
+  <link rel="stylesheet" href="/admin/usage/static/style.css?v=activity-ledger-20260505">
+  <style>
+    .flash {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+    }
+    .flash.is-error { border-color: #e7c8c0; background: #fbeeea; color: #7a3220; }
+    .flash.is-ok    { border-color: #cfe1d4; background: #eef5f0; color: #2e5b3e; }
+    .flash code { font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 12px; }
+
+    .ref-create-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1.4fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+    .ref-create-grid label {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .ref-create-grid input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .ref-create-grid input:focus {
+      outline: none;
+      border-color: var(--accent-strong);
+      box-shadow: 0 0 0 3px var(--accent);
+    }
+    .ref-create-grid button {
+      border: 1px solid var(--text);
+      border-radius: 999px;
+      padding: 10px 20px;
+      background: var(--text);
+      color: #fff;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.2;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      height: 40px;
+      align-self: end;
+    }
+    .ref-create-grid button:hover { background: #3a3935; }
+    @media (max-width: 1080px) { .ref-create-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px)  { .ref-create-grid { grid-template-columns: 1fr; } }
+
+    .toggle-pill {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .toggle-pill.is-on   { background: #eef5f0; border-color: #cfe1d4; color: #2e5b3e; }
+    .toggle-pill.is-off  { background: #f5f1ee; color: #87807a; }
+    .toggle-pill:hover { filter: brightness(0.97); }
+
+    .conv-badge {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .conv-badge.is-zero { background: transparent; color: var(--muted); padding: 0; }
+
+    .ref-code {
+      font-family: 'IBM Plex Mono', Menlo, monospace;
+      font-size: 13px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .ref-code:hover { text-decoration: underline; }
+
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    th.num { text-align: right; }
+
+    .row-actions a { color: var(--muted); text-decoration: none; font-size: 12px; }
+    .row-actions a:hover { color: var(--text); text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo">NL</div>
+      <nav class="nav-links">
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/usage') else '' }}" href="/admin/usage">Usage</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/prompts') else '' }}" href="/admin/prompts">Prompts</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/past-papers') else '' }}" href="/admin/past-papers">Papers</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/security') else '' }}" href="/admin/security">Security</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/referrals') else '' }}" href="/admin/referrals">Referrals</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <div>
+          <h1>Referrals</h1>
+          <p>Creator links, attribution and conversion stats.</p>
+        </div>
+        <div class="stamp">Updated {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</div>
+      </header>
+
+      {% set total_visits = rows|sum(attribute='visits_count') %}
+      {% set total_uniques = rows|sum(attribute='unique_visitors') %}
+      {% set total_regs = rows|sum(attribute='registrations') %}
+      {% set total_purch = rows|sum(attribute='purchases') %}
+      <section class="stats-grid">
+        <article class="stat-card">
+          <h2>Sources</h2>
+          <div class="value">{{ rows|length }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Total visits</h2>
+          <div class="value">{{ total_visits }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Registrations</h2>
+          <div class="value">{{ total_regs }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Purchases</h2>
+          <div class="value">{{ total_purch }}</div>
+        </article>
+      </section>
+
+      {% if error == 'user-not-found' %}
+        <div class="flash is-error">No user with that email.</div>
+      {% elif error == 'code-taken' %}
+        <div class="flash is-error">That code is already in use.</div>
+      {% elif error == 'invalid-code' %}
+        <div class="flash is-error">Code must match <code>[A-Za-z0-9_-]{2,64}</code>.</div>
+      {% endif %}
+      {% if ok == 'created' %}
+        <div class="flash is-ok">Source created.</div>
+      {% elif ok == 'toggled' %}
+        <div class="flash is-ok">Source updated.</div>
+      {% endif %}
+
+      <section class="panel">
+        <h3 class="section-title">Create new link</h3>
+        <form method="post" action="/admin/referrals" class="ref-create-grid">
+          <label>Creator email <input name="email" type="email" required placeholder="creator@example.com"></label>
+          <label>Code <input name="code" required placeholder="roman-yt" pattern="[A-Za-z0-9_-]{2,64}"></label>
+          <label>Label <input name="label" placeholder="YouTube channel"></label>
+          <button type="submit">Create</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        {% if rows %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Label</th>
+                <th>Owner</th>
+                <th>State</th>
+                <th class="num">Visits</th>
+                <th class="num">Uniques</th>
+                <th class="num">Regs</th>
+                <th class="num">Purch</th>
+                <th class="num">Conv</th>
+                <th>Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in rows %}
+              <tr>
+                <td><a class="ref-code" href="/admin/referrals/{{ r.source_id }}">{{ r.code }}</a></td>
+                <td>{{ r.label or '—' }}</td>
+                <td>
+                  <div class="email">{{ r.owner_email }}</div>
+                </td>
+                <td>
+                  <form method="post" action="/admin/referrals/{{ r.source_id }}/toggle" style="display:inline">
+                    <button type="submit" class="toggle-pill {{ 'is-on' if r.is_active else 'is-off' }}">
+                      {{ 'active' if r.is_active else 'paused' }}
+                    </button>
+                  </form>
+                </td>
+                <td class="num">{{ r.visits_count }}</td>
+                <td class="num">{{ r.unique_visitors }}</td>
+                <td class="num">{{ r.registrations }}</td>
+                <td class="num">{{ r.purchases }}</td>
+                <td class="num">
+                  {% if r.visits_count %}
+                    <span class="conv-badge">{{ '%.1f%%'|format(100 * r.registrations / r.visits_count) }}</span>
+                  {% else %}
+                    <span class="conv-badge is-zero">—</span>
+                  {% endif %}
+                </td>
+                <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+                <td class="row-actions"><a href="/admin/referrals/{{ r.source_id }}">Detail →</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty">No referral sources yet. Create one above.</div>
+        {% endif %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

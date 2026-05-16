@@ -1,0 +1,318 @@
+/* ===========================
+   Highlight.js — Light theme (Figma match)
+   =========================== */
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+}
+code.hljs {
+  display: inline;
+}
+.hljs {
+  color: #002339;
+  background: transparent;
+}
+.hljs-keyword,
+.hljs-operator,
+.hljs-meta .hljs-keyword {
+  color: #7b30d0;
+}
+.hljs-comment,
+.hljs-doctag {
+  color: #357b42;
+  font-style: italic;
+}
+.hljs-string,
+.hljs-regexp {
+  color: #a44185;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-variable.constant_,
+.hljs-meta {
+  color: #174781;
+}
+.hljs-built_in,
+.hljs-class .hljs-title,
+.hljs-type {
+  color: #dc3eb7;
+}
+.hljs-function .hljs-title,
+.hljs-title.function_,
+.hljs-title.class_ {
+  color: #002339;
+}
+.hljs-params {
+  color: #b1108e;
+}
+.hljs-attr,
+.hljs-attribute {
+  color: #b1108e;
+}
+.hljs-tag {
+  color: #7b30d0;
+}
+.hljs-name {
+  color: #dc3eb7;
+}
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-selector-tag {
+  color: #7b30d0;
+}
+.hljs-property {
+  color: #002339;
+}
+.hljs-symbol,
+.hljs-bullet {
+  color: #174781;
+}
+.hljs-subst {
+  color: #002339;
+}
+.hljs-section,
+.hljs-title {
+  color: #002339;
+  font-weight: 500;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: bold;
+}
+.hljs-addition {
+  color: #357b42;
+  background-color: rgba(53, 123, 66, 0.1);
+}
+.hljs-deletion {
+  color: #a44185;
+  background-color: rgba(164, 65, 133, 0.1);
+}
+
+/* ===========================
+   Markdown prose styles
+   =========================== */
+.chat-prose {
+  font-family: var(--font-inter), Inter, sans-serif;
+}
+
+/* Headings */
+.chat-prose h1 {
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 1.25em 0 0.5em;
+  color: var(--ege-text);
+}
+.chat-prose h2 {
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 1.125em 0 0.5em;
+  color: var(--ege-text);
+}
+.chat-prose h3 {
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 1em 0 0.4em;
+  color: var(--ege-text);
+}
+.chat-prose h4, .chat-prose h5, .chat-prose h6 {
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.45;
+  margin: 0.875em 0 0.375em;
+  color: var(--ege-text);
+}
+.chat-prose h1:first-child,
+.chat-prose h2:first-child,
+.chat-prose h3:first-child {
+  margin-top: 0;
+}
+
+/* Paragraphs */
+.chat-prose p {
+  margin: 0.625em 0;
+  line-height: 1.7;
+}
+.chat-prose p:first-child {
+  margin-top: 0;
+}
+.chat-prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* Bold / Italic */
+.chat-prose strong {
+  font-weight: 600;
+  color: var(--ege-text);
+}
+.chat-prose em {
+  font-style: italic;
+}
+
+/* Links */
+.chat-prose a {
+  color: #2563EB;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.chat-prose a:hover {
+  color: #1D4ED8;
+}
+
+/* Lists */
+.chat-prose ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+.chat-prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+.chat-prose li {
+  margin: 0.25em 0;
+  line-height: 1.7;
+}
+.chat-prose li > ul,
+.chat-prose li > ol {
+  margin: 0.125em 0;
+}
+
+/* Blockquotes */
+.chat-prose blockquote {
+  border-left: 3px solid var(--ege-border);
+  padding: 0.25em 0 0.25em 1em;
+  margin: 0.75em 0;
+  color: var(--ege-muted);
+}
+.chat-prose blockquote p {
+  margin: 0.25em 0;
+}
+
+/* Inline code */
+.chat-prose :not(pre) > code {
+  background: var(--ege-surface);
+  border-radius: 5px;
+  padding: 0.15em 0.4em;
+  font-family: var(--font-ibm-plex-mono), 'IBM Plex Mono', monospace;
+  font-size: 0.875em;
+  color: var(--ege-text);
+  word-break: break-word;
+}
+
+/* Horizontal rules */
+.chat-prose hr {
+  border: none;
+  border-top: 1px solid var(--ege-border);
+  margin: 1.5em 0;
+}
+
+/* Tables */
+.chat-prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--ege-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0.75em 0;
+  font-size: 0.875em;
+}
+.chat-prose thead {
+  background: var(--ege-surface);
+}
+.chat-prose th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ege-text);
+  padding: 0.625em 0.75em;
+  border-bottom: 1px solid var(--ege-border);
+}
+.chat-prose th:not(:last-child) {
+  border-right: 1px solid var(--ege-border);
+}
+.chat-prose td {
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid var(--ege-border);
+  color: var(--ege-text);
+}
+.chat-prose td:not(:last-child) {
+  border-right: 1px solid var(--ege-border);
+}
+.chat-prose tr:last-child td {
+  border-bottom: none;
+}
+.chat-prose .table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 0.75em 0;
+  border-radius: 12px;
+}
+
+/* ===========================
+   Math / KaTeX
+   =========================== */
+
+/* Block math: horizontally scrollable with hidden scrollbar */
+.chat-prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5em 0;
+  margin: 0.5em 0;
+  /* Hide scrollbar cross-browser */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.chat-prose .katex-display::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent block math from growing message width */
+.chat-prose .katex-display > .katex {
+  white-space: nowrap;
+}
+
+/* Inline math: inherit text size */
+.chat-prose .katex {
+  font-size: 1em;
+}
+
+/* Images inside chat */
+.chat-prose img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 0.5em 0;
+}
+
+/* ===========================
+   Text selection highlight
+   =========================== */
+
+/* Voice input waveform bars — reduced-motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .voice-waveform-bar {
+    transition: none !important;
+  }
+}
+
+/* Custom native selection color within chat messages */
+[data-message-id] ::selection {
+  background: var(--ege-track);
+  color: inherit;
+}
+
+/* Persisted highlight marks */
+mark.chat-text-highlight {
+  background: var(--ege-track);
+  color: inherit;
+  border-radius: 4px;
+  padding: 1px 0;
+  /* Decorative outline removed for clean look */
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

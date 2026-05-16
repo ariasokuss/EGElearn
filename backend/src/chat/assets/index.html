@@ -1,0 +1,3569 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nova</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+        <style>
+            /* ── Reset & Variables ─────────────────────────────────── */
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            :root {
+                --bg: #0a0f14;
+                --s1: #0e141c;
+                --s2: #121a24;
+                --s3: #1a2433;
+                --border: rgba(232, 238, 245, 0.12);
+                --border-s: rgba(232, 238, 245, 0.08);
+
+                --accent: #67d4c1;
+                --accent-dim: #2fb6a1;
+                --accent-glow: rgba(103, 212, 193, 0.14);
+
+                --text: #e8eef5;
+                --muted: #99a7b5;
+                --dim: rgba(232, 238, 245, 0.35);
+
+                --user-bg: transparent;
+                --err: #f28b7d;
+                --ok: #67d4c1;
+
+                --r-s: 6px;
+                --r-m: 12px;
+                --r-l: 16px;
+                --r-xl: 22px;
+                --font: "Inter", -apple-system, sans-serif;
+                --mono: "JetBrains Mono", monospace;
+
+                --rail-w: 56px;
+                --conv-w: 224px;
+                --vw: 480px;
+                --msg-max: 720px;
+            }
+
+            html,
+            body {
+                height: 100%;
+                font-family: var(--font);
+                font-size: 15px;
+                color: var(--text);
+                background:
+                    radial-gradient(circle at top left, rgba(103, 212, 193, 0.14), transparent 22rem),
+                    radial-gradient(circle at top right, rgba(86, 136, 255, 0.16), transparent 24rem),
+                    radial-gradient(circle at bottom left, rgba(47, 182, 161, 0.08), transparent 28rem),
+                    linear-gradient(180deg, #0e141c 0%, #0a0f14 100%);
+                -webkit-font-smoothing: antialiased;
+                overflow: hidden;
+            }
+            button {
+                cursor: pointer;
+                border: none;
+                background: none;
+                font-family: var(--font);
+            }
+            input,
+            textarea,
+            select {
+                font-family: var(--font);
+            }
+            a {
+                color: var(--accent);
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+
+            /* ── App Layout ─────────────────────────────────────────── */
+            .app {
+                display: flex;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            /* ══════════════════════════════════════════════════
+       ICON RAIL
+    ══════════════════════════════════════════════════ */
+            .icon-rail {
+                width: var(--rail-w);
+                flex-shrink: 0;
+                background: var(--s1);
+                border-right: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 12px 0 14px;
+                z-index: 10;
+            }
+
+            .rail-logo {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: var(--accent);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 22px;
+                flex-shrink: 0;
+                color: #fff;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: default;
+                user-select: none;
+            }
+
+            .rail-nav {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+            }
+
+            .rail-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 11px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--dim);
+                transition:
+                    background 0.15s,
+                    color 0.15s;
+            }
+            .rail-btn:hover {
+                background: var(--s2);
+                color: var(--muted);
+            }
+            .rail-btn.active {
+                background: var(--accent-glow);
+                color: var(--accent);
+            }
+
+            .rail-foot {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .rail-avatar {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: var(--s3);
+                border: 1.5px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--muted);
+                cursor: pointer;
+                flex-shrink: 0;
+                transition: border-color 0.15s;
+            }
+            .rail-avatar:hover {
+                border-color: var(--accent);
+            }
+
+            /* ══════════════════════════════════════════════════
+       CONVERSATIONS PANEL
+    ══════════════════════════════════════════════════ */
+            .conv-panel {
+                width: 0;
+                flex-shrink: 0;
+                overflow: hidden;
+                background: var(--s1);
+                border-right: 0px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                transition:
+                    width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-right-width 0.25s,
+                    margin 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-radius 0.28s,
+                    box-shadow 0.28s;
+            }
+            .conv-panel.open {
+                width: var(--conv-w);
+                border-right-width: 1px;
+            }
+
+            .conv-panel-inner {
+                width: var(--conv-w);
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            .conv-head {
+                padding: 14px 12px 10px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                border-bottom: 1px solid var(--border-s);
+                flex-shrink: 0;
+            }
+            .conv-head-title {
+                font-size: 13px;
+                font-weight: 600;
+                flex: 1;
+                color: var(--text);
+            }
+            .btn-new-conv {
+                width: 26px;
+                height: 26px;
+                border-radius: 8px;
+                background: var(--s2);
+                color: var(--muted);
+                font-size: 18px;
+                font-weight: 300;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.15s;
+                flex-shrink: 0;
+                line-height: 1;
+            }
+            .btn-new-conv:hover {
+                background: var(--s3);
+                color: var(--text);
+            }
+
+            .conv-list {
+                flex: 1;
+                overflow-y: auto;
+                padding: 6px 8px;
+            }
+            .conv-list::-webkit-scrollbar {
+                width: 3px;
+            }
+            .conv-list::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 2px;
+            }
+
+            .conv-empty {
+                padding: 16px;
+                font-size: 12.5px;
+                color: var(--dim);
+                text-align: center;
+            }
+
+            .conv-item {
+                padding: 8px 10px;
+                border-radius: 10px;
+                cursor: pointer;
+                margin-bottom: 2px;
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                transition: background 0.1s;
+                position: relative;
+            }
+            .conv-item:hover {
+                background: var(--s2);
+            }
+            .conv-item.active {
+                background: var(--accent-glow);
+            }
+            .conv-item:hover .conv-del {
+                opacity: 1;
+            }
+
+            .conv-info {
+                flex: 1;
+                min-width: 0;
+            }
+            .conv-title {
+                font-size: 12.5px;
+                font-weight: 500;
+                color: var(--text);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-bottom: 1px;
+            }
+            .conv-item.active .conv-title {
+                color: var(--accent);
+            }
+            .conv-meta {
+                font-size: 11.5px;
+                color: var(--dim);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .conv-del {
+                opacity: 0;
+                transition: opacity 0.15s;
+                width: 18px;
+                height: 18px;
+                border-radius: 4px;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--dim);
+                font-size: 11px;
+            }
+            .conv-del:hover {
+                color: var(--err);
+                background: rgba(242, 139, 125, 0.12);
+            }
+
+            /* ══════════════════════════════════════════════════
+       PDF VIEWER PANEL
+    ══════════════════════════════════════════════════ */
+            .viewer-panel {
+                width: 0;
+                flex-shrink: 0;
+                overflow: hidden;
+                background: #090d12;
+                border-right: 0px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                transition:
+                    width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-right-width 0.28s;
+            }
+            .viewer-panel.open {
+                width: var(--vw);
+                border-right-width: 1px;
+            }
+            .viewer-panel.resizing {
+                transition: none !important;
+            }
+
+            .viewer-resize-handle {
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 5px;
+                cursor: col-resize;
+                z-index: 20;
+                background: transparent;
+                transition: background 0.2s;
+            }
+            .viewer-resize-handle::after {
+                content: "";
+                position: absolute;
+                right: 1px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 3px;
+                height: 40px;
+                border-radius: 2px;
+                background: var(--border);
+                transition:
+                    background 0.2s,
+                    height 0.2s;
+            }
+            .viewer-resize-handle:hover::after,
+            .viewer-resize-handle.dragging::after {
+                background: var(--accent);
+                height: 60px;
+            }
+
+            .viewer-toolbar {
+                padding: 7px 8px;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                flex-shrink: 0;
+                min-height: 46px;
+                background: var(--s1);
+                white-space: nowrap;
+            }
+            .viewer-filename {
+                flex: 1;
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--dim);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                min-width: 0;
+            }
+            .viewer-filename.loaded {
+                color: var(--text);
+            }
+
+            .viewer-nav {
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                flex-shrink: 0;
+            }
+            .vbtn {
+                width: 26px;
+                height: 26px;
+                border-radius: 7px;
+                background: var(--s2);
+                border: 1px solid var(--border);
+                color: var(--muted);
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.15s;
+                flex-shrink: 0;
+            }
+            .vbtn:hover:not(:disabled) {
+                background: var(--s3);
+                color: var(--text);
+            }
+            .vbtn:disabled {
+                opacity: 0.35;
+                cursor: not-allowed;
+            }
+
+            .viewer-page-input {
+                width: 40px;
+                text-align: center;
+                background: var(--s2);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                padding: 4px;
+                font-size: 12.5px;
+                color: var(--text);
+                outline: none;
+                transition: border-color 0.15s;
+                -moz-appearance: textfield;
+            }
+            .viewer-page-input::-webkit-inner-spin-button,
+            .viewer-page-input::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+            }
+            .viewer-page-input:focus {
+                border-color: var(--accent);
+            }
+            .viewer-page-total {
+                font-size: 12px;
+                color: var(--dim);
+                flex-shrink: 0;
+            }
+
+            .viewer-zoom {
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                flex-shrink: 0;
+            }
+            .zoom-label {
+                font-size: 11.5px;
+                color: var(--dim);
+                min-width: 34px;
+                text-align: center;
+                font-variant-numeric: tabular-nums;
+            }
+
+            .viewer-body {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: auto;
+                background: #070b10;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 14px;
+                position: relative;
+            }
+            .viewer-body::-webkit-scrollbar {
+                width: 5px;
+                height: 5px;
+            }
+            .viewer-body::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 3px;
+            }
+
+            .viewer-canvas-wrap {
+                box-shadow: 0 2px 16px rgb(0 0 0 / 15%);
+                line-height: 0;
+                flex-shrink: 0;
+            }
+            .viewer-canvas-wrap canvas {
+                display: block;
+            }
+
+            .viewer-drop-overlay {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 24px;
+                background: #0b1018;
+                pointer-events: none;
+                transition: background 0.15s;
+            }
+            .viewer-drop-overlay.drag-over {
+                background: rgba(103, 212, 193, 0.06);
+                outline: 2px dashed var(--accent);
+                outline-offset: -8px;
+            }
+            .viewer-drop-overlay.hidden {
+                display: none;
+            }
+            .viewer-drop-icon {
+                font-size: 36px;
+                opacity: 0.35;
+            }
+            .viewer-drop-text {
+                font-size: 13px;
+                color: var(--muted);
+                text-align: center;
+                line-height: 1.55;
+            }
+            .viewer-drop-btn {
+                padding: 8px 18px;
+                border-radius: var(--r-m);
+                background: var(--s1);
+                border: 1px solid var(--border);
+                font-size: 13px;
+                color: var(--muted);
+                transition: all 0.15s;
+                pointer-events: all;
+                cursor: pointer;
+            }
+            .viewer-drop-btn:hover {
+                background: var(--s2);
+                color: var(--text);
+                border-color: var(--accent);
+            }
+
+            .viewer-link-bar {
+                padding: 6px 8px;
+                border-top: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+                background: var(--s1);
+                font-size: 12px;
+                min-height: 38px;
+            }
+            .viewer-link-label {
+                color: var(--dim);
+                white-space: nowrap;
+                font-size: 11.5px;
+            }
+            .viewer-link-select {
+                flex: 1;
+                min-width: 0;
+                background: var(--s2);
+                border: 1px solid var(--border);
+                border-radius: var(--r-s);
+                padding: 4px 7px;
+                font-size: 12px;
+                color: var(--text);
+                outline: none;
+                transition: border-color 0.15s;
+                cursor: pointer;
+            }
+            .viewer-link-select:focus {
+                border-color: var(--accent);
+            }
+            .viewer-linked-badge {
+                background: var(--accent-glow);
+                border: 1px solid rgba(103, 212, 193, 0.3);
+                border-radius: 10px;
+                padding: 2px 8px;
+                font-size: 11px;
+                color: var(--accent);
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* ══════════════════════════════════════════════════
+       MAIN CHAT
+    ══════════════════════════════════════════════════ */
+            .main {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                min-width: 300px;
+                transition:
+                    margin 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-radius 0.28s,
+                    box-shadow 0.28s;
+            }
+
+            /* Messages */
+            .messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 28px 0 12px;
+                scroll-behavior: smooth;
+            }
+            .messages::-webkit-scrollbar {
+                width: 4px;
+            }
+            .messages::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 2px;
+            }
+
+            /* Welcome / empty state */
+            .empty-state {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 100px;
+                padding: 40px 24px;
+                pointer-events: none;
+            }
+
+            /* Nova avatar — looping video */
+            .nova-avatar-wrap {
+                width: 160px;
+                height: 160px;
+                border-radius: 50%;
+                position: relative;
+                flex-shrink: 0;
+                overflow: hidden;
+                /* box-shadow: 0 4px 24px rgba(0,0,0,.15); */
+            }
+            .nova-avatar-wrap video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+            .empty-greeting {
+                font-size: 16px;
+                font-weight: 500;
+                color: var(--muted);
+                letter-spacing: -0.01em;
+            }
+
+            /* Message row — shared container */
+            .msg-row {
+                padding: 4px 36px;
+                max-width: calc(var(--msg-max) + 72px);
+                margin: 0 auto;
+                width: 100%;
+                animation: fade-up 0.18s ease;
+            }
+            @keyframes fade-up {
+                from {
+                    opacity: 0;
+                    transform: translateY(5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* User message — right-aligned bubble */
+            .msg-row.user {
+                padding-top: 16px;
+                padding-bottom: 4px;
+                display: flex;
+                justify-content: flex-end;
+            }
+            .user-text {
+                font-size: 14.5px;
+                line-height: 1.6;
+                color: var(--text);
+                white-space: pre-wrap;
+                word-break: break-word;
+                background: rgba(19, 27, 38, 0.9);
+                border-radius: 18px 18px 4px 18px;
+                padding: 10px 15px;
+                max-width: 72%;
+            }
+
+            /* AI message — left-aligned with Nova label */
+            .msg-row.assistant {
+                padding-top: 16px;
+                padding-bottom: 4px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .msg-sender-label {
+                font-size: 11.5px;
+                font-weight: 600;
+                letter-spacing: 0.03em;
+                color: var(--accent);
+                margin-bottom: 4px;
+                padding-left: 2px;
+            }
+            .ai-content {
+                font-size: 14.5px;
+                line-height: 1.72;
+                color: var(--text);
+                word-break: break-word;
+                max-width: 88%;
+            }
+            .ai-content p {
+                margin-bottom: 0.75em;
+            }
+            .ai-content p:last-child {
+                margin-bottom: 0;
+            }
+            .ai-content h1,
+            .ai-content h2,
+            .ai-content h3 {
+                font-weight: 600;
+                margin-top: 1.2em;
+                margin-bottom: 0.45em;
+                line-height: 1.3;
+            }
+            .ai-content h1 {
+                font-size: 1.15em;
+            }
+            .ai-content h2 {
+                font-size: 1.07em;
+            }
+            .ai-content h3 {
+                font-size: 1em;
+            }
+            .ai-content strong {
+                font-weight: 600;
+            }
+            .ai-content em {
+                color: var(--muted);
+            }
+            .ai-content hr {
+                border: none;
+                border-top: 1px solid var(--border);
+                margin: 0.9em 0;
+            }
+            .ai-content ul,
+            .ai-content ol {
+                padding-left: 1.5em;
+                margin-bottom: 0.7em;
+            }
+            .ai-content li {
+                margin-bottom: 0.28em;
+            }
+            .ai-content code {
+                font-family: var(--mono);
+                font-size: 0.85em;
+                background: var(--s2);
+                border: 1px solid var(--border);
+                border-radius: 4px;
+                padding: 1px 5px;
+                color: #d9f7f1;
+            }
+            .ai-content pre {
+                background: var(--s2);
+                border: 1px solid var(--border);
+                border-radius: var(--r-m);
+                padding: 12px 14px;
+                overflow-x: auto;
+                margin-bottom: 0.7em;
+            }
+            .ai-content pre code {
+                background: none;
+                border: none;
+                padding: 0;
+                font-size: 0.84em;
+                line-height: 1.55;
+                color: var(--text);
+            }
+            .ai-content blockquote {
+                border-left: 3px solid var(--accent);
+                padding-left: 12px;
+                color: var(--muted);
+                margin: 0.5em 0;
+            }
+            .ai-content table {
+                border-collapse: collapse;
+                width: 100%;
+                margin-bottom: 0.7em;
+                font-size: 0.93em;
+            }
+            .ai-content th,
+            .ai-content td {
+                border: 1px solid var(--border);
+                padding: 6px 10px;
+                text-align: left;
+            }
+            .ai-content th {
+                background: var(--s2);
+                font-weight: 600;
+            }
+
+            /* KaTeX */
+            .math-block {
+                display: block;
+                overflow-x: auto;
+                padding: 10px 0;
+                margin: 0.6em 0;
+                text-align: center;
+            }
+            .math-block .katex-display {
+                margin: 0;
+            }
+            .math-inline .katex {
+                font-size: 1em;
+            }
+            .math-err {
+                font-family: var(--mono);
+                font-size: 0.85em;
+                color: var(--err);
+                background: rgba(242, 139, 125, 0.12);
+                border-radius: 4px;
+                padding: 1px 5px;
+            }
+
+            /* Citation refs */
+            .cit-ref {
+                color: var(--accent);
+                font-size: 0.75em;
+                font-weight: 600;
+                cursor: pointer;
+                margin-left: 1px;
+                vertical-align: super;
+            }
+            .cit-ref:hover {
+                opacity: 0.7;
+            }
+
+            /* Citation tooltip */
+            .cit-tooltip {
+                position: fixed;
+                z-index: 500;
+                pointer-events: none;
+                background: var(--s1);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 7px 11px;
+                font-size: 12.5px;
+                color: var(--text);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                max-width: 280px;
+                opacity: 0;
+                transform: translateY(5px);
+                transition:
+                    opacity 0.13s,
+                    transform 0.13s;
+                white-space: nowrap;
+            }
+            .cit-tooltip.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .cit-tooltip-icon {
+                font-size: 14px;
+                flex-shrink: 0;
+            }
+            .cit-tooltip-body {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                min-width: 0;
+            }
+            .cit-tooltip-doc {
+                font-weight: 500;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .cit-tooltip-pg {
+                color: var(--accent);
+                font-size: 11.5px;
+            }
+
+            /* Citations block */
+            .citations {
+                margin-top: 10px;
+                padding: 8px 10px;
+                background: var(--s2);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                align-items: center;
+            }
+            .cit-label {
+                font-size: 10.5px;
+                font-weight: 600;
+                color: var(--dim);
+                text-transform: uppercase;
+                letter-spacing: 0.07em;
+                margin-right: 3px;
+            }
+            .cit-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: var(--s1);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 2px 9px 2px 7px;
+                font-size: 12px;
+                color: var(--muted);
+                transition: all 0.15s;
+            }
+            .cit-chip:hover {
+                border-color: var(--accent);
+                color: var(--text);
+            }
+            .cit-chip .cit-doc {
+                max-width: 160px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .cit-chip .cit-pg {
+                color: var(--accent);
+                font-size: 11px;
+                font-weight: 500;
+                flex-shrink: 0;
+            }
+
+            /* Follow-ups */
+            .followups {
+                margin-top: 14px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .followups-label {
+                font-size: 11px;
+                color: var(--dim);
+                font-weight: 500;
+            }
+            .followups-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .followup-chip {
+                background: transparent;
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 6px 14px;
+                font-size: 13px;
+                color: var(--muted);
+                transition: all 0.15s;
+                text-align: left;
+                line-height: 1.35;
+                cursor: pointer;
+            }
+            .followup-chip:hover {
+                border-color: var(--accent);
+                color: var(--text);
+                background: var(--accent-glow);
+            }
+            .followup-chip.used {
+                opacity: 0.4;
+                pointer-events: none;
+            }
+            .followup-chip.selected {
+                border-color: var(--accent);
+                opacity: 0.7;
+            }
+
+            /* Cursor */
+            .cursor {
+                display: inline-block;
+                width: 2px;
+                height: 1em;
+                background: var(--accent);
+                margin-left: 2px;
+                vertical-align: text-bottom;
+                border-radius: 1px;
+                animation: blink 1s step-end infinite;
+            }
+            @keyframes blink {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0;
+                }
+            }
+            .ai-content.streaming {
+                white-space: pre-wrap;
+            }
+
+            /* Status bar */
+            .status-bar {
+                padding: 5px 36px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 12.5px;
+                color: var(--muted);
+                min-height: 30px;
+                opacity: 0;
+                transform: translateY(3px);
+                transition:
+                    opacity 0.2s,
+                    transform 0.2s;
+                pointer-events: none;
+            }
+            .status-bar.on {
+                opacity: 1;
+                transform: none;
+            }
+            .status-dots {
+                display: flex;
+                gap: 3px;
+                align-items: center;
+                flex-shrink: 0;
+            }
+            .status-dot {
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--accent);
+                animation: pdot 1.4s ease-in-out infinite;
+            }
+            .status-dot:nth-child(2) {
+                animation-delay: 0.18s;
+            }
+            .status-dot:nth-child(3) {
+                animation-delay: 0.36s;
+            }
+            @keyframes pdot {
+                0%,
+                80%,
+                100% {
+                    opacity: 0.25;
+                    transform: scale(0.8);
+                }
+                40% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            .status-text {
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .status-iter {
+                font-size: 11px;
+                color: var(--dim);
+                background: var(--s2);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 1px 8px;
+                flex-shrink: 0;
+            }
+
+            /* ── Input Area ─────────────────────────────────────────── */
+            .input-area {
+                padding: 6px 24px 20px;
+                background: var(--bg);
+            }
+
+            /* Last AI message preview chip */
+            .last-msg-chip {
+                max-width: var(--msg-max);
+                margin: 0 auto 8px;
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 9px 14px;
+                background: var(--s2);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: background 0.15s;
+                overflow: hidden;
+            }
+            .last-msg-chip:hover {
+                background: var(--s3);
+            }
+            .last-msg-chip-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--dim);
+                flex-shrink: 0;
+                margin-top: 1px;
+            }
+            .last-msg-chip-text {
+                font-size: 12.5px;
+                color: var(--muted);
+                line-height: 1.45;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+
+            /* Doc context pill */
+            .doc-context-pill {
+                max-width: var(--msg-max);
+                margin: 0 auto 6px;
+                display: none;
+                align-items: center;
+                gap: 5px;
+                font-size: 11.5px;
+                color: var(--muted);
+                cursor: pointer;
+                transition: color 0.15s;
+            }
+            .doc-context-pill:hover {
+                color: var(--text);
+            }
+            .doc-context-pill .dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--accent);
+                flex-shrink: 0;
+            }
+
+            /* Input card */
+            .input-card {
+                max-width: var(--msg-max);
+                margin: 0 auto;
+                background: var(--s1);
+                border: 1.5px solid var(--border);
+                border-radius: 18px;
+                overflow: hidden;
+                transition:
+                    border-color 0.2s,
+                    box-shadow 0.2s;
+            }
+            .input-card:focus-within {
+                border-color: rgba(103, 212, 193, 0.36);
+                box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .msg-input {
+                width: 100%;
+                border: none;
+                outline: none;
+                background: transparent;
+                color: var(--text);
+                font-size: 14.5px;
+                line-height: 1.55;
+                resize: none;
+                max-height: 160px;
+                overflow-y: auto;
+                padding: 14px 16px 8px;
+            }
+            .msg-input::placeholder {
+                color: var(--dim);
+            }
+            .msg-input::-webkit-scrollbar {
+                width: 3px;
+            }
+            .msg-input::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 2px;
+            }
+
+            /* Input toolbar (inside card, bottom row) */
+            .input-toolbar {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 10px 10px 10px;
+            }
+
+            .btn-attach {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: var(--s2);
+                color: var(--dim);
+                font-size: 20px;
+                font-weight: 300;
+                line-height: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.15s;
+                flex-shrink: 0;
+            }
+            .btn-attach:hover {
+                background: var(--s3);
+                color: var(--muted);
+            }
+
+            .input-selectors {
+                display: flex;
+                gap: 5px;
+                flex: 1;
+            }
+
+            .input-sel {
+                background: transparent;
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 4px 22px 4px 10px;
+                font-size: 12px;
+                color: var(--muted);
+                outline: none;
+                cursor: pointer;
+                transition: border-color 0.15s;
+                appearance: none;
+                -webkit-appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23BABABA' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 8px center;
+            }
+            .input-sel:hover {
+                border-color: var(--muted);
+            }
+            .input-sel:focus {
+                border-color: var(--accent);
+            }
+
+            .input-right {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                flex-shrink: 0;
+            }
+
+            .btn-mic {
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--dim);
+                transition: all 0.15s;
+            }
+            .btn-mic:hover {
+                color: var(--muted);
+                background: var(--s2);
+            }
+
+            .btn-send {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                background: var(--accent);
+                color: #031411;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.15s;
+                opacity: 0.32;
+            }
+            .btn-send:not(:disabled) {
+                opacity: 1;
+            }
+            .btn-send:not(:disabled):hover {
+                transform: scale(1.07);
+                box-shadow: 0 3px 14px rgba(103, 212, 193, 0.4);
+            }
+            .btn-send:disabled {
+                cursor: not-allowed;
+            }
+
+            /* ── Settings Modal ─────────────────────────────────────── */
+            .overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 100;
+                background: rgba(0, 0, 0, 0.22);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(8px);
+            }
+            .overlay.hidden {
+                display: none;
+            }
+
+            .modal {
+                background: var(--s1);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 26px 28px;
+                width: 460px;
+                max-width: 92vw;
+                max-height: 85vh;
+                overflow-y: auto;
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+            }
+            .modal::-webkit-scrollbar {
+                width: 4px;
+            }
+            .modal::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 2px;
+            }
+
+            .modal-title {
+                font-size: 16px;
+                font-weight: 600;
+                letter-spacing: -0.02em;
+                margin-bottom: 20px;
+            }
+
+            .field-section {
+                margin-bottom: 18px;
+            }
+            .field-section-label {
+                font-size: 10.5px;
+                font-weight: 600;
+                color: var(--dim);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 5px;
+                margin-bottom: 12px;
+            }
+            .field {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                margin-bottom: 10px;
+            }
+            .field:last-child {
+                margin-bottom: 0;
+            }
+            .field label {
+                font-size: 12.5px;
+                font-weight: 500;
+                color: var(--muted);
+            }
+            .field input {
+                background: var(--s2);
+                border: 1px solid var(--border);
+                border-radius: var(--r-m);
+                padding: 8px 12px;
+                font-size: 13.5px;
+                color: var(--text);
+                outline: none;
+                transition: border-color 0.15s;
+            }
+            .field input:focus {
+                border-color: var(--accent);
+            }
+            .field input::placeholder {
+                color: var(--dim);
+            }
+            .field-hint {
+                font-size: 11.5px;
+                color: var(--dim);
+            }
+
+            .modal-actions {
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                margin-top: 6px;
+            }
+            .btn-cancel {
+                padding: 8px 16px;
+                border-radius: var(--r-m);
+                background: var(--s2);
+                border: 1px solid var(--border);
+                font-size: 13.5px;
+                font-weight: 500;
+                color: var(--muted);
+                transition: all 0.15s;
+            }
+            .btn-cancel:hover {
+                background: var(--s3);
+                color: var(--text);
+            }
+            .btn-save {
+                padding: 8px 20px;
+                border-radius: var(--r-m);
+                background: var(--accent);
+                font-size: 13.5px;
+                font-weight: 600;
+                color: #031411;
+                transition: all 0.15s;
+            }
+            .btn-save:hover {
+                opacity: 0.88;
+            }
+
+            /* ── Toast ──────────────────────────────────────────────── */
+            .toast {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 200;
+                background: var(--s1);
+                border: 1px solid var(--border);
+                border-radius: var(--r-m);
+                padding: 10px 14px;
+                font-size: 13.5px;
+                color: var(--text);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                max-width: 320px;
+                pointer-events: none;
+                opacity: 0;
+                transform: translateY(8px);
+                transition: all 0.22s;
+            }
+            .toast.show {
+                opacity: 1;
+                transform: none;
+            }
+            .toast.err {
+                border-color: rgba(242, 139, 125, 0.4);
+                color: var(--err);
+            }
+            .toast.ok {
+                border-color: rgba(103, 212, 193, 0.35);
+                color: var(--ok);
+            }
+
+            /* ── Card layout when viewer is open ───────────────────── */
+            .app.viewer-open {
+                background: #070b0f;
+            }
+            /* Icon rail becomes transparent so gray bg shows through */
+            .app.viewer-open .icon-rail {
+                background: transparent;
+                border-right-color: transparent;
+            }
+            /* Conversations panel → floating card */
+            .app.viewer-open .conv-panel.open {
+                margin: 8px 8px 8px 0;
+                border-radius: 16px;
+                border-right: none;
+                box-shadow: 0 2px 24px rgba(0, 0, 0, 0.1);
+            }
+            /* Chat main → floating card */
+            .app.viewer-open .main {
+                margin: 8px 8px 8px 8px;
+                border-radius: 16px;
+                box-shadow: 0 2px 24px rgba(0, 0, 0, 0.1);
+                background: var(--s1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app">
+            <!-- ── Icon Rail ── -->
+            <div class="icon-rail">
+                <div class="rail-logo" title="Nova">✦</div>
+
+                <nav class="rail-nav">
+                    <!-- Conversations -->
+                    <button
+                        class="rail-btn"
+                        id="btnToggleConv"
+                        onclick="toggleConvPanel()"
+                        title="Conversations"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                            />
+                        </svg>
+                    </button>
+                    <!-- Viewer -->
+                    <button
+                        class="rail-btn"
+                        id="btnViewer"
+                        onclick="toggleViewer()"
+                        title="PDF Viewer"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <line x1="10" y1="9" x2="8" y2="9" />
+                        </svg>
+                    </button>
+                </nav>
+
+                <div class="rail-foot">
+                    <a
+                        class="rail-btn"
+                        href="./dashboard"
+                        title="Inspector"
+                        style="text-decoration: none; color: inherit"
+                        >⟲</a
+                    >
+                    <button
+                        class="rail-btn"
+                        id="btnSettings"
+                        onclick="openSettings()"
+                        title="Settings"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                            />
+                        </svg>
+                    </button>
+                    <div
+                        class="rail-avatar"
+                        id="railAvatar"
+                        onclick="openSettings()"
+                        title="Account"
+                    >
+                        U
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Conversations Panel ── -->
+            <div class="conv-panel" id="convPanel">
+                <div class="conv-panel-inner">
+                    <div class="conv-head">
+                        <span class="conv-head-title">Conversations</span>
+                        <button
+                            class="btn-new-conv"
+                            id="btnNew"
+                            title="New conversation"
+                        >
+                            +
+                        </button>
+                    </div>
+                    <div class="conv-list" id="convList">
+                        <div class="conv-empty">No conversations yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── PDF Viewer Panel ── -->
+            <div
+                class="viewer-panel"
+                id="viewerPanel"
+                ondragover="vOnDragOver(event)"
+                ondragleave="vOnDragLeave(event)"
+                ondrop="vOnDrop(event)"
+            >
+                <div class="viewer-resize-handle" id="vResizeHandle"></div>
+
+                <div class="viewer-toolbar">
+                    <button class="vbtn" onclick="vOpenFile()" title="Open PDF">
+                        <svg
+                            width="13"
+                            height="13"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+                            />
+                        </svg>
+                    </button>
+                    <span class="viewer-filename" id="vFilename"
+                        >No file loaded</span
+                    >
+                    <div class="viewer-nav">
+                        <button
+                            class="vbtn"
+                            id="vBtnPrev"
+                            onclick="vPrevPage()"
+                            disabled
+                            title="Previous page"
+                        >
+                            ‹
+                        </button>
+                        <input
+                            class="viewer-page-input"
+                            id="vPageInput"
+                            type="number"
+                            min="1"
+                            value="1"
+                            onchange="vGoToPage(parseInt(this.value))"
+                            onkeydown="
+                                if (event.key === 'Enter') {
+                                    event.preventDefault();
+                                    vGoToPage(parseInt(this.value));
+                                }
+                            "
+                        />
+                        <span class="viewer-page-total" id="vPageTotal"
+                            >/ —</span
+                        >
+                        <button
+                            class="vbtn"
+                            id="vBtnNext"
+                            onclick="vNextPage()"
+                            disabled
+                            title="Next page"
+                        >
+                            ›
+                        </button>
+                    </div>
+                    <div class="viewer-zoom">
+                        <button
+                            class="vbtn"
+                            onclick="vZoomOut()"
+                            title="Zoom out"
+                        >
+                            −
+                        </button>
+                        <span class="zoom-label" id="vZoomLabel">100%</span>
+                        <button
+                            class="vbtn"
+                            onclick="vZoomIn()"
+                            title="Zoom in"
+                        >
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <div class="viewer-body" id="vBody">
+                    <div class="viewer-drop-overlay" id="vDropOverlay">
+                        <div class="viewer-drop-icon">📄</div>
+                        <div class="viewer-drop-text">
+                            Drop a PDF here<br />or click to open a file
+                        </div>
+                        <button class="viewer-drop-btn" onclick="vOpenFile()">
+                            Open PDF…
+                        </button>
+                    </div>
+                    <div
+                        class="viewer-canvas-wrap"
+                        id="vCanvasWrap"
+                        style="display: none"
+                    >
+                        <canvas id="vCanvas"></canvas>
+                    </div>
+                </div>
+
+                <div class="viewer-link-bar">
+                    <span class="viewer-link-label">Doc:</span>
+                    <select
+                        class="viewer-link-select"
+                        id="vLinkSelect"
+                        onchange="vSetLinkedDoc(this.value)"
+                    >
+                        <option value="">— Not linked —</option>
+                    </select>
+                    <span
+                        class="viewer-linked-badge"
+                        id="vLinkedBadge"
+                        style="display: none"
+                        >✓ Synced</span
+                    >
+                </div>
+            </div>
+
+            <!-- ── Main Chat ── -->
+            <main class="main">
+                <div class="messages" id="messages">
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-greeting">Hi, I'm Nova</div>
+                    </div>
+                </div>
+
+                <div class="status-bar" id="statusBar">
+                    <div class="status-dots">
+                        <div class="status-dot"></div>
+                        <div class="status-dot"></div>
+                        <div class="status-dot"></div>
+                    </div>
+                    <span class="status-text" id="statusText">Working…</span>
+                    <span
+                        class="status-iter"
+                        id="statusIter"
+                        style="display: none"
+                    ></span>
+                </div>
+                <!-- Simple debug log preview -->
+                <div
+                    id="debugLog"
+                    style="
+                        display: none;
+                        font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+                        font-size: 11px;
+                        line-height: 1.4;
+                        color: var(--muted-fg, #7a7f8a);
+                        background: rgba(15, 23, 42, 0.04);
+                        border-top: 1px solid rgba(148, 163, 184, 0.4);
+                        padding: 4px 10px;
+                        max-height: 80px;
+                        overflow-y: auto;
+                        white-space: nowrap;
+                    "
+                ></div>
+
+                <div class="input-area">
+                    <!-- Doc context pill -->
+                    <div
+                        class="doc-context-pill"
+                        id="docPill"
+                        onclick="openSettings()"
+                    >
+                        <span class="dot"></span>
+                        <span id="docPillText"></span>
+                    </div>
+
+                    <!-- Last AI response preview chip -->
+                    <div
+                        class="last-msg-chip"
+                        id="lastMsgChip"
+                        style="display: none"
+                        onclick="scrollBottom()"
+                    >
+                        <span class="last-msg-chip-icon">
+                            <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <polyline points="9 14 4 9 9 4" />
+                                <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+                            </svg>
+                        </span>
+                        <span
+                            class="last-msg-chip-text"
+                            id="lastMsgText"
+                        ></span>
+                    </div>
+
+                    <!-- Input card -->
+                    <div class="input-card">
+                        <textarea
+                            class="msg-input"
+                            id="msgInput"
+                            rows="1"
+                            placeholder="Ask Nova anything"
+                        ></textarea>
+                        <div class="input-toolbar">
+                            <button
+                                class="btn-attach"
+                                title="Settings"
+                                onclick="openSettings()"
+                            >
+                                +
+                            </button>
+                            <div class="input-selectors">
+                                <select
+                                    class="input-sel"
+                                    id="modelSelect"
+                                    title="Model"
+                                >
+                                    <option value="YandexGPT">
+                                        YandexGPT
+                                    </option>
+                                </select>
+                                <select
+                                    class="input-sel"
+                                    id="reasoningSelect"
+                                    title="Reasoning effort"
+                                >
+                                    <option value="">Reasoning: Default</option>
+                                </select>
+                            </div>
+                            <div class="input-right">
+                                <button
+                                    class="btn-mic"
+                                    title="Voice input (coming soon)"
+                                    onclick="
+                                        toast(
+                                            'Voice input not available yet',
+                                            '',
+                                        )
+                                    "
+                                >
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path
+                                            d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                                        />
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                        <line x1="12" y1="19" x2="12" y2="23" />
+                                        <line x1="8" y1="23" x2="16" y2="23" />
+                                    </svg>
+                                </button>
+                                <button
+                                    class="btn-send"
+                                    id="btnSend"
+                                    disabled
+                                    title="Send"
+                                >
+                                    <svg
+                                        width="15"
+                                        height="15"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <line x1="22" y1="2" x2="11" y2="13" />
+                                        <polygon
+                                            points="22 2 15 22 11 13 2 9 22 2"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Hidden file input for PDF -->
+        <input
+            type="file"
+            id="vFileInput"
+            accept="application/pdf,.pdf"
+            style="display: none"
+            onchange="vOnFileInput(event)"
+        />
+
+        <!-- ── Settings Modal ── -->
+        <div class="overlay hidden" id="overlay">
+            <div class="modal">
+                <div class="modal-title">Settings</div>
+
+                <div class="field-section">
+                    <div class="field-section-label">Connection</div>
+                    <div class="field">
+                        <label>API Base URL</label>
+                        <div
+                            style="display: flex; gap: 6px; align-items: center"
+                        >
+                            <input
+                                id="cfgBase"
+                                type="text"
+                                placeholder="http://localhost:8000"
+                                style="flex: 1"
+                            />
+                            <button
+                                type="button"
+                                id="btnTestStream"
+                                title="Test SSE streaming"
+                                style="
+                                    padding: 6px 12px;
+                                    border-radius: var(--r-m);
+                                    background: var(--s2);
+                                    border: 1px solid var(--border);
+                                    color: var(--muted);
+                                    font-size: 12px;
+                                    cursor: pointer;
+                                    white-space: nowrap;
+                                    transition: all 0.15s;
+                                "
+                            >
+                                Test stream
+                            </button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>User ID</label>
+                        <input
+                            id="cfgUser"
+                            type="text"
+                            placeholder="user-uuid"
+                        />
+                    </div>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-label">Context</div>
+                    <div class="field">
+                        <label>Folder ID</label>
+                        <input
+                            id="cfgFolder"
+                            type="text"
+                            placeholder="folder-uuid"
+                        />
+                    </div>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-label">
+                        Document Context
+                        <span
+                            style="
+                                font-weight: 400;
+                                text-transform: none;
+                                font-size: 10px;
+                            "
+                            >(optional)</span
+                        >
+                    </div>
+                    <div class="field">
+                        <label>Active Document</label>
+                        <div style="display: flex; gap: 6px">
+                            <select
+                                id="cfgDocSelect"
+                                style="
+                                    flex: 1;
+                                    background: var(--s2);
+                                    border: 1px solid var(--border);
+                                    border-radius: var(--r-m);
+                                    padding: 8px 10px;
+                                    font-size: 13.5px;
+                                    color: var(--text);
+                                    outline: none;
+                                    cursor: pointer;
+                                    transition: border-color 0.15s;
+                                "
+                            >
+                                <option value="">
+                                    — No document context —
+                                </option>
+                            </select>
+                            <button
+                                id="btnLoadDocs"
+                                onclick="loadDocuments()"
+                                title="Reload documents"
+                                style="
+                                    width: 36px;
+                                    height: 36px;
+                                    border-radius: var(--r-m);
+                                    background: var(--s2);
+                                    border: 1px solid var(--border);
+                                    color: var(--muted);
+                                    font-size: 17px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    flex-shrink: 0;
+                                    transition: all 0.15s;
+                                    cursor: pointer;
+                                "
+                            >
+                                ↻
+                            </button>
+                        </div>
+                        <span class="field-hint" id="docLoadHint"
+                            >Fill in Folder ID and click ↻ to load
+                            documents</span
+                        >
+                    </div>
+                    <div
+                        id="pageSection"
+                        style="display: none; margin-top: 10px"
+                    >
+                        <div class="field">
+                            <label
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                "
+                            >
+                                Current Page
+                                <span
+                                    id="pageInfo"
+                                    style="
+                                        color: var(--accent);
+                                        font-weight: 600;
+                                        font-variant-numeric: tabular-nums;
+                                    "
+                                ></span>
+                            </label>
+                            <input
+                                type="range"
+                                id="cfgPageSlider"
+                                min="1"
+                                max="1"
+                                step="1"
+                                style="
+                                    width: 100%;
+                                    accent-color: var(--accent);
+                                    margin: 6px 0 2px;
+                                    cursor: pointer;
+                                "
+                                oninput="syncPageLabel()"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-cancel" id="btnCancel">Cancel</button>
+                    <button class="btn-save" id="btnSave">Save & Apply</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Toast ── -->
+        <div class="toast" id="toast"></div>
+
+        <!-- ── Citation Tooltip ── -->
+        <div class="cit-tooltip" id="citTooltip">
+            <span class="cit-tooltip-icon">📄</span>
+            <div class="cit-tooltip-body">
+                <span class="cit-tooltip-doc" id="citTipDoc"></span>
+                <span class="cit-tooltip-pg" id="citTipPg"></span>
+            </div>
+        </div>
+
+        <script>
+            /* ══════════════════════════════════════════════════
+   State & Config
+══════════════════════════════════════════════════ */
+            const LS = (k, d = "") => localStorage.getItem("nc_" + k) ?? d;
+            const cfg = {
+                base: LS("base", "/api/v1"),
+                userId: LS("userId", ""),
+                folder: LS("folder", ""),
+                doc: LS("doc", ""),
+                docName: LS("docName", ""),
+                page: LS("page", ""),
+                total: LS("total", ""),
+            };
+
+            function authHeaders(extra = {}) {
+                const h = { ...extra };
+                const token = LS("accessToken");
+                if (token) h.Authorization = `Bearer ${token}`;
+                if (cfg.userId) h["x-user-id"] = cfg.userId;
+                return h;
+            }
+
+            let docList = [];
+            function saveCfg(updates) {
+                Object.assign(cfg, updates);
+                for (const [k, v] of Object.entries(cfg))
+                    localStorage.setItem("nc_" + k, v);
+            }
+
+            let conversations = [];
+            let activeId = null;
+            let streaming = false;
+            let streamText = "";
+            let streamEl = null;
+
+            let convPanelOpen = localStorage.getItem("nc_convOpen") !== "false";
+
+            /* ══════════════════════════════════════════════════
+   Init
+══════════════════════════════════════════════════ */
+            marked.setOptions({ breaks: true, gfm: true });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                // Restore conv panel state
+                if (convPanelOpen) {
+                    document.getElementById("convPanel").classList.add("open");
+                    document
+                        .getElementById("btnToggleConv")
+                        .classList.add("active");
+                }
+
+                // Wire elements
+                document
+                    .getElementById("btnNew")
+                    .addEventListener("click", newConversation);
+                document
+                    .getElementById("btnTestStream")
+                    .addEventListener("click", testStream);
+                document
+                    .getElementById("btnCancel")
+                    .addEventListener("click", closeSettings);
+                document
+                    .getElementById("btnSave")
+                    .addEventListener("click", applySettings);
+                document
+                    .getElementById("overlay")
+                    .addEventListener("click", (e) => {
+                        if (e.target === e.currentTarget) closeSettings();
+                    });
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") {
+                        closeSettings();
+                        return;
+                    }
+                    const tag = document.activeElement?.tagName;
+                    if (
+                        tag !== "INPUT" &&
+                        tag !== "TEXTAREA" &&
+                        tag !== "SELECT"
+                    ) {
+                        if (vSt.open && vSt.pdf) {
+                            if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                                e.preventDefault();
+                                vPrevPage();
+                            }
+                            if (
+                                e.key === "ArrowRight" ||
+                                e.key === "ArrowDown"
+                            ) {
+                                e.preventDefault();
+                                vNextPage();
+                            }
+                        }
+                    }
+                });
+
+                // Wheel scroll for PDF viewer
+                document.getElementById("vBody").addEventListener(
+                    "wheel",
+                    (e) => {
+                        if (!vSt.pdf) return;
+                        const body = document.getElementById("vBody");
+                        const atBottom =
+                            body.scrollTop + body.clientHeight >=
+                            body.scrollHeight - 4;
+                        const atTop = body.scrollTop <= 4;
+                        if (e.deltaY > 0 && atBottom) {
+                            e.preventDefault();
+                            vNextPage();
+                        } else if (e.deltaY < 0 && atTop) {
+                            e.preventDefault();
+                            vPrevPage();
+                        }
+                    },
+                    { passive: false },
+                );
+
+                if (cfg.doc) vSt.linkedDocId = cfg.doc;
+
+                const input = document.getElementById("msgInput");
+                const btnSend = document.getElementById("btnSend");
+
+                input.addEventListener("input", () => {
+                    autoResize(input);
+                    syncSendBtn();
+                });
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        doSend();
+                    }
+                });
+                btnSend.addEventListener("click", doSend);
+
+                // Restore and persist model / reasoning selections
+                const modelSel = document.getElementById("modelSelect");
+                const reasoningSel = document.getElementById("reasoningSelect");
+                modelSel.value =
+                    localStorage.getItem("nc_model") || "YandexGPT";
+                reasoningSel.value =
+                    localStorage.getItem("nc_reasoning") || "";
+                modelSel.addEventListener("change", () =>
+                    localStorage.setItem("nc_model", modelSel.value),
+                );
+                reasoningSel.addEventListener("change", () =>
+                    localStorage.setItem("nc_reasoning", reasoningSel.value),
+                );
+
+                updateDocPill();
+                updateFooter();
+                syncSendBtn();
+
+                if (!cfg.userId && !LS("accessToken")) {
+                    openSettings();
+                    return;
+                }
+                fetchConversations();
+                loadDocuments();
+            });
+
+            /* ══════════════════════════════════════════════════
+   Conv Panel Toggle
+══════════════════════════════════════════════════ */
+            function toggleConvPanel() {
+                convPanelOpen = !convPanelOpen;
+                localStorage.setItem("nc_convOpen", convPanelOpen);
+                document
+                    .getElementById("convPanel")
+                    .classList.toggle("open", convPanelOpen);
+                document
+                    .getElementById("btnToggleConv")
+                    .classList.toggle("active", convPanelOpen);
+            }
+
+            /* ══════════════════════════════════════════════════
+   Settings
+══════════════════════════════════════════════════ */
+            function openSettings() {
+                document.getElementById("cfgBase").value = cfg.base;
+                document.getElementById("cfgUser").value = cfg.userId;
+                document.getElementById("cfgFolder").value = cfg.folder;
+                document.getElementById("overlay").classList.remove("hidden");
+                document.getElementById("cfgUser").focus();
+
+                if (docList.length) {
+                    _populateDocSelect();
+                } else if (cfg.folder && cfg.userId) {
+                    loadDocuments();
+                }
+            }
+            function closeSettings() {
+                document.getElementById("overlay").classList.add("hidden");
+            }
+
+            async function testStream() {
+                const base =
+                    document
+                        .getElementById("cfgBase")
+                        .value.trim()
+                        .replace(/\/$/, "") || cfg.base;
+                streamEl = startStreamingMsg();
+                streamText = "";
+                streaming = true;
+                syncSendBtn();
+                try {
+                    const res = await fetch(`${base}/chat/stream-test`);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    await consumeSSE(res, streamEl);
+                } catch (err) {
+                    finalizeStream(streamEl, `**Error:** ${err.message}`, []);
+                } finally {
+                    streaming = false;
+                    hideStatus();
+                    syncSendBtn();
+                }
+            }
+
+            async function loadDocuments() {
+                const folder =
+                    document.getElementById("cfgFolder").value.trim() ||
+                    cfg.folder;
+                const userId =
+                    document.getElementById("cfgUser").value.trim() ||
+                    cfg.userId;
+                const btn = document.getElementById("btnLoadDocs");
+                const hint = document.getElementById("docLoadHint");
+
+                if (!folder || !userId) {
+                    hint.textContent = "⚠ Fill in User ID and Folder ID first";
+                    return;
+                }
+
+                btn.textContent = "…";
+                btn.disabled = true;
+                hint.textContent = "Loading…";
+
+                try {
+                    const base =
+                        document
+                            .getElementById("cfgBase")
+                            .value.trim()
+                            .replace(/\/$/, "") || cfg.base;
+                    const r = await fetch(
+                        `${base}/chat/documents?folder_id=${enc(folder)}`,
+                        { headers: authHeaders() },
+                    );
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    const d = await r.json();
+                    docList = d.documents || [];
+
+                    if (!docList.length) {
+                        hint.textContent = "No documents found in this folder";
+                    } else {
+                        hint.textContent = `${docList.length} document${docList.length !== 1 ? "s" : ""} loaded`;
+                    }
+                    _populateDocSelect();
+                    if (vSt.open) vPopulateLink();
+                } catch (e) {
+                    hint.textContent = `Error: ${e.message}`;
+                    docList = [];
+                } finally {
+                    btn.textContent = "↻";
+                    btn.disabled = false;
+                }
+            }
+
+            function _populateDocSelect() {
+                const sel = document.getElementById("cfgDocSelect");
+                sel.innerHTML =
+                    '<option value="">— No document context —</option>';
+                for (const doc of docList) {
+                    const opt = document.createElement("option");
+                    opt.value = doc.id;
+                    opt.textContent = `${doc.name}  (${doc.page_count}p)`;
+                    sel.appendChild(opt);
+                }
+                if (cfg.doc) sel.value = cfg.doc;
+                _onDocSelectChange();
+                sel.onchange = _onDocSelectChange;
+            }
+
+            function _onDocSelectChange() {
+                const sel = document.getElementById("cfgDocSelect");
+                const doc = docList.find((d) => d.id === sel.value);
+                const sec = document.getElementById("pageSection");
+                const info = document.getElementById("pageInfo");
+                const sl = document.getElementById("cfgPageSlider");
+
+                if (doc) {
+                    sec.style.display = "";
+                    sl.max = doc.page_count;
+                    sl.value = cfg.doc === doc.id && cfg.page ? cfg.page : 1;
+                    syncPageLabel();
+                } else {
+                    sec.style.display = "none";
+                    info.textContent = "";
+                }
+            }
+
+            function syncPageLabel() {
+                const sl = document.getElementById("cfgPageSlider");
+                const doc = docList.find(
+                    (d) =>
+                        d.id === document.getElementById("cfgDocSelect").value,
+                );
+                document.getElementById("pageInfo").textContent = doc
+                    ? `${sl.value} / ${doc.page_count}`
+                    : "";
+            }
+
+            function applySettings() {
+                const prev = { ...cfg };
+
+                const sel = document.getElementById("cfgDocSelect");
+                const selDoc = docList.find((d) => d.id === sel.value) || null;
+                const slider = document.getElementById("cfgPageSlider");
+
+                saveCfg({
+                    base: document
+                        .getElementById("cfgBase")
+                        .value.trim()
+                        .replace(/\/$/, ""),
+                    userId: document.getElementById("cfgUser").value.trim(),
+                    folder: document.getElementById("cfgFolder").value.trim(),
+                    doc: selDoc ? selDoc.id : "",
+                    docName: selDoc ? selDoc.name : "",
+                    page: selDoc ? String(slider.value) : "",
+                    total: selDoc ? String(selDoc.page_count) : "",
+                });
+
+                closeSettings();
+                updateDocPill();
+                updateFooter();
+                syncSendBtn();
+
+                activeId = null;
+                clearMessages();
+                fetchConversations();
+                toast("Settings saved", "ok");
+            }
+
+            function updateDocPill() {
+                const pill = document.getElementById("docPill");
+                const text = document.getElementById("docPillText");
+                if (cfg.doc && cfg.page && cfg.total) {
+                    const name = cfg.docName || cfg.doc.slice(0, 8) + "…";
+                    text.textContent = `${name}  ·  p. ${cfg.page} / ${cfg.total}`;
+                    pill.style.display = "flex";
+                } else {
+                    pill.style.display = "none";
+                }
+            }
+            function updateFooter() {
+                const el = document.getElementById("railAvatar");
+                el.textContent = cfg.userId ? cfg.userId[0].toUpperCase() : "U";
+            }
+            function syncSendBtn() {
+                const btn = document.getElementById("btnSend");
+                const val = document.getElementById("msgInput").value.trim();
+                btn.disabled = !val || !cfg.userId || !cfg.folder || streaming;
+            }
+
+            /* ══════════════════════════════════════════════════
+   Last AI message chip
+══════════════════════════════════════════════════ */
+            function updateLastMsgChip(text) {
+                const chip = document.getElementById("lastMsgChip");
+                const textEl = document.getElementById("lastMsgText");
+                if (!text) {
+                    chip.style.display = "none";
+                    return;
+                }
+                // Strip citation markers and markdown to plain text
+                const plain = text
+                    .replace(/:::link Doc:"[^"]+",\s*pages?:"[^"]+":::/g, "")
+                    .replace(/#{1,6}\s/g, "")
+                    .replace(/[*_`~\[\]]/g, "")
+                    .replace(/\s+/g, " ")
+                    .trim();
+                if (!plain) {
+                    chip.style.display = "none";
+                    return;
+                }
+                textEl.textContent = plain;
+                chip.style.display = "flex";
+            }
+
+            /* ══════════════════════════════════════════════════
+   Conversations
+══════════════════════════════════════════════════ */
+            async function fetchConversations() {
+                if (!cfg.userId && !LS("accessToken")) return;
+                try {
+                    const url = cfg.folder
+                        ? `${cfg.base}/chat/conversations?folder_id=${enc(cfg.folder)}`
+                        : `${cfg.base}/chat/conversations`;
+                    const r = await fetch(url, { headers: authHeaders() });
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    const d = await r.json();
+                    conversations = d.conversations || [];
+                    renderConvList();
+                } catch (e) {
+                    console.error("fetchConversations", e);
+                }
+            }
+
+            function renderConvList() {
+                const list = document.getElementById("convList");
+                if (!conversations.length) {
+                    list.innerHTML =
+                        '<div class="conv-empty">No conversations yet</div>';
+                    return;
+                }
+                list.innerHTML = conversations
+                    .map((c) => {
+                        const active = c.id === activeId ? "active" : "";
+                        const title = esc(c.title || "New Conversation");
+                        const preview = esc(c.last_message_preview || "");
+                        const time = relTime(c.updated_at);
+                        return `
+      <div class="conv-item ${active}" data-id="${c.id}" onclick="selectConv('${c.id}')">
+        <div class="conv-info">
+          <div class="conv-title">${title}</div>
+          <div class="conv-meta">${preview || time}</div>
+        </div>
+        <button class="conv-del" title="Delete" onclick="deleteConv(event,'${c.id}')">✕</button>
+      </div>`;
+                    })
+                    .join("");
+            }
+
+            async function selectConv(id) {
+                if (id === activeId) return;
+                activeId = id;
+                renderConvList();
+                await loadMessages(id);
+            }
+
+            async function loadMessages(id) {
+                clearMessages();
+                try {
+                    const r = await fetch(
+                        `${cfg.base}/chat/conversations/${id}/messages`,
+                        { headers: authHeaders() },
+                    );
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    const d = await r.json();
+                    const msgs = d.messages || [];
+
+                    const conv = conversations.find((c) => c.id === id);
+                    setTitle(conv?.title || null);
+
+                    hideEmpty();
+                    if (!msgs.length) {
+                        showEmpty();
+                        return;
+                    }
+
+                    let lastAi = "";
+                    for (const m of msgs) {
+                        if (m.role === "user") {
+                            appendUser(m.content);
+                        } else if (m.role === "assistant") {
+                            const cits = m.metadata?.citations || [];
+                            appendAssistant(m.content, cits, false);
+                            lastAi = m.content;
+                        }
+                    }
+                    if (lastAi) updateLastMsgChip(lastAi);
+                    scrollBottom();
+                } catch (e) {
+                    toast(`Failed to load messages: ${e.message}`, "err");
+                }
+            }
+
+            async function deleteConv(e, id) {
+                e.stopPropagation();
+                try {
+                    const r = await fetch(
+                        `${cfg.base}/chat/conversations/${id}`,
+                        {
+                            method: "DELETE",
+                            headers: authHeaders(),
+                        },
+                    );
+                    if (!r.ok && r.status !== 204)
+                        throw new Error(`HTTP ${r.status}`);
+                    conversations = conversations.filter((c) => c.id !== id);
+                    if (activeId === id) {
+                        activeId = null;
+                        clearMessages();
+                        setTitle(null);
+                        showEmpty();
+                    }
+                    renderConvList();
+                    toast("Conversation deleted");
+                } catch (e) {
+                    toast(`Delete failed: ${e.message}`, "err");
+                }
+            }
+
+            function newConversation() {
+                activeId = null;
+                clearMessages();
+                showEmpty();
+                setTitle(null);
+                renderConvList();
+                updateLastMsgChip("");
+                document.getElementById("msgInput").focus();
+            }
+
+            /* ══════════════════════════════════════════════════
+   Messages
+══════════════════════════════════════════════════ */
+            function clearMessages() {
+                document.getElementById("messages").innerHTML =
+                    '<div class="empty-state" id="emptyState" style="display:none"></div>';
+                updateLastMsgChip("");
+            }
+            function showEmpty() {
+                const el = document.getElementById("emptyState");
+                if (el) {
+                    el.innerHTML = `
+      <div class="nova-avatar-wrap"><video autoplay loop muted playsinline src="nova.mp4"></video></div>
+      <div class="empty-greeting">Hi, I'm Nova</div>`;
+                    el.style.display = "";
+                }
+            }
+            function hideEmpty() {
+                const el = document.getElementById("emptyState");
+                if (el) el.style.display = "none";
+            }
+            function setTitle(t) {
+                document.title = t ? `${t} — Nova` : "Nova";
+            }
+
+            function appendUser(text) {
+                hideEmpty();
+                const el = document.createElement("div");
+                el.className = "msg-row user";
+                el.innerHTML = `<div class="user-text">${esc(text)}</div>`;
+                document.getElementById("messages").appendChild(el);
+                scrollBottom();
+                return el;
+            }
+
+            function appendAssistant(content, citations, doUpdateChip = true) {
+                hideEmpty();
+                const el = document.createElement("div");
+                el.className = "msg-row assistant";
+                const { html } = renderMd(content);
+                el.innerHTML = `
+    <div class="msg-sender-label">Nova</div>
+    <div class="ai-content">${html}</div>
+    ${buildCitations(citations)}`;
+                document.getElementById("messages").appendChild(el);
+                scrollBottom();
+                if (doUpdateChip) updateLastMsgChip(content);
+                return el;
+            }
+
+            function startStreamingMsg() {
+                hideEmpty();
+                const el = document.createElement("div");
+                el.className = "msg-row assistant";
+                el.innerHTML = `<div class="msg-sender-label">Nova</div><div class="ai-content" id="streamContent"><span class="cursor"></span></div>`;
+                document.getElementById("messages").appendChild(el);
+                scrollBottom();
+                return el;
+            }
+
+            function updateStream(el, text) {
+                const c = el.querySelector(".ai-content");
+                if (!c) return;
+                c.classList.add("streaming");
+                c.textContent = text;
+                const cursor = document.createElement("span");
+                cursor.className = "cursor";
+                c.appendChild(cursor);
+                scrollBottom();
+            }
+
+            function finalizeStream(el, content, citations) {
+                const body = el;
+                if (!body) return;
+                const { html } = renderMd(content);
+                body.innerHTML = `
+    <div class="msg-sender-label">Nova</div>
+    <div class="ai-content">${html}</div>
+    ${buildCitations(citations)}`;
+                scrollBottom();
+                updateLastMsgChip(content);
+            }
+
+            function addFollowups(el, questions) {
+                if (!questions.length) return;
+                const div = document.createElement("div");
+                div.className = "followups";
+                div.innerHTML = `
+    <div class="followups-label">Suggested follow-ups</div>
+    <div class="followups-chips">
+      ${questions.map((q) => `<button class="followup-chip" onclick="useFollowup(this)">${esc(q)}</button>`).join("")}
+    </div>`;
+                el.appendChild(div);
+                scrollBottom();
+            }
+
+            function useFollowup(btn) {
+                const input = document.getElementById("msgInput");
+                input.value = btn.textContent;
+                autoResize(input);
+                syncSendBtn();
+                input.focus();
+                btn.closest(".followups-chips")
+                    .querySelectorAll(".followup-chip")
+                    .forEach((b) => b.classList.add("used"));
+                btn.classList.remove("used");
+                btn.classList.add("selected");
+            }
+
+            /* ══════════════════════════════════════════════════
+   Markdown & Citations
+══════════════════════════════════════════════════ */
+            const CIT_RE = /:::link Doc:"([^"]+)", page(?:s|):"([^"]+)":::/g;
+
+            function _katexRender(math, display) {
+                try {
+                    return katex.renderToString(math, {
+                        displayMode: display,
+                        throwOnError: true,
+                        strict: false,
+                    });
+                } catch (e) {
+                    const raw = esc(display ? `$$${math}$$` : `$${math}$`);
+                    return `<span class="math-err" title="${esc(String(e))}">${raw}</span>`;
+                }
+            }
+
+            function _extractMath(text) {
+                const slots = [];
+                const ph = (display, math) => {
+                    slots.push({ display, math });
+                    return `\x02MATH${slots.length - 1}\x03`;
+                };
+                text = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, m) =>
+                    ph(true, m),
+                );
+                text = text.replace(/\\\[([\s\S]*?)\\\]/g, (_, m) =>
+                    ph(true, m),
+                );
+                text = text.replace(/\$([^\$\n]+?)\$/g, (_, m) => ph(false, m));
+                text = text.replace(/\\\(([^\n]+?)\\\)/g, (_, m) =>
+                    ph(false, m),
+                );
+                return { text, slots };
+            }
+
+            function _restoreMath(html, slots) {
+                return html.replace(/\x02MATH(\d+)\x03/g, (_, i) => {
+                    const { display, math } = slots[+i];
+                    const rendered = _katexRender(math, display);
+                    return display
+                        ? `<div class="math-block">${rendered}</div>`
+                        : `<span class="math-inline">${rendered}</span>`;
+                });
+            }
+
+            function renderMd(text) {
+                const cits = [];
+                text = text.replace(CIT_RE, (_, docName, pages) => {
+                    const i = cits.findIndex(
+                        (c) => c.docName === docName && c.pages === pages,
+                    );
+                    if (i !== -1) return `\x02CIT${i}\x03`;
+                    cits.push({ docName, pages });
+                    return `\x02CIT${cits.length - 1}\x03`;
+                });
+
+                const { text: safe, slots } = _extractMath(text);
+                let html = marked.parse(safe, { breaks: true, gfm: true });
+                html = _restoreMath(html, slots);
+
+                html = html.replace(/\x02CIT(\d+)\x03/g, (_, i) => {
+                    const c = cits[+i];
+                    const doc = c ? esc(c.docName) : "";
+                    const pg = c ? esc(c.pages) : "";
+                    return `<sup class="cit-ref" data-doc="${doc}" data-pg="${pg}">[${+i + 1}]</sup>`;
+                });
+
+                return { html, cits };
+            }
+
+            function buildCitations(citations) {
+                if (!citations || !citations.length) return "";
+                const chips = citations
+                    .map((c) => {
+                        const pages = c.pages || [];
+                        let pg = "";
+                        if (pages.length === 1) pg = `p.${pages[0]}`;
+                        else if (pages.length > 1)
+                            pg = `pp.${Math.min(...pages)}–${Math.max(...pages)}`;
+                        const name = esc(
+                            c.document_name || c.document_id || "",
+                        );
+                        return `
+      <span class="cit-chip" title="${name}">
+        <span>📄</span>
+        <span class="cit-doc">${name}</span>
+        ${pg ? `<span class="cit-pg">${pg}</span>` : ""}
+      </span>`;
+                    })
+                    .join("");
+                return `<div class="citations"><span class="cit-label">Sources</span>${chips}</div>`;
+            }
+
+            /* ══════════════════════════════════════════════════
+   Send / SSE
+══════════════════════════════════════════════════ */
+            async function doSend() {
+                const input = document.getElementById("msgInput");
+                const text = input.value.trim();
+                if (!text || streaming) return;
+
+                input.value = "";
+                autoResize(input);
+                syncSendBtn();
+                appendUser(text);
+
+                streamEl = startStreamingMsg();
+                streamText = "";
+                streaming = true;
+                syncSendBtn();
+
+                const payload = {
+                    conversation_id: activeId,
+                    folder_id: cfg.folder,
+                    message: text,
+                    model:
+                        document.getElementById("modelSelect").value || "YandexGPT",
+                    reasoning:
+                        document.getElementById("reasoningSelect").value ||
+                        "",
+                };
+                if (cfg.doc && cfg.page && cfg.total) {
+                    payload.current_document_id = cfg.doc;
+                    payload.current_page = parseInt(cfg.page);
+                    payload.total_pages = parseInt(cfg.total);
+                }
+
+                try {
+                    const res = await fetch(`${cfg.base}/chat/message`, {
+                        method: "POST",
+                        headers: authHeaders({
+                            "Content-Type": "application/json",
+                        }),
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (!res.ok) {
+                        let detail = `HTTP ${res.status}`;
+                        try {
+                            detail = (await res.json()).detail || detail;
+                        } catch {}
+                        throw new Error(detail);
+                    }
+
+                    await consumeSSE(res, streamEl);
+                } catch (err) {
+                    finalizeStream(streamEl, `**Error:** ${err.message}`, []);
+                    toast(err.message, "err");
+                } finally {
+                    streaming = false;
+                    hideStatus();
+                    syncSendBtn();
+                }
+            }
+
+            async function consumeSSE(res, el) {
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buf = "";
+
+                try {
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        buf += decoder.decode(value, { stream: true });
+
+                        let boundary;
+                        while ((boundary = buf.indexOf("\n\n")) !== -1) {
+                            const raw = buf.slice(0, boundary);
+                            buf = buf.slice(boundary + 2);
+                            if (!raw.trim()) continue;
+
+                            let type = "",
+                                data = null;
+                            for (const line of raw.split("\n")) {
+                                if (line.startsWith("event: "))
+                                    type = line.slice(7).trim();
+                                else if (line.startsWith("data: ")) {
+                                    try {
+                                        data = JSON.parse(line.slice(6));
+                                    } catch {
+                                        data = { _raw: line.slice(6) };
+                                    }
+                                }
+                            }
+                            if (!type || data === null) continue;
+
+                            switch (type) {
+                                case "token":
+                                    if (!streamEl) {
+                                        streamEl = startStreamingMsg();
+                                    }
+                                    streamText += data.content || "";
+                                    requestAnimationFrame(() =>
+                                        updateStream(streamEl, streamText),
+                                    );
+                                    break;
+
+                                case "status":
+                                    updateStatus(data);
+                                    try {
+                                        // Log a compact, human-readable status line
+                                        const step = data.step || "";
+                                        const it = data.iteration;
+                                        const maxIt = data.max_iterations;
+                                        let line = step || "status";
+                                        if (it && maxIt)
+                                            line += ` (${it}/${maxIt})`;
+                                        else if (it) line += ` (iter ${it})`;
+                                        if (step === "searching" && data.query) {
+                                            line += ` · q="${data.query}"`;
+                                        } else if (
+                                            step === "reading_pages" &&
+                                            data.document_name
+                                        ) {
+                                            const p = data.pages || [];
+                                            line += ` · ${data.document_name} [${p[0]}–${p[1]}]`;
+                                        } else if (
+                                            step === "tool_error" &&
+                                            data.tool
+                                        ) {
+                                            line += ` · ${data.tool}: ${data.message || ""}`;
+                                        }
+                                        appendDebugLog(line);
+                                    } catch {}
+                                    break;
+
+                                case "message_complete": {
+                                    const content = data.content || streamText;
+                                    const citations = data.citations || [];
+                                    finalizeStream(el, content, citations);
+                                    if (data.conversation_id)
+                                        activeId = data.conversation_id;
+                                    await fetchConversations();
+                                    highlightActive();
+                                    const conv = conversations.find(
+                                        (c) => c.id === activeId,
+                                    );
+                                    if (conv?.title) setTitle(conv.title);
+                                    break;
+                                }
+
+                                case "followup_suggestions":
+                                    addFollowups(el, data.questions || []);
+                                    break;
+
+                                case "error":
+                                    finalizeStream(
+                                        el,
+                                        `**Error:** ${data.message || "Something went wrong"}`,
+                                        [],
+                                    );
+                                    toast(data.message, "err");
+                                    appendDebugLog(
+                                        `ERROR: ${data.message || "Something went wrong"}`,
+                                    );
+                                    break;
+                            }
+                        }
+                    }
+                } finally {
+                    if (streamText && el.querySelector(".cursor")) {
+                        finalizeStream(el, streamText, []);
+                    }
+                }
+            }
+
+            /* ══════════════════════════════════════════════════
+   Status Bar
+══════════════════════════════════════════════════ */
+            function updateStatus(data) {
+                const bar = document.getElementById("statusBar");
+                const text = document.getElementById("statusText");
+                const iter = document.getElementById("statusIter");
+
+                bar.classList.add("on");
+
+                const step = data.step || "";
+                const it = data.iteration,
+                    maxIt = data.max_iterations;
+                if (it && maxIt) {
+                    iter.textContent = `${it} / ${maxIt}`;
+                    iter.style.display = "";
+                } else if (it) {
+                    iter.textContent = `iter ${it}`;
+                    iter.style.display = "";
+                } else {
+                    iter.style.display = "none";
+                }
+
+                if (step === "thinking") {
+                    const n = data.chunks_in_context || 0;
+                    text.textContent = n
+                        ? `Thinking… (${n} chunk${n !== 1 ? "s" : ""})`
+                        : "Thinking…";
+                } else if (step === "searching") {
+                    const q = data.query || "";
+                    const docs = data.filtered_documents;
+                    let msg = `Searching: "${q}"`;
+                    if (docs?.length) msg += `  ·  ${docs.join(", ")}`;
+                    text.textContent = msg;
+                } else if (step === "reading_pages") {
+                    const doc = data.document_name || data.document_id || "?";
+                    const pgs = data.pages || [];
+                    text.textContent = `Reading pages ${pgs[0]}–${pgs[1]} of "${doc}"`;
+                } else if (step === "evaluating") {
+                    const n = data.chunks_retrieved || 0;
+                    text.textContent = `Evaluating… (${n} chunks retrieved)`;
+                } else if (step === "asking_clarification") {
+                    text.textContent = "Asking for clarification…";
+                } else if (step === "analyzing_followups") {
+                    text.textContent = "Generating follow-ups…";
+                } else if (step === "tool_error") {
+                    text.textContent = `Tool error: ${data.message || ""}`;
+                } else {
+                    text.textContent = step || "Working…";
+                }
+            }
+            function hideStatus() {
+                document.getElementById("statusBar").classList.remove("on");
+                document.getElementById("statusIter").style.display = "none";
+            }
+
+            /* ══════════════════════════════════════════════════
+   PDF Viewer
+══════════════════════════════════════════════════ */
+            if (typeof pdfjsLib !== "undefined") {
+                pdfjsLib.GlobalWorkerOptions.workerSrc =
+                    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+            }
+
+            // Restore saved viewer width
+            (function () {
+                const saved =
+                    parseInt(localStorage.getItem("nc_viewerW")) || 520;
+                document.documentElement.style.setProperty(
+                    "--vw",
+                    saved + "px",
+                );
+            })();
+
+            const vSt = {
+                open: false,
+                pdf: null,
+                page: 1,
+                total: 0,
+                linkedDocId: "",
+                rendering: false,
+                scale: 1.0,
+                baseScale: 1.0,
+            };
+
+            /* ── Drag-to-resize handle ─── */
+            (function () {
+                const VW_MIN = 280;
+                const CHAT_MIN = 360;
+
+                function getLeftOffset() {
+                    const railW =
+                        parseInt(
+                            getComputedStyle(
+                                document.documentElement,
+                            ).getPropertyValue("--rail-w"),
+                        ) || 56;
+                    const cp = document.getElementById("convPanel");
+                    const convW =
+                        cp && cp.classList.contains("open")
+                            ? parseInt(
+                                  getComputedStyle(
+                                      document.documentElement,
+                                  ).getPropertyValue("--conv-w"),
+                              ) || 224
+                            : 0;
+                    return railW + convW;
+                }
+
+                document.addEventListener("DOMContentLoaded", () => {
+                    const handle = document.getElementById("vResizeHandle");
+                    if (!handle) return;
+
+                    handle.addEventListener("mousedown", (e) => {
+                        e.preventDefault();
+                        const panel = document.getElementById("viewerPanel");
+                        handle.classList.add("dragging");
+                        panel.classList.add("resizing");
+                        document.body.style.cursor = "col-resize";
+                        document.body.style.userSelect = "none";
+
+                        function onMove(e) {
+                            const sw = getLeftOffset();
+                            const maxW = Math.max(
+                                VW_MIN,
+                                window.innerWidth - sw - CHAT_MIN,
+                            );
+                            const newW = Math.max(
+                                VW_MIN,
+                                Math.min(maxW, e.clientX - sw),
+                            );
+                            document.documentElement.style.setProperty(
+                                "--vw",
+                                newW + "px",
+                            );
+                            if (vSt.pdf) {
+                                clearTimeout(vSt._resizeTimer);
+                                vSt._resizeTimer = setTimeout(
+                                    () => vRenderPage(vSt.page),
+                                    180,
+                                );
+                            }
+                        }
+
+                        function onUp() {
+                            handle.classList.remove("dragging");
+                            panel.classList.remove("resizing");
+                            document.body.style.cursor = "";
+                            document.body.style.userSelect = "";
+                            const w =
+                                parseInt(
+                                    getComputedStyle(
+                                        document.documentElement,
+                                    ).getPropertyValue("--vw"),
+                                ) || 520;
+                            localStorage.setItem("nc_viewerW", w);
+                            document.removeEventListener("mousemove", onMove);
+                            document.removeEventListener("mouseup", onUp);
+                        }
+
+                        document.addEventListener("mousemove", onMove);
+                        document.addEventListener("mouseup", onUp);
+                    });
+                });
+            })();
+
+            /* ── Toggle viewer ─── */
+            function toggleViewer() {
+                vSt.open = !vSt.open;
+                const panel = document.getElementById("viewerPanel");
+                const btn = document.getElementById("btnViewer");
+                document
+                    .querySelector(".app")
+                    .classList.toggle("viewer-open", vSt.open);
+                panel.classList.toggle("open", vSt.open);
+                btn.classList.toggle("active", vSt.open);
+                if (vSt.open) {
+                    if (docList.length) {
+                        vPopulateLink();
+                    } else if (cfg.userId && cfg.folder) {
+                        loadDocuments();
+                    }
+                }
+            }
+
+            /* ── File input / drop ─── */
+            function vOpenFile() {
+                document.getElementById("vFileInput").click();
+            }
+            function vOnFileInput(e) {
+                const file = e.target.files?.[0];
+                if (file) vLoadFile(file);
+                e.target.value = "";
+            }
+
+            function vOnDragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                document
+                    .getElementById("vDropOverlay")
+                    .classList.add("drag-over");
+            }
+            function vOnDragLeave(e) {
+                e.stopPropagation();
+                const panel = document.getElementById("viewerPanel");
+                if (!panel.contains(e.relatedTarget)) {
+                    document
+                        .getElementById("vDropOverlay")
+                        .classList.remove("drag-over");
+                }
+            }
+            function vOnDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                document
+                    .getElementById("vDropOverlay")
+                    .classList.remove("drag-over");
+                const file = e.dataTransfer?.files?.[0];
+                if (!file) return;
+                if (
+                    file.type === "application/pdf" ||
+                    file.name.toLowerCase().endsWith(".pdf")
+                ) {
+                    if (!vSt.open) toggleViewer();
+                    vLoadFile(file);
+                } else {
+                    toast("Please drop a PDF file", "err");
+                }
+            }
+
+            /* ── Load PDF ─── */
+            async function vLoadFile(file) {
+                const overlay = document.getElementById("vDropOverlay");
+                const wrap = document.getElementById("vCanvasWrap");
+                overlay.classList.remove("drag-over");
+                overlay.textContent = "Loading…";
+                overlay.classList.remove("hidden");
+                wrap.style.display = "none";
+
+                try {
+                    const buf = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: buf })
+                        .promise;
+
+                    vSt.pdf = pdf;
+                    vSt.total = pdf.numPages;
+                    vSt.page = 1;
+                    vSt.scale = 1.0;
+                    vSt.baseScale = 1.0;
+
+                    const fnEl = document.getElementById("vFilename");
+                    fnEl.textContent = file.name;
+                    fnEl.classList.add("loaded");
+                    document.getElementById("vPageTotal").textContent =
+                        `/ ${vSt.total}`;
+
+                    overlay.classList.add("hidden");
+                    wrap.style.display = "";
+
+                    await vRenderPage(1);
+                    vAutoLinkDoc(file.name);
+                    vPopulateLink();
+                } catch (err) {
+                    overlay.innerHTML = `
+      <div class="viewer-drop-icon">📄</div>
+      <div class="viewer-drop-text">No file loaded</div>
+      <button class="viewer-drop-btn" onclick="vOpenFile()">Open PDF…</button>`;
+                    overlay.classList.remove("hidden");
+                    toast(`PDF error: ${err.message}`, "err");
+                    console.error("vLoadFile", err);
+                }
+            }
+
+            /* ── Render page ─── */
+            async function vRenderPage(n) {
+                if (!vSt.pdf) return;
+                if (vSt.rendering) {
+                    vSt._pendingPage = n;
+                    return;
+                }
+                n = Math.max(1, Math.min(n, vSt.total));
+                vSt.rendering = true;
+                vSt.page = n;
+
+                document.getElementById("vPageInput").value = n;
+                document.getElementById("vBtnPrev").disabled = n <= 1;
+                document.getElementById("vBtnNext").disabled = n >= vSt.total;
+
+                try {
+                    const page = await vSt.pdf.getPage(n);
+                    const body = document.getElementById("vBody");
+                    const canvas = document.getElementById("vCanvas");
+                    const ctx = canvas.getContext("2d");
+
+                    const availW = body.clientWidth - 28;
+                    const vp1 = page.getViewport({ scale: 1 });
+                    vSt.baseScale = Math.max(availW / vp1.width, 0.3);
+                    const finalScale = vSt.baseScale * vSt.scale;
+
+                    const vp = page.getViewport({ scale: finalScale });
+                    canvas.width = vp.width;
+                    canvas.height = vp.height;
+
+                    await page.render({ canvasContext: ctx, viewport: vp })
+                        .promise;
+                    document.getElementById("vZoomLabel").textContent =
+                        `${Math.round(vSt.scale * 100)}%`;
+                    if (vSt.linkedDocId) vSyncToCfg();
+                } catch (err) {
+                    console.error("vRenderPage", err);
+                } finally {
+                    vSt.rendering = false;
+                    if (vSt._pendingPage !== undefined) {
+                        const p = vSt._pendingPage;
+                        delete vSt._pendingPage;
+                        vRenderPage(p);
+                    }
+                }
+            }
+
+            /* ── Navigation ─── */
+            function vPrevPage() {
+                if (vSt.page > 1) vRenderPage(vSt.page - 1);
+            }
+            function vNextPage() {
+                if (vSt.page < vSt.total) vRenderPage(vSt.page + 1);
+            }
+            function vGoToPage(n) {
+                if (!vSt.pdf || isNaN(n)) return;
+                vRenderPage(Math.max(1, Math.min(n, vSt.total)));
+            }
+
+            /* ── Zoom ─── */
+            const ZOOM_STEPS = [
+                0.5, 0.67, 0.75, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0,
+            ];
+            function vZoomIn() {
+                const next = ZOOM_STEPS.find((s) => s > vSt.scale + 0.01);
+                if (next) {
+                    vSt.scale = next;
+                    vRenderPage(vSt.page);
+                }
+            }
+            function vZoomOut() {
+                const prev = [...ZOOM_STEPS]
+                    .reverse()
+                    .find((s) => s < vSt.scale - 0.01);
+                if (prev) {
+                    vSt.scale = prev;
+                    vRenderPage(vSt.page);
+                }
+            }
+
+            /* ── Doc linking ─── */
+            function vPopulateLink() {
+                const sel = document.getElementById("vLinkSelect");
+                const cur = sel.value || vSt.linkedDocId;
+                sel.innerHTML = '<option value="">— Not linked —</option>';
+                for (const doc of docList) {
+                    const opt = document.createElement("option");
+                    opt.value = doc.id;
+                    opt.textContent = `${doc.name}  (${doc.page_count}p)`;
+                    sel.appendChild(opt);
+                }
+                sel.value = cur || "";
+            }
+
+            function vAutoLinkDoc(filename) {
+                if (!docList.length) return;
+                const base = filename.replace(/\.pdf$/i, "").toLowerCase();
+                const match = docList.find((d) => {
+                    const dn = d.name.replace(/\.pdf$/i, "").toLowerCase();
+                    return (
+                        dn === base ||
+                        d.name.toLowerCase() === filename.toLowerCase()
+                    );
+                });
+                if (match) {
+                    vSetLinkedDoc(match.id, false);
+                    toast(`Linked to "${match.name}"`, "ok");
+                }
+            }
+
+            function vSetLinkedDoc(id, updateSelect = true) {
+                vSt.linkedDocId = id;
+                if (updateSelect)
+                    document.getElementById("vLinkSelect").value = id;
+                const badge = document.getElementById("vLinkedBadge");
+                if (id) {
+                    badge.style.display = "";
+                    if (!updateSelect && vSt.pdf) {
+                        vSyncToCfg();
+                    } else if (updateSelect) {
+                        _vFetchPdf(id);
+                    }
+                } else {
+                    badge.style.display = "none";
+                    saveCfg({ doc: "", docName: "", page: "", total: "" });
+                    updateDocPill();
+                }
+            }
+
+            async function _vFetchPdf(id) {
+                if (!cfg.base || (!cfg.userId && !LS("accessToken"))) return;
+                const doc = docList.find((d) => d.id === id);
+                const filename = doc ? doc.name : `${id}.pdf`;
+                const url = `${cfg.base}/chat/documents/${encodeURIComponent(id)}/pdf`;
+
+                const overlay = document.getElementById("vDropOverlay");
+                const wrap = document.getElementById("vCanvasWrap");
+                overlay.innerHTML =
+                    '<div class="viewer-drop-icon">⏳</div><div class="viewer-drop-text">Loading PDF…</div>';
+                overlay.classList.remove("hidden");
+                wrap.style.display = "none";
+
+                try {
+                    const r = await fetch(url, { headers: authHeaders() });
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    const ct = (r.headers.get("content-type") || "").toLowerCase();
+                    const buf = await r.arrayBuffer();
+
+                    // Validate that we actually received a PDF (helps debug cases where backend
+                    // returns HTML/JSON with 200 OK).
+                    const headBytes = new Uint8Array(buf.slice(0, 16));
+                    const headText = Array.from(headBytes)
+                        .map((b) => String.fromCharCode(b))
+                        .join("");
+                    const looksLikePdf = headText.startsWith("%PDF");
+                    if (!looksLikePdf) {
+                        let preview = "";
+                        try {
+                            preview = new TextDecoder("utf-8", {
+                                fatal: false,
+                            }).decode(new Uint8Array(buf.slice(0, 400)));
+                        } catch {
+                            preview = headText;
+                        }
+                        throw new Error(
+                            `Unexpected response (content-type: ${ct || "n/a"}). ` +
+                                `First bytes: ${JSON.stringify(headText)}. ` +
+                                `Preview: ${preview
+                                    .replace(/\s+/g, " ")
+                                    .slice(0, 220)}`,
+                        );
+                    }
+                    const file = new File([buf], filename, {
+                        type: "application/pdf",
+                    });
+                    await vLoadFile(file);
+                } catch (err) {
+                    overlay.innerHTML = `
+      <div class="viewer-drop-icon">📄</div>
+      <div class="viewer-drop-text">Could not load PDF</div>
+      <button class="viewer-drop-btn" onclick="vOpenFile()">Open manually…</button>`;
+                    overlay.classList.remove("hidden");
+                    document.getElementById("vCanvasWrap").style.display =
+                        "none";
+                    toast(`PDF load failed: ${err.message}`, "err");
+                }
+            }
+
+            function vSyncToCfg() {
+                const doc = docList.find((d) => d.id === vSt.linkedDocId);
+                if (!doc || !vSt.total) return;
+                saveCfg({
+                    doc: doc.id,
+                    docName: doc.name,
+                    page: String(vSt.page),
+                    total: String(vSt.total),
+                });
+                updateDocPill();
+            }
+
+            /* ══════════════════════════════════════════════════
+   Helpers
+══════════════════════════════════════════════════ */
+            function autoResize(el) {
+                el.style.height = "auto";
+                el.style.height = Math.min(el.scrollHeight, 160) + "px";
+            }
+            function scrollBottom() {
+                const el = document.getElementById("messages");
+                el.scrollTop = el.scrollHeight;
+            }
+            function highlightActive() {
+                document.querySelectorAll(".conv-item").forEach((el) => {
+                    el.classList.toggle("active", el.dataset.id === activeId);
+                });
+            }
+            function esc(s) {
+                return String(s)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;");
+            }
+            function enc(s) {
+                return encodeURIComponent(s);
+            }
+            function relTime(iso) {
+                if (!iso) return "";
+                try {
+                    const d = new Date(iso),
+                        diff = Date.now() - d;
+                    if (diff < 60e3) return "just now";
+                    if (diff < 3600e3) return `${Math.floor(diff / 60e3)}m ago`;
+                    if (diff < 86400e3)
+                        return `${Math.floor(diff / 3600e3)}h ago`;
+                    return d.toLocaleDateString();
+                } catch {
+                    return "";
+                }
+            }
+
+            let _toastTimer;
+            function toast(msg, type = "") {
+                const el = document.getElementById("toast");
+                el.textContent = msg;
+                el.className = `toast ${type} show`;
+                clearTimeout(_toastTimer);
+                _toastTimer = setTimeout(
+                    () => el.classList.remove("show"),
+                    3200,
+                );
+            }
+
+            // Simple in-UI debug log of agent pipeline events
+            const _debugLines = [];
+            function appendDebugLog(msg) {
+                if (!msg) return;
+                const el = document.getElementById("debugLog");
+                if (!el) return;
+                const ts = new Date().toISOString().slice(11, 19); // HH:MM:SS
+                _debugLines.push(`[${ts}] ${msg}`);
+                while (_debugLines.length > 30) _debugLines.shift();
+                el.innerHTML = _debugLines
+                    .map((line) => `<div>${esc(line)}</div>`)
+                    .join("");
+                el.style.display = "block";
+            }
+
+            /* ══════════════════════════════════════════════════
+   Citation Tooltip
+══════════════════════════════════════════════════ */
+            (function () {
+                const tip = document.getElementById("citTooltip");
+                const tipDoc = document.getElementById("citTipDoc");
+                const tipPg = document.getElementById("citTipPg");
+                let hideTimer;
+
+                function show(el, x, y) {
+                    const doc = el.dataset.doc || "";
+                    const pg = el.dataset.pg || "";
+                    if (!doc && !pg) return;
+
+                    tipDoc.textContent = doc || "—";
+                    tipPg.textContent = pg ? `page ${pg}` : "";
+                    tipPg.style.display = pg ? "" : "none";
+
+                    tip.style.visibility = "hidden";
+                    tip.style.display = "flex";
+                    const tw = tip.offsetWidth;
+                    const th = tip.offsetHeight;
+                    tip.style.visibility = "";
+
+                    const gap = 8;
+                    let left = x - tw / 2;
+                    let top = y - th - gap;
+
+                    left = Math.max(
+                        8,
+                        Math.min(left, window.innerWidth - tw - 8),
+                    );
+                    if (top < 8) top = y + gap + 16;
+
+                    tip.style.left = left + "px";
+                    tip.style.top = top + "px";
+                    clearTimeout(hideTimer);
+                    tip.classList.add("show");
+                }
+
+                function hide() {
+                    hideTimer = setTimeout(
+                        () => tip.classList.remove("show"),
+                        80,
+                    );
+                }
+
+                document.addEventListener("mouseover", (e) => {
+                    const el = e.target.closest(".cit-ref[data-doc]");
+                    if (!el) return;
+                    const r = el.getBoundingClientRect();
+                    show(el, r.left + r.width / 2, r.top);
+                });
+                document.addEventListener("mouseout", (e) => {
+                    if (e.target.closest(".cit-ref[data-doc]")) hide();
+                });
+            })();
+        </script>
+    </body>
+</html>

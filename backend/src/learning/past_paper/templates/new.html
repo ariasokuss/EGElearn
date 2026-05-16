@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="back-link" href="/admin/past-papers">← All past papers</a>
+
+<div class="page-header">
+  <div>
+    <h1>Upload past paper</h1>
+    <div class="page-header-sub">PDF will be OCR'd and parsed into questions.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post" action="/admin/past-papers" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="pp-name">Name</label>
+        <input id="pp-name" type="text" name="name" required placeholder="e.g. AQA Physics Paper 1 — June 2024">
+        <div class="hint">Leave empty before choosing a file to auto-fill from the filename.</div>
+      </div>
+      <div class="form-group">
+        <label for="pp-file">Past paper PDF</label>
+        <input id="pp-file" type="file" name="file" accept="application/pdf" required>
+      </div>
+      <div class="form-group">
+        <label for="pp-ms">Mark scheme PDF (optional)</label>
+        <input id="pp-ms" type="file" name="mark_scheme_file" accept="application/pdf">
+      </div>
+      <div class="form-actions">
+        <a class="btn btn-ghost" href="/admin/past-papers">Cancel</a>
+        <button class="btn btn-primary" type="submit">Upload &amp; process</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block body_end %}
+<script>
+  (function () {
+    const fileInput = document.getElementById('pp-file');
+    const nameInput = document.getElementById('pp-name');
+    if (!fileInput || !nameInput) return;
+    let userTouched = false;
+    nameInput.addEventListener('input', function () { userTouched = true; });
+    fileInput.addEventListener('change', function () {
+      if (userTouched && nameInput.value.trim() !== '') return;
+      const f = fileInput.files && fileInput.files[0];
+      if (!f) return;
+      const stem = f.name.replace(/\.pdf$/i, '').replace(/[._]+/g, ' ').trim();
+      nameInput.value = stem;
+    });
+  })();
+</script>
+{% endblock %}

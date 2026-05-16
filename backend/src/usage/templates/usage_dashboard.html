@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} | NovaLearn</title>
+  <link rel="stylesheet" href="/admin/usage/static/style.css?v=activity-chart-20260506">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo">NL</div>
+      <nav class="nav-links">
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/usage') else '' }}" href="/admin/usage">Usage</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/prompts') else '' }}" href="/admin/prompts">Prompts</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/past-papers') else '' }}" href="/admin/past-papers">Papers</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/security') else '' }}" href="/admin/security">Security</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/referrals') else '' }}" href="/admin/referrals">Referrals</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <div>
+          <h1>YandexGPT Usage</h1>
+          <p>Per-user analytics for period: <strong>{{ overview.period }}</strong></p>
+        </div>
+        <div class="stamp">Updated {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <h2>Total Cost</h2>
+          <div class="value">${{ '%.6f'|format(overview.total_cost_usd) }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Total Tokens</h2>
+          <div class="value">{{ overview.total_tokens }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Active Users</h2>
+          <div class="value">{{ overview.active_users }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Total Users</h2>
+          <div class="value">{{ overview.total_users }}</div>
+        </article>
+      </section>
+
+      {% set chart = overview.activity_chart %}
+      <section class="panel usage-activity-panel">
+        <div class="usage-activity-header">
+          <div>
+            <p class="eyebrow">Activity</p>
+            <h2 class="usage-activity-title">
+              Active users by {{ 'hour' if chart.bucket_granularity == 'hour' else 'day' }}
+            </h2>
+          </div>
+          <div class="usage-activity-meta">
+            <span>{{ chart.timezone }}</span>
+            <span>{{ current_period|upper }}</span>
+          </div>
+        </div>
+        {% if chart.period == 'month' and chart.selected_month %}
+        <div class="usage-month-nav" aria-label="Month navigation">
+          <a class="ghost-btn" href="/admin/usage?period=month&month={{ chart.previous_month }}&limit={{ current_limit }}{% if current_email %}&email={{ current_email|urlencode }}{% endif %}">
+            {{ chart.previous_month_label }}
+          </a>
+          <span class="usage-month-current">{{ chart.period_label }}</span>
+          <a class="ghost-btn" href="/admin/usage?period=month&month={{ chart.next_month }}&limit={{ current_limit }}{% if current_email %}&email={{ current_email|urlencode }}{% endif %}">
+            {{ chart.next_month_label }}
+          </a>
+        </div>
+        {% elif chart.period_label %}
+        <div class="usage-month-nav">
+          <span class="usage-month-current">{{ chart.period_label }}</span>
+        </div>
+        {% endif %}
+
+        {% if chart.enabled %}
+          {% set selected = namespace(index=-1) %}
+          {% for bucket in chart.buckets %}
+            {% if bucket.request_count > 0 %}
+              {% set selected.index = loop.index0 %}
+            {% endif %}
+          {% endfor %}
+          {% if selected.index == -1 and chart.buckets %}
+            {% set selected.index = chart.buckets|length - 1 %}
+          {% endif %}
+
+          <div
+            class="activity-chart-bars"
+            style="--activity-bucket-count: {{ chart.buckets|length }};"
+            role="list"
+            aria-label="Active users by {{ chart.bucket_granularity }}"
+          >
+            {% for bucket in chart.buckets %}
+              {% set bucket_id = 'activity-bucket-' ~ loop.index0 %}
+              {% set is_selected = loop.index0 == selected.index %}
+              <button
+                type="button"
+                class="activity-chart-bar{{ ' is-selected' if is_selected else '' }}"
+                data-activity-bucket-trigger="{{ bucket_id }}"
+                aria-expanded="{{ 'true' if is_selected else 'false' }}"
+                title="{{ bucket.label }}: {{ bucket.active_users }} users, {{ bucket.request_count }} requests"
+              >
+                <span class="activity-chart-bar-track">
+                  <span class="activity-chart-bar-fill" style="--activity-bar-height: {{ bucket.height_percent }}%;"></span>
+                </span>
+                <span class="activity-chart-bar-label">{{ bucket.label }}</span>
+              </button>
+            {% endfor %}
+          </div>
+
+          <div class="activity-bucket-panels">
+            {% for bucket in chart.buckets %}
+              {% set bucket_id = 'activity-bucket-' ~ loop.index0 %}
+              {% set is_selected = loop.index0 == selected.index %}
+              <div
+                class="activity-bucket-panel"
+                data-activity-bucket-panel="{{ bucket_id }}"
+                {{ 'hidden' if not is_selected else '' }}
+              >
+                <div class="activity-bucket-summary">
+                  <div>
+                    <h3>{{ bucket.label }}</h3>
+                    <p>{{ bucket.bucket_start.strftime('%Y-%m-%d %H:%M') }} UTC - {{ bucket.bucket_end.strftime('%Y-%m-%d %H:%M') }} UTC</p>
+                  </div>
+                  <div class="activity-bucket-totals">
+                    <span>{{ bucket.active_users }} users</span>
+                    <span>{{ bucket.request_count }} requests</span>
+                    <span>{{ bucket.total_tokens }} tokens</span>
+                  </div>
+                </div>
+
+                {% if bucket.users %}
+                <div class="activity-bucket-table-wrap">
+                  <table class="activity-bucket-table">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Requests</th>
+                        <th>Tokens</th>
+                        <th>Cost</th>
+                        <th>Latest Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in bucket.users %}
+                      <tr>
+                        <td>
+                          <div class="email">
+                            <a href="/admin/usage/users/{{ row.user_id }}?period={{ current_period }}&limit={{ current_limit }}{% if current_period == 'month' and current_month %}&month={{ current_month }}{% endif %}">{{ row.email }}</a>
+                          </div>
+                          <div class="muted">{{ row.user_id }}</div>
+                        </td>
+                        <td>{{ row.request_count }}</td>
+                        <td>{{ row.total_tokens }}</td>
+                        <td>${{ '%.6f'|format(row.total_cost_usd) }}</td>
+                        <td>
+                          {% if row.latest_action %}
+                          <div>{{ row.latest_action }}</div>
+                          {% if row.latest_action_at %}
+                          <div class="muted">{{ row.latest_action_at.strftime('%Y-%m-%d %H:%M') }} UTC</div>
+                          {% endif %}
+                          {% else %}
+                          <span class="muted-inline">No ledger action in bucket</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                {% else %}
+                <div class="empty activity-bucket-empty">No API requests in this bucket.</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty activity-chart-empty">{{ chart.empty_reason }}</div>
+        {% endif %}
+      </section>
+
+      <section class="panel">
+        <form method="get" action="/admin/usage" class="filters">
+          <label>
+            Period
+            <select name="period">
+              {% for option in period_options %}
+              <option value="{{ option }}" {{ 'selected' if current_period == option else '' }}>{{ option|upper }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>
+            Email contains
+            <input name="email" value="{{ current_email }}" placeholder="alice@novalearn.ai">
+          </label>
+
+          {% if current_period == 'month' and current_month %}
+          <input type="hidden" name="month" value="{{ current_month }}">
+          {% endif %}
+
+          <label>
+            Limit
+            <input name="limit" type="number" min="1" max="500" value="{{ current_limit }}">
+          </label>
+
+          <button type="submit">Apply</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        {% if overview.users %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Prompt</th>
+                <th>Completion</th>
+                <th>Total Tokens</th>
+                <th>Cost (USD)</th>
+                <th>Requests</th>
+                <th>Last Used</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in overview.users %}
+              <tr>
+                <td>
+                  <div class="email">
+                    <a href="/admin/usage/users/{{ row.user_id }}?period={{ current_period }}&limit={{ current_limit }}{% if current_period == 'month' and current_month %}&month={{ current_month }}{% endif %}">{{ row.email }}</a>
+                  </div>
+                  <div class="muted">{{ row.user_id }}</div>
+                </td>
+                <td>{{ row.prompt_tokens }}</td>
+                <td>{{ row.completion_tokens }}</td>
+                <td>{{ row.total_tokens }}</td>
+                <td>${{ '%.6f'|format(row.total_cost_usd) }}</td>
+                <td>{{ row.request_count }}</td>
+                <td>{{ row.last_used_at.strftime('%Y-%m-%d %H:%M') if row.last_used_at else '-' }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty">No usage rows found for this filter.</div>
+        {% endif %}
+      </section>
+    </main>
+  </div>
+  {% if chart.enabled %}
+  <script>
+    (() => {
+      const buttons = Array.from(document.querySelectorAll("[data-activity-bucket-trigger]"));
+      const panels = Array.from(document.querySelectorAll("[data-activity-bucket-panel]"));
+      if (!buttons.length || !panels.length) return;
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.dataset.activityBucketTrigger;
+          buttons.forEach((candidate) => {
+            const selected = candidate === button;
+            candidate.classList.toggle("is-selected", selected);
+            candidate.setAttribute("aria-expanded", selected ? "true" : "false");
+          });
+          panels.forEach((panel) => {
+            panel.hidden = panel.dataset.activityBucketPanel !== target;
+          });
+        });
+      });
+    })();
+  </script>
+  {% endif %}
+</body>
+</html>

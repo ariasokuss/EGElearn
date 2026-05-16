@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — NovaLearn Prompts</title>
+<link rel="stylesheet" href="/admin/prompts/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="logo">NL</div>
+    <nav class="nav-links">
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/usage') else '' }}" href="/admin/usage">Usage</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/prompts') else '' }}" href="/admin/prompts">Prompts</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/past-papers') else '' }}" href="/admin/past-papers">Papers</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/security') else '' }}" href="/admin/security">Security</a>
+      <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/referrals') else '' }}" href="/admin/referrals">Referrals</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

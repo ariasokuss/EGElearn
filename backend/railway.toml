@@ -1,0 +1,19 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+watchPatterns = [
+  "src/**",
+  "alembic/**",
+  "scripts/**",
+  "pyproject.toml",
+  "uv.lock",
+  "Dockerfile",
+]
+
+[deploy]
+# Как в docker-compose: сначала миграции, потом API (одна строка — Railway допускает max 1 элемент)
+preDeployCommand = "uv run alembic upgrade head"
+startCommand = "sh -c \"uv run uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-8000}\""
+healthcheckPath = "/openapi.json"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"

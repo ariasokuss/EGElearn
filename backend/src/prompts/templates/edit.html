@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a class="back-link" href="/admin/prompts?service={{ prompt.service }}">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  Back to {{ prompt.service }}
+</a>
+
+<div class="page-header">
+  <div>
+    <h1>{{ prompt.key }}</h1>
+    <div class="page-header-sub">{{ prompt.service }} &middot; v{{ prompt.version }} &middot; Updated {{ prompt.updated_at.strftime('%b %d, %Y %H:%M') }}</div>
+  </div>
+  <div class="header-actions">
+    <a class="btn btn-ghost btn-sm" href="/admin/prompts/{{ prompt.id }}/versions">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+    </a>
+    <form method="post" action="/admin/prompts/{{ prompt.id }}/delete" style="display:inline"
+          onsubmit="return confirm('Are you sure you want to delete this prompt?')">
+      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="card"><div class="card-body">
+  <form method="post" action="/admin/prompts/{{ prompt.id }}">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Service</label>
+        <input type="text" value="{{ prompt.service }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Key</label>
+        <input type="text" value="{{ prompt.key }}" disabled>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" name="description" value="{{ prompt.description or '' }}">
+    </div>
+    <div class="form-group">
+      <label>Variables</label>
+      <input type="text" name="variables" value="{{ prompt.variables|join(', ') if prompt.variables else '' }}">
+    </div>
+    <div class="form-group">
+      <label>Content</label>
+      <textarea name="content" required>{{ prompt.content }}</textarea>
+    </div>
+    <div class="form-actions">
+      <label class="form-check">
+        <input type="checkbox" name="is_active" value="true" {{ 'checked' if prompt.is_active }}> Active
+      </label>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+  </form>
+</div></div>
+
+{% endblock %}

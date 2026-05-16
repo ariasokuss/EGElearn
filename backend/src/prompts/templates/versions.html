@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a class="back-link" href="/admin/prompts/{{ prompt.id }}/edit">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  Back to {{ prompt.key }}
+</a>
+
+<div class="page-header">
+  <div>
+    <h1>Version History</h1>
+    <div class="page-header-sub">{{ prompt.service }} &middot; {{ prompt.key }} &middot; {{ versions|length }} version{{ 's' if versions|length != 1 }}</div>
+  </div>
+</div>
+
+{% if versions %}
+<div class="version-list">
+  {% for v in versions %}
+  <div class="version-item{{ ' current' if v.version == prompt.version }}">
+    <div class="version-meta">
+      <strong>v{{ v.version }}</strong>
+      {% if v.version == prompt.version %}
+      <span class="badge badge-active">Current</span>
+      {% endif %}
+      <span>{{ v.created_at.strftime('%b %d, %Y at %H:%M') }}</span>
+      <span>{{ v.changed_by or 'unknown' }}</span>
+      {% if v.version != prompt.version %}
+      <span style="margin-left:auto">
+        <button class="btn btn-ghost btn-sm"
+                onclick="fetch('/api/v1/prompts/{{ prompt.id }}/restore/{{ v.id }}', {method:'POST'}).then(()=>location.reload())">
+          Restore
+        </button>
+      </span>
+      {% endif %}
+    </div>
+    <div class="version-content">{{ v.content[:600] }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><p>No version history</p></div>
+{% endif %}
+
+{% endblock %}

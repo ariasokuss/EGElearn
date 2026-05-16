@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NovaLearn Inspector Folder</title>
+    <link rel="stylesheet" href="/api/v1/inspector/assets/styles.css">
+    <script src="/api/v1/inspector/assets/app.js" defer></script>
+  </head>
+  <body data-page="folder">
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Inspector</p>
+          <h1 id="folderTitle">Folder</h1>
+          <div id="folderMeta" class="pill-row"></div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button ghost" href="./dashboard">Dashboard</a>
+          <a class="button ghost" href="./chat" id="chatLink">Chat</a>
+          <div class="session-chip" id="sessionLabel">User</div>
+          <button id="signOutButton" type="button" class="button ghost">Sign out</button>
+        </div>
+      </header>
+
+      <div id="flash" class="flash" hidden></div>
+
+      <main class="content-grid">
+        <section class="panel stack">
+          <div class="section-heading split">
+            <div>
+              <p class="eyebrow">Folder</p>
+              <h2>Overview</h2>
+            </div>
+            <div class="button-row">
+              <span id="liveStatus" class="pill">Live updates on</span>
+              <button id="deleteFolderButton" type="button" class="button ghost danger">Delete folder</button>
+            </div>
+          </div>
+          <div id="folderMetrics" class="metric-grid"></div>
+        </section>
+
+        <section class="panel stack">
+          <div class="section-heading">
+            <p class="eyebrow">Ingest</p>
+            <h2>Upload documents</h2>
+          </div>
+          <form id="uploadForm" class="stack">
+            <label class="field">
+              <span>PDF or TXT files</span>
+              <input id="documentFileInput" name="files" type="file" accept="application/pdf,text/plain,.txt" multiple required>
+            </label>
+            <button type="submit" class="button accent">Upload Selected Files</button>
+          </form>
+        </section>
+
+        <section class="panel stack wide-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Documents</p>
+            <h2>Document list</h2>
+          </div>
+          <div id="documentsList" class="card-grid"></div>
+        </section>
+
+        <section class="panel stack">
+          <div class="section-heading">
+            <p class="eyebrow">Megaclusters</p>
+            <h2>Cross-document overview</h2>
+          </div>
+          <div id="megaclustersList" class="stack"></div>
+        </section>
+
+        <section class="panel stack">
+          <div class="section-heading">
+            <p class="eyebrow">Jobs</p>
+            <h2>Recent pipeline activity</h2>
+          </div>
+          <div id="folderJobs" class="stack"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

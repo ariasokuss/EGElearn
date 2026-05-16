@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NovaLearn Inspector Document</title>
+    <link rel="stylesheet" href="/api/v1/inspector/assets/styles.css">
+    <script src="/api/v1/inspector/assets/app.js" defer></script>
+  </head>
+  <body data-page="document">
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Inspector</p>
+          <h1 id="documentTitle">Document</h1>
+          <div class="button-row">
+            <a id="folderBackLink" class="button ghost" href="./dashboard">Back to folder</a>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button ghost" href="./chat" id="chatLink">Chat</a>
+          <div class="session-chip" id="sessionLabel">User</div>
+          <button id="signOutButton" type="button" class="button ghost">Sign out</button>
+        </div>
+      </header>
+
+      <div id="flash" class="flash" hidden></div>
+
+      <main class="content-grid">
+        <section class="panel stack">
+          <div class="section-heading split">
+            <div>
+              <p class="eyebrow">Document</p>
+              <h2>Storage view</h2>
+            </div>
+            <div class="button-row">
+              <span id="liveStatus" class="pill">Live updates on</span>
+              <button id="deleteDocumentButton" type="button" class="button ghost danger">Delete document</button>
+            </div>
+          </div>
+          <div id="documentMeta" class="pill-row"></div>
+          <div id="storageMetrics" class="metric-grid"></div>
+          <div id="storageNotes" class="stack"></div>
+        </section>
+
+        <section class="panel stack">
+          <div class="section-heading">
+            <p class="eyebrow">Megaclusters</p>
+            <h2>Related cross-document topics</h2>
+          </div>
+          <div id="megaclustersList" class="stack"></div>
+        </section>
+
+        <section class="panel stack">
+          <div class="section-heading">
+            <p class="eyebrow">Jobs</p>
+            <h2>Document activity</h2>
+          </div>
+          <div id="documentJobs" class="stack"></div>
+        </section>
+
+        <section class="panel stack wide-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Markdown</p>
+            <h2>Extracted text</h2>
+          </div>
+          <pre id="markdownPreview" class="code-panel"></pre>
+        </section>
+
+        <section class="panel stack wide-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Clusters</p>
+            <h2>Cluster and chunk tree</h2>
+          </div>
+          <div id="clustersList" class="stack"></div>
+        </section>
+
+        <section class="panel stack wide-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Weaviate</p>
+            <h2>Vector mirror objects</h2>
+          </div>
+          <div id="weaviateView" class="stack"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

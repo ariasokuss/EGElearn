@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NovaLearn Inspector Login</title>
+    <link rel="stylesheet" href="/api/v1/inspector/assets/styles.css">
+    <script src="/api/v1/inspector/assets/app.js" defer></script>
+  </head>
+  <body data-page="login">
+    <div class="page-shell auth-shell">
+      <section class="hero-panel">
+        <p class="eyebrow">NovaLearn backend</p>
+        <h1>Inspector</h1>
+        <p class="hero-copy">
+          Log in, browse folders, upload PDFs, and inspect megaclusters, clusters, chunks, and
+          Weaviate objects with a simple operator UI.
+        </p>
+        <div class="hero-stack">
+          <div class="meta-chip">
+            <span class="meta-label">Flow</span>
+            <strong>Login, dashboard, folder, document</strong>
+          </div>
+          <div class="meta-chip">
+            <span class="meta-label">Data</span>
+            <strong>Folders, docs, vectors</strong>
+          </div>
+        </div>
+      </section>
+
+      <main class="auth-card">
+        <div class="section-heading">
+          <p class="eyebrow">Access</p>
+          <h2>Sign in or create user</h2>
+        </div>
+
+        <div id="flash" class="flash" hidden></div>
+
+        <form id="authForm" class="stack">
+          <label class="field">
+            <span>Email</span>
+            <input id="emailInput" name="email" type="email" autocomplete="username" placeholder="me@example.com" required>
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="passwordInput" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required>
+          </label>
+          <div class="button-row">
+            <button type="submit" class="button accent">Login</button>
+            <button id="registerButton" type="button" class="button">Register</button>
+          </div>
+        </form>
+
+        <div class="divider"></div>
+
+        <form id="manualUserForm" class="stack">
+          <label class="field">
+            <span>Manual user UUID</span>
+            <input id="manualUserId" name="userId" type="text" placeholder="Paste an existing user UUID">
+          </label>
+          <button type="submit" class="button ghost">Use existing user</button>
+        </form>
+
+        <div id="activeSession" class="session-card" hidden></div>
+        <div class="button-row", style="margin-top: 0.9rem;">
+          <button id="continueButton" type="button" class="button accent" hidden>Continue</button>
+          <button id="clearButton" type="button" class="button ghost" hidden>Clear saved session</button>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

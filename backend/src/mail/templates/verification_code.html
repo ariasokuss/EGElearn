@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
+  <title>Verify your NovaLearn account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: light only; supported-color-schemes: light; }
+    body, table, td { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    a { color: #3C221B; }
+    @media (prefers-color-scheme: dark) {
+      body, .outer-table, .email-card, .email-header, .email-body, .email-footer, .code-block { background-color: inherit !important; color: inherit !important; }
+    }
+    @media only screen and (max-width: 600px) {
+      .email-card   { border-radius: 0 !important; }
+      .email-header { padding: 22px 24px !important; }
+      .email-body   { padding: 28px 24px 24px !important; }
+      .email-footer { padding: 16px 24px !important; }
+      .code-block   { padding: 22px 16px !important; }
+      .code-text    { font-size: 34px !important; letter-spacing: 8px !important; }
+      .outer-table  { padding: 24px 0 !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#F1ECE9;font-family:'Inter','Segoe UI',Arial,sans-serif;color:#3C221B;">
+  <span style="display:none!important;visibility:hidden;opacity:0;color:transparent;height:0;width:0;overflow:hidden;mso-hide:all;">
+    Your NovaLearn verification code is {{ code }}. It expires in 15 minutes.
+  </span>
+  <table role="presentation" class="outer-table" width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background:#F1ECE9;padding:48px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" class="email-card" width="100%" cellpadding="0" cellspacing="0" border="0"
+               style="background:#FFFFFF;border-radius:20px;overflow:hidden;border:1px solid #EAE2DC;
+                      box-shadow:0 1px 2px rgba(28,40,64,.04), 0 0 0 1px rgba(28,40,64,.02);max-width:540px;">
+
+          <!-- Header -->
+          <tr>
+            <td class="email-header"
+                style="background:#FAF9F7;padding:24px 40px;border-bottom:1px solid #EFE7E1;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="vertical-align:middle;padding-right:10px;line-height:0;">
+                    <svg width="20" height="28" viewBox="0 0 22 31" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M0.8 16.54C15.24 24.62 28.63 0.73 0.8 16.54ZM0.8 16.54C19.87 9.18 22.68 48.68 0.8 16.54ZM0.8 16.54C27.8-11.05 28.35 3.19 0.8 16.54ZM0.8 16.54C12.55 58.64 25.07-31.77 0.8 16.54Z" stroke="#2A201A" stroke-width="1.5"/>
+                    </svg>
+                  </td>
+                  <td style="vertical-align:middle;font-family:'Inter','Segoe UI',Arial,sans-serif;font-size:19px;font-weight:600;color:#2A201A;letter-spacing:-0.4px;">
+                    NovaLearn
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td class="email-body" style="padding:40px 40px 32px;">
+              <p style="margin:0 0 10px;font-family:'IBM Plex Mono','Consolas',monospace;font-size:11px;font-weight:500;color:#A67A68;letter-spacing:1.6px;text-transform:uppercase;">
+                Email verification
+              </p>
+              <h1 style="font-family:'Inter','Segoe UI',Arial,sans-serif;font-size:24px;font-weight:600;color:#2A201A;margin:0 0 14px;letter-spacing:-0.5px;line-height:1.25;">
+                Confirm it's you
+              </h1>
+              <p style="font-family:'Inter','Segoe UI',Arial,sans-serif;font-size:15px;color:#5C463C;line-height:1.65;margin:0 0 28px;">
+                Enter the six-digit code below to finish signing in. It expires in
+                <strong style="color:#2A201A;font-weight:600;">15&nbsp;minutes</strong>.
+              </p>
+
+              <!-- Code block -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
+                <tr>
+                  <td class="code-block" align="center"
+                      style="background:#FAF7F4;border-radius:14px;padding:30px 20px;border:1px solid #EFE7E1;">
+                    <div class="code-text"
+                         style="font-family:'IBM Plex Mono','Consolas','Courier New',monospace;font-size:40px;font-weight:600;letter-spacing:12px;color:#2A201A;line-height:1;text-indent:12px;">
+                      {{ code }}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="font-family:'Inter','Segoe UI',Arial,sans-serif;font-size:13px;color:#8F7669;line-height:1.65;margin:0;">
+                Didn't ask for this? You can safely ignore the email — no NovaLearn account will be created.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="email-footer"
+                style="background:#FAF9F7;padding:18px 40px;border-top:1px solid #EFE7E1;">
+              <p style="font-family:'Inter','Segoe UI',Arial,sans-serif;font-size:12px;color:#A0897C;margin:0;letter-spacing:0.1px;">
+                &copy; 2026 NovaLearn &middot; Подготовка к ЕГЭ без лишнего шума.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

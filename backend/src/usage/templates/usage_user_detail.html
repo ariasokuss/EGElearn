@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} | NovaLearn</title>
+  <link rel="stylesheet" href="/admin/usage/static/style.css?v=activity-chart-20260506">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo">NL</div>
+      <nav class="nav-links">
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/usage') else '' }}" href="/admin/usage">Usage</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/prompts') else '' }}" href="/admin/prompts">Prompts</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/past-papers') else '' }}" href="/admin/past-papers">Papers</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/security') else '' }}" href="/admin/security">Security</a>
+        <a class="nav-link {{ 'is-active' if request.url.path.startswith('/admin/referrals') else '' }}" href="/admin/referrals">Referrals</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <div>
+          <h1>User Requests</h1>
+          <p>
+            <strong>{{ detail.email }}</strong>
+            <span class="muted-inline">({{ detail.user_id }})</span>
+          </p>
+        </div>
+        <div class="header-actions">
+          <a class="ghost-btn" href="/admin/usage?period={{ current_period }}">Back to users</a>
+          <div class="stamp">Updated {{ generated_at.strftime('%Y-%m-%d %H:%M UTC') }}</div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <form method="get" action="/admin/usage/users/{{ detail.user_id }}" class="filters">
+          <label>
+            Period
+            <select name="period">
+              {% for option in period_options %}
+              <option value="{{ option }}" {{ 'selected' if current_period == option else '' }}>{{ option|upper }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>
+            Limit
+            <input name="limit" type="number" min="1" max="5000" value="{{ current_limit }}">
+          </label>
+
+          <button type="submit">Apply</button>
+        </form>
+      </section>
+
+      <section class="stats-grid stats-grid-compact">
+        <article class="stat-card">
+          <h2>Total Requests</h2>
+          <div class="value">{{ detail.request_count_total }}</div>
+        </article>
+        <article class="stat-card">
+          <h2>Returned</h2>
+          <div class="value">{{ detail.request_count_returned }}</div>
+        </article>
+      </section>
+
+      <section class="panel activity-panel">
+        <div class="activity-panel-header">
+          <div>
+            <p class="eyebrow">Behaviour timeline</p>
+            <h2 class="section-title activity-title">Activity Sessions</h2>
+          </div>
+          <span class="activity-count">{{ detail.activity_sessions|length }} {{ 'session' if detail.activity_sessions|length == 1 else 'sessions' }}</span>
+        </div>
+        {% if detail.activity_sessions %}
+        <div class="activity-session-list">
+          {% for session in detail.activity_sessions %}
+          <details class="activity-session" {{ 'open' if loop.first else '' }}>
+            <summary class="activity-session-summary">
+              <span class="activity-session-toggle" aria-hidden="true"></span>
+              <span class="activity-session-main">
+                <span class="activity-summary">{{ session.summary }}</span>
+                <span class="activity-range">
+                  {{ session.start_at.strftime('%Y-%m-%d %H:%M') }} - {{ session.end_at.strftime('%Y-%m-%d %H:%M') }}
+                </span>
+              </span>
+              <span class="activity-session-meta">
+                <span>{{ session.duration_seconds }}s</span>
+                <span>{{ session.event_count }} {{ 'event' if session.event_count == 1 else 'events' }}</span>
+              </span>
+            </summary>
+
+            <div class="activity-signals">
+              {% if session.signals %}
+                {% for signal in session.signals %}
+                <span class="signal-badge signal-{{ signal }}">{{ signal.replace('_', ' ')|title }}</span>
+                {% endfor %}
+              {% else %}
+              <span class="muted-inline">No signals</span>
+              {% endif %}
+            </div>
+
+            {% if session.events %}
+            <ol class="activity-timeline">
+              {% for event in session.events %}
+              <li>
+                <time class="activity-event-time">{{ event.created_at.strftime('%H:%M:%S') }}</time>
+                <div class="activity-event-body">
+                  <span class="activity-event-meta">
+                    <span class="event-group-chip">{{ event.event_group|title }}</span>
+                    <span class="event-type-chip">{{ event.action_label if event.action_label is defined else event.event_type.replace('_', ' ')|title }}</span>
+                    {% set is_correct = event.metadata.get('is_correct') %}
+                    {% set earned_marks = event.metadata.get('earned_marks') %}
+                    {% set total_marks = event.metadata.get('total_marks') %}
+                    {% if is_correct is sameas true %}
+                    <span class="result-chip result-correct">Correct</span>
+                    {% elif is_correct is sameas false %}
+                    <span class="result-chip result-wrong">Incorrect</span>
+                    {% endif %}
+                    {% if earned_marks is not none and total_marks is not none %}
+                    <span class="result-chip">{{ earned_marks }}/{{ total_marks }}</span>
+                    {% endif %}
+                  </span>
+                  {% set replay_items = event.replay_payload.get('items') if event.replay_payload else [] %}
+                  {% if replay_items %}
+                  <div class="activity-replay">
+                    {% for item in replay_items %}
+                    {% if not item.get('absorbed_into_options') %}
+                    <div class="activity-replay-item">
+                      <div class="activity-replay-item-header">
+                        {% set kind_label = item.get('kind').replace('_', ' ')|title if item.get('kind') else none %}
+                        {% set title_label = item.get('title') if item.get('title') else kind_label %}
+                        <span class="activity-replay-title">
+                          {{ title_label or 'Item' }}
+                        </span>
+                        {% if kind_label and kind_label != title_label %}
+                        <span class="activity-replay-kind">{{ kind_label }}</span>
+                        {% endif %}
+                        {% if item.get('score') is not none and not (item.get('earned_marks') is not none and item.get('total_marks') is not none) %}
+                        <span class="activity-replay-chip">Score {{ item.get('score') }}</span>
+                        {% endif %}
+                        {% if item.get('earned_marks') is not none and item.get('total_marks') is not none %}
+                        <span class="activity-replay-chip">{{ item.get('earned_marks') }}/{{ item.get('total_marks') }}</span>
+                        {% endif %}
+                        {% if item.get('score_percent') is not none %}
+                        <span class="activity-replay-chip">{{ '%.0f'|format(item.get('score_percent')) }}%</span>
+                        {% endif %}
+                        {% set correctness = item.get('correctness') %}
+                        {% if correctness is not none %}
+                          {% if correctness is sameas true %}
+                          <span class="activity-replay-chip activity-replay-correct">Correct</span>
+                          {% elif correctness is sameas false %}
+                          <span class="activity-replay-chip activity-replay-wrong">Incorrect</span>
+                          {% else %}
+                          <span class="activity-replay-chip">{{ correctness|string|replace('_', ' ')|title }}</span>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                      {% if item.get('text') is not none %}
+                      <div class="activity-replay-text">{{ item.get('text') }}</div>
+                      {% endif %}
+                      {% if item.get('options') %}
+                      <div class="activity-mcq-options" role="list">
+                        {% for option in item.get('options') %}
+                        {% if option is mapping %}
+                        <div class="activity-mcq-option{{ ' is-selected' if option.get('is_selected') else '' }}{{ ' is-correct' if option.get('is_correct') else '' }}" role="listitem">
+                          <span class="activity-mcq-letter">{{ option.get('label') }}</span>
+                          <span class="activity-mcq-text">{{ option.get('text') or option.get('value') }}</span>
+                          <span class="activity-mcq-status">
+                            {% if option.get('is_selected') %}
+                            <span class="activity-mcq-chip activity-mcq-selected">Selected</span>
+                            {% endif %}
+                            {% if option.get('is_correct') %}
+                            <span class="activity-mcq-chip activity-mcq-correct">Correct</span>
+                            {% endif %}
+                          </span>
+                        </div>
+                        {% else %}
+                        <div class="activity-mcq-option" role="listitem">
+                          <span class="activity-mcq-letter"></span>
+                          <span class="activity-mcq-text">{{ option }}</span>
+                          <span class="activity-mcq-status"></span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                      </div>
+                      {% endif %}
+                      {% if item.get('value') is not none %}
+                      <div class="activity-replay-value">{{ item.get('value') }}</div>
+                      {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </li>
+              {% endfor %}
+            </ol>
+            {% else %}
+            <div class="empty activity-empty">No events found for this session.</div>
+            {% endif %}
+          </details>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">No activity sessions found for this period.</div>
+        {% endif %}
+      </section>
+
+      <section class="panel">
+        <h2 class="section-title">Split By Type</h2>
+        {% if detail.split_by_type %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Requests</th>
+                <th>Tokens</th>
+                <th>Cost (USD)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in detail.split_by_type %}
+              <tr>
+                <td>{{ row.type_label if row.type_label is defined else row.type }}</td>
+                <td>{{ row.request_count }}</td>
+                <td>{{ row.tokens }}</td>
+                <td>${{ '%.6f'|format(row.cost_usd) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty">No request types found for this period.</div>
+        {% endif %}
+      </section>
+
+      <section class="panel">
+        <h2 class="section-title">All Requests</h2>
+        {% if detail.requests %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Type</th>
+                <th>Model</th>
+                <th>Prompt</th>
+                <th>Completion</th>
+                <th>Total</th>
+                <th>Cost (USD)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in detail.requests %}
+              <tr>
+                <td>{{ row.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ row.feature_label if row.feature_label is defined else row.feature }}</td>
+                <td>{{ row.model }}</td>
+                <td>{{ row.prompt_tokens }}</td>
+                <td>{{ row.completion_tokens }}</td>
+                <td>{{ row.total_tokens }}</td>
+                <td>${{ '%.6f'|format(row.cost_usd) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty">No requests found for this period.</div>
+        {% endif %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,347 @@
+@import "tailwindcss";
+
+/* TODO: Fix scaling tailwind components (V: i idk how to fix) */
+:root {
+  --background: #e7e9ed;
+  --foreground: #0b0f1a;
+  --ege-canvas: #e7e9ed;
+  --ege-surface: #dfe2e7;
+  --ege-surface-raised: #f1f3f6;
+  --ege-border: #c5ccd6;
+  --ege-text: #0b0f1a;
+  --ege-muted: #5b6472;
+  --ege-accent: #d91024;
+  --ege-accent-strong: #b40819;
+  --ege-track: #c5ceda;
+  --font-roboto: "Roboto", "Segoe UI", Arial, sans-serif;
+  --font-inter: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", "Consolas", "Courier New", monospace;
+  --spacing: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #15171d;
+    --foreground: #f7f8fb;
+    --ege-canvas: #15171d;
+    --ege-surface: #1d2129;
+    --ege-surface-raised: #262b35;
+    --ege-border: #3b4250;
+    --ege-text: #f7f8fb;
+    --ege-muted: #b9c1cc;
+    --ege-accent: #ef1f36;
+    --ege-accent-strong: #ff4052;
+    --ege-track: #485160;
+  }
+}
+
+:root[data-theme="light"] {
+  --background: #e7e9ed;
+  --foreground: #0b0f1a;
+  --ege-canvas: #e7e9ed;
+  --ege-surface: #dfe2e7;
+  --ege-surface-raised: #f1f3f6;
+  --ege-border: #c5ccd6;
+  --ege-text: #0b0f1a;
+  --ege-muted: #5b6472;
+  --ege-accent: #d91024;
+  --ege-accent-strong: #b40819;
+  --ege-track: #c5ceda;
+}
+
+:root[data-theme="dark"] {
+  --background: #15171d;
+  --foreground: #f7f8fb;
+  --ege-canvas: #15171d;
+  --ege-surface: #1d2129;
+  --ege-surface-raised: #262b35;
+  --ege-border: #3b4250;
+  --ege-text: #f7f8fb;
+  --ege-muted: #b9c1cc;
+  --ege-accent: #ef1f36;
+  --ege-accent-strong: #ff4052;
+  --ege-track: #485160;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.lesson-content *::selection {
+  background-color: var(--ege-track);
+  color: inherit;
+}
+.lesson-content[data-has-selection] *::selection {
+  background-color: transparent;
+}
+
+.lesson-content .katex-display {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  padding: 0.35em 0;
+  margin: 0.5em 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.lesson-content .katex-display::-webkit-scrollbar {
+  display: none;
+}
+.lesson-content .katex-display > .katex {
+  white-space: nowrap;
+}
+.lesson-content .katex {
+  font-size: 1em;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ege-track) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--ege-track);
+  border-radius: 9999px;
+}
+
+.auto-hide-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 212, 216, 0) transparent;
+  transition: scrollbar-color 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.auto-hide-scrollbar[data-scrolling="true"] {
+  scrollbar-color: rgba(212, 212, 216, 0.88) transparent;
+}
+.auto-hide-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.auto-hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.auto-hide-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(212, 212, 216, 0);
+  border-radius: 9999px;
+  transition: background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.auto-hide-scrollbar[data-scrolling="true"]::-webkit-scrollbar-thumb {
+  background-color: rgba(212, 212, 216, 0.72);
+}
+
+.lesson-study-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0) transparent;
+  transition: scrollbar-color 0.35s ease;
+}
+.lesson-study-scroll[data-scrolling="true"] {
+  scrollbar-color: var(--ege-track) transparent;
+}
+.lesson-study-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.lesson-study-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.lesson-study-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(212, 212, 216, 0);
+  border-radius: 9999px;
+  transition: background-color 0.35s ease;
+}
+.lesson-study-scroll[data-scrolling="true"]::-webkit-scrollbar-thumb {
+  background-color: var(--ege-track);
+}
+
+div, button, input, a {
+  &:not(.outline-none) {
+    @apply outline-none ring-transparent focus-visible:ring focus-visible:ring-[var(--ege-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ege-canvas)]
+  }
+}
+
+.tippy-box {
+  @apply duration-300 transition-all;
+
+  &[data-animation='fade'][data-state='hidden'] {
+    opacity: 0;
+  }
+}
+.tippy-content {
+  @apply nova-text-label-tiny text-center rounded-[12px] border p-1 bg-[var(--ege-surface-raised)] border-[var(--ege-border)] text-[var(--ege-text)]
+}
+
+.Toastify__toast-container {
+  view-transition-name: Toaster /* Prevent dissapearing during view transition */
+}
+div.Toastify__toast {
+  @apply mb-2 bg-[var(--ege-surface-raised)] rounded-[16px] border-none nova-shadow-sm p-0 min-h-0 w-90 nova-text-label-medium text-[var(--ege-text)]
+}
+
+@utility nova-shadow-sm {
+  @apply shadow-[0px_0px_2px_0px_rgba(28,40,64,0.18),0px_1px_3px_0px_rgba(28,40,64,0.04)];
+}
+
+@utility nova-shadow-md {
+  @apply shadow-[0px_1px_3px_0px_rgba(28,40,64,0.04),0px_0px_2px_0px_rgba(28,40,64,0.18)];
+}
+
+@utility nova-shadow-triple {
+  @apply shadow-[0px_0px_0px_4px_rgba(232,229,225,0.22),0px_1px_2px_-1px_rgba(28,40,64,0.1),0px_2px_4px_0px_rgba(28,40,64,0.06)];
+}
+
+@utility nova-shadow-bottom {
+  @apply shadow-[0px_2px_10px_-5px_rgba(238,238,238,1)];
+}
+
+
+@utility nova-text-h-small {
+  @apply font-(family-name:--font-inter) font-medium text-[22px] leading-8 tracking-[-0.014em]
+}
+@utility nova-text-h-small-sb {
+  @apply nova-text-h-small font-semibold
+}
+@utility nova-text-h-tiny {
+  @apply font-(family-name:--font-inter) font-medium text-[20px] leading-7 tracking-[-0.025em]
+}
+@utility nova-text-h-xss {
+  @apply font-(family-name:--font-inter) font-semibold text-[18px] leading-6.5
+}
+
+@utility nova-text-p-large {
+  @apply font-(family-name:--font-inter) font-medium text-[18px] leading-8
+}
+@utility nova-text-p-medium {
+  @apply font-(family-name:--font-inter) font-normal text-[15px] leading-5 tracking-[-0.32px]
+}
+@utility nova-text-p-base {
+  @apply font-(family-name:--font-inter) font-normal text-[14px] leading-5.5
+}
+
+@utility nova-text-bold-question {
+  @apply font-(family-name:--font-inter) font-semibold text-[18px] leading-[26px] tracking-normal align-middle not-italic;
+  leading-trim: none;
+}
+
+@utility nova-text-test-question {
+  @apply font-(family-name:--font-inter) text-[18px] leading-[26px] font-semibold tracking-normal align-middle not-italic;
+}
+
+@utility nova-text-p-small {
+  @apply nova-text-label-small
+}
+
+@utility nova-text-label-base { /* also = M3/Title/Medium */
+  @apply font-(family-name:--font-inter) font-medium text-[16px] leading-6
+}
+@utility nova-text-label-medium {
+  @apply font-(family-name:--font-inter) font-medium text-[14px] leading-5
+}
+@utility nova-text-label-medium-regular {
+  @apply nova-text-label-medium font-normal
+}
+@utility nova-text-label-small {
+  @apply font-(family-name:--font-inter) font-medium text-[13px] leading-5
+}
+@utility nova-text-label-small-regular {
+  @apply nova-text-label-small font-normal
+}
+@utility nova-text-label-tiny {
+  @apply font-(family-name:--font-inter) font-medium text-[12px] leading-4
+}
+@utility nova-text-label-tiny-sb {
+  @apply nova-text-label-tiny font-semibold
+}
+@utility nova-text-label-tiny-sbd {
+  @apply font-(family-name:--font-inter) text-[12px] leading-4 tracking-normal align-middle;
+  font-weight: 600;
+}
+@utility nova-text-label-xxs {
+  @apply font-(family-name:--font-inter) font-medium text-[10px]
+}
+
+@utility nova-text-button-xxs {
+  @apply font-(family-name:--font-inter) font-medium text-[11px] leading-3
+}
+
+@utility nova-text-chat-message {
+  @apply font-(family-name:--font-inter) text-[15px] leading-6.5 tracking-[-0.32px]
+}
+
+@utility nova-text-code-header {
+  @apply font-(family-name:--font-ibm-plex-mono) text-[13px] leading-5.5 tracking-[-0.1px]
+}
+@utility nova-text-code-content {
+  @apply font-(family-name:--font-ibm-plex-mono) text-[14.4px] leading-[21.6px] tracking-[-0.1px]
+}
+
+
+@theme {
+  --color-nova-50: #F9F7F5;
+  --color-nova-100: #F1ECE9;
+  --color-nova-200: #E7DFDA;
+  --color-nova-300: #D4C6BF;
+  --color-nova-400: #BBA195;
+  --color-nova-500: #A67A68;
+  --color-nova-600: #8F5E4D;
+  --color-nova-700: #73483A;
+  --color-nova-800: #573429;
+  --color-nova-900: #3C221B;
+  --color-nova-950: #20110E;
+
+  --animate-icon-pulse: icon-pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite
+}
+
+@keyframes icon-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes token-appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spinner-rotate {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinner-dash {
+  0% {
+    stroke-dasharray: 15, 100;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 60, 100;
+    stroke-dashoffset: -20;
+  }
+  100% {
+    stroke-dasharray: 15, 100;
+    stroke-dashoffset: -110;
+  }
+}
