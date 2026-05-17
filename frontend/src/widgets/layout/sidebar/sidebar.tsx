@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
 
 import { SidebarUserMenu } from "@/features/settings";
-import { ThemeToggleButton } from "@/shared/ui";
 
 import { SidebarNavItem } from "./nav-item";
 
@@ -36,21 +35,17 @@ export function Sidebar() {
   const learningHref = currentFolderId ? `/folders/${currentFolderId}` : "/learning";
 
   return (
-    <aside className="flex flex-col bg-[var(--ege-canvas)] text-[var(--ege-text)]">
-      <nav className="flex flex-1 flex-col justify-between gap-1 pt-0.5 p-2.5">
-        <SidebarNavItem link="home" />
-
-        <div className="flex flex-col gap-4">
+    <aside className="flex flex-col rounded-[18px] bg-[#111722] text-white shadow-[0px_18px_40px_-28px_rgba(11,15,26,0.7)]">
+      <nav className="flex flex-1 flex-col justify-between p-2">
+        <div className="flex flex-col gap-1">
+          <SidebarNavItem link="home" />
           {showLearning && <SidebarNavItem link="learning" hrefOverride={learningHref} />}
           <SidebarNavItem link="chat" />
           {/* Notes page not implemented yet — restore when /notes is ready */}
           {/* <SidebarNavItem link="notes" /> */}
         </div>
 
-        <div className="flex flex-col items-center gap-2">
-          <ThemeToggleButton />
-          <SidebarUserMenu />
-        </div>
+        <SidebarUserMenu />
       </nav>
     </aside>
   );

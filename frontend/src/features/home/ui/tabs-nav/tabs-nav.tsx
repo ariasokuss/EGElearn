@@ -53,8 +53,8 @@ export function TabsNav() {
     <div
       ref={containerRef}
       role="tablist"
-      aria-label="Категории папок"
-      className="relative flex max-w-170.5 items-center gap-2 border-b border-[var(--ege-border)] pb-[8px]"
+      aria-label="Folder categories"
+      className="relative flex max-w-170.5 items-center gap-2 border-b border-[var(--ege-border)] pb-3"
     >
       {HOME_FOLDER_TABS.map((tab, index) => (
         <div key={tab.label} ref={setTabRef(index)}>
@@ -71,7 +71,7 @@ export function TabsNav() {
       ))}
 
       <div
-        className="absolute -bottom-px h-px rounded-full bg-[var(--ege-text)] transition-all duration-400 ease-in-out"
+        className="absolute -bottom-px h-0.75 rounded-full bg-[var(--ege-accent)] transition-all duration-400 ease-in-out"
         style={{ left: indicator.left, width: indicator.width }}
       />
     </div>

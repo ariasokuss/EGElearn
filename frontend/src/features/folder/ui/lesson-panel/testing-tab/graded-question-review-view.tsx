@@ -94,7 +94,7 @@ export function GradedQuestionReviewView({
       {showMcqGrid && templateQuestion.options ? (
         <div className="mt-6 flex flex-col gap-2">
           <p className="nova-text-label-small uppercase tracking-wider text-[#9B97A3]">
-            Your answer
+            Твой ответ
           </p>
           {templateQuestion.options.map((opt, idx) => {
             const key = OPTION_KEYS[idx] ?? String(idx);
@@ -131,12 +131,12 @@ export function GradedQuestionReviewView({
       ) : mcqFallback ? (
         <div className="mt-6 min-w-0 max-w-full space-y-3 break-words rounded-xl border border-[#E8E5E1] bg-white px-4 py-3 nova-text-label-small text-[#242529] [&_p]:min-w-0 [&_pre]:max-w-full [&_pre]:overflow-x-auto">
           <p>
-            <span className="font-semibold text-[#9B97A3]">Your selection: </span>
+            <span className="font-semibold text-[#9B97A3]">Твой выбор: </span>
             {optionLetter(selectedIdx)}
           </p>
           {correctIdx >= 0 ? (
             <p>
-              <span className="font-semibold text-[#9B97A3]">Correct: </span>
+              <span className="font-semibold text-[#9B97A3]">Правильно: </span>
               {optionLetter(correctIdx)}
             </p>
           ) : null}
@@ -149,7 +149,7 @@ export function GradedQuestionReviewView({
       ) : (
         <div className="mt-6 min-w-0">
           <p className="nova-text-label-tiny-sb uppercase tracking-wider text-[#9B97A3]">
-            Your answer
+            Твой ответ
           </p>
           {answerImageUrls.length > 0 ? (
             <div className="mt-2 overflow-hidden rounded-xl border border-[#E8E5E1] bg-white">
@@ -163,7 +163,7 @@ export function GradedQuestionReviewView({
                 <img
                   key={url}
                   src={url}
-                  alt={`Student answer${answerImageUrls.length > 1 ? ` ${i + 1}` : ""}`}
+                  alt={`Ответ ученика${answerImageUrls.length > 1 ? ` ${i + 1}` : ""}`}
                   className={`w-full object-contain${item.answer?.trim() || i > 0 ? " border-t border-[#E8E5E1]" : ""}`}
                 />
               ))}
@@ -173,7 +173,7 @@ export function GradedQuestionReviewView({
               {item.answer?.trim() ? (
                 <Md>{item.answer.trim()}</Md>
               ) : (
-                <span className="text-[#A1A1AA]">No answer submitted</span>
+                <span className="text-[#A1A1AA]">Ответ не отправлен</span>
               )}
             </div>
           )}
@@ -202,7 +202,7 @@ export function GradedQuestionReviewView({
               type="button"
               onClick={onXClick}
               className="flex shrink-0 items-center justify-center"
-              aria-label="Exit test"
+              aria-label="Выйти из теста"
             >
               <XMarkIcon className="size-4.5" />
             </Button>
@@ -215,7 +215,7 @@ export function GradedQuestionReviewView({
               type="button"
               onClick={onArrowsClick}
               className="flex shrink-0 items-center justify-center"
-              aria-label="Back to summary"
+              aria-label="К результатам"
             >
               <ArrowsPointingInIcon />
             </Button>
@@ -229,8 +229,8 @@ export function GradedQuestionReviewView({
                 templateQuestion?.question_number ??
                 (item as { question_number?: string | null }).question_number;
               return qn
-                ? `Review ${qn} · ${questionIndex + 1} of ${total}`
-                : `Review ${questionIndex + 1} of ${total}`;
+                ? `Разбор ${qn} · ${questionIndex + 1} из ${total}`
+                : `Разбор ${questionIndex + 1} из ${total}`;
             })()}
           </span>
           <div className="h-1 w-full max-w-xs rounded-full bg-[#E8E5E1]">
@@ -250,8 +250,8 @@ export function GradedQuestionReviewView({
               type="button"
               onClick={onToggleChat}
               className="flex shrink-0 items-center justify-center"
-              aria-label="Open chat"
-              title="Open chat"
+              aria-label="Открыть чат"
+              title="Открыть чат"
             >
               <HideBarIcon className="h-4 w-4 rotate-180" />
             </Button>
@@ -265,7 +265,7 @@ export function GradedQuestionReviewView({
             className="flex items-center justify-center gap-1 text-[#71717A] opacity-50 hover:opacity-100"
           >
             <ChevronLeftIcon className="h-3.5 w-3.5" />
-            Back
+            Назад
           </Button>
           <Button
             size="sm"
@@ -273,7 +273,7 @@ export function GradedQuestionReviewView({
             onClick={onNext}
             className="flex items-center justify-center gap-1"
           >
-            {isLast ? "Summary" : "Next"}
+            {isLast ? "Итоги" : "Далее"}
             {!isLast && <ChevronRightIcon className="h-3.5 w-3.5" />}
           </Button>
         </div>

@@ -48,11 +48,11 @@ export function ModelSelector({
   }, [isOpen])
 
   if (isLoading) {
-    return <span className={LABEL_CLASSES}>Загрузка…</span>
+    return <span className={LABEL_CLASSES}>Загружаем...</span>
   }
 
   if (error) {
-    return <span className={cn(LABEL_CLASSES, "text-red-400")}>Модель недоступна</span>
+    return <span className={cn(LABEL_CLASSES, "text-red-400")}>Модель пока недоступна</span>
   }
 
   if (models.length === 0) {

@@ -71,8 +71,13 @@ export function FolderItem({
         pressed={pressed}
         dragHandleProps={dragHandleProps}
       >
-        <div className="flex h-full flex-col justify-between">
-          <FolderIcon pressed={pressed} className="h-[64px] w-[82px]" />
+        <div className="relative flex h-full w-full flex-col justify-end">
+          <div className="relative">
+            <FolderIcon
+              pressed={pressed}
+              className="h-[132px] w-[170px] drop-shadow-[0px_10px_16px_rgba(11,15,26,0.12)] transition-transform duration-300 group-hover/card:-translate-y-0.5"
+            />
+          </div>
           {editing ? (
             <input
               autoFocus
@@ -85,14 +90,14 @@ export function FolderItem({
                 e.target.setSelectionRange(len, len);
               }}
               onClick={(e) => e.stopPropagation()}
-              placeholder="Введите название"
-              className="w-full border-none bg-transparent nova-text-label-small text-[var(--ege-text)] outline-none placeholder:text-[var(--ege-muted)]"
+              placeholder="Enter the name"
+              className="absolute bottom-5 left-5 z-10 w-[132px] border-none bg-transparent nova-text-label-small text-[#0b0f1a] outline-none placeholder:text-[#5b6472]"
             />
           ) : (
-            <span className="nova-text-label-small text-[var(--ege-text)]">
+            <span className="absolute bottom-5 left-5 z-10 max-w-[132px] whitespace-normal break-words nova-text-label-small font-semibold text-[#0b0f1a]">
               {label || (
-                <span className="text-[var(--ege-muted)]">
-                  Введите название
+                <span className="text-[#5b6472]">
+                  Enter the name
                 </span>
               )}
             </span>

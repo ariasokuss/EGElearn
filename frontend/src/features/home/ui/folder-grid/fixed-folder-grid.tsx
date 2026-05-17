@@ -48,7 +48,7 @@ export function FixedFolderGrid() {
     <section aria-labelledby="fixed-folder-heading-ege">
       <h1
         id="fixed-folder-heading-ege"
-        className="mt-4 mb-6 nova-text-label-base text-[var(--ege-text)]"
+        className="mb-6 nova-text-h-small-sb text-[var(--ege-text)]"
       >
         {title}
       </h1>
@@ -60,7 +60,7 @@ export function FixedFolderGrid() {
         {...handlers}
       >
         <SortableContext items={folderIds} strategy={rectSortingStrategy}>
-          <div className="flex flex-wrap gap-3.5">
+          <div className="grid max-w-[1180px] grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-x-8 gap-y-12">
             {egeFolders.map((folder, index) => (
               <SortableFolderItem
                 key={folder.id}

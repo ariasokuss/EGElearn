@@ -29,7 +29,7 @@ export function WizardStepper({
   return (
     <div
       className={cn(
-        "grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b border-[var(--ege-border)] bg-[var(--ege-canvas)] text-[var(--ege-text)]",
+        "grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b border-[#F4F4F5]",
         isFullscreen ? "pt-4 pb-2" : "py-3",
       )}
     >
@@ -42,7 +42,7 @@ export function WizardStepper({
             rounded={false}
             type="button"
             onClick={onClose}
-            className="flex items-center justify-center text-[var(--ege-muted)] hover:text-[var(--ege-text)]"
+            className="flex items-center justify-center text-[#71717A] hover:text-[#242529]"
           >
             <XMarkIcon className="size-4.5" />
           </Button>
@@ -55,9 +55,9 @@ export function WizardStepper({
             rounded={false}
             type="button"
             onClick={onToggleFullscreen}
-            className="flex items-center justify-center text-[var(--ege-muted)] hover:text-[var(--ege-text)]"
-            aria-label={isFullscreen ? "Выйти из полноэкранного режима" : "Полноэкранный режим"}
-            title={isFullscreen ? "Выйти из полноэкранного режима" : "Полноэкранный режим"}
+            className="flex items-center justify-center text-[#71717A] hover:text-[#242529]"
+            aria-label={isFullscreen ? "Выйти из полноэкранного режима" : "На весь экран"}
+            title={isFullscreen ? "Выйти из полноэкранного режима" : "На весь экран"}
           >
             {isFullscreen ? (
               <ArrowsPointingInIcon />
@@ -74,7 +74,7 @@ export function WizardStepper({
           {WIZARD_STEPS.map((step, i) => (
             <div key={step.number} className="flex items-center gap-1">
               {i > 0 && (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mx-0.5 text-[var(--ege-muted)]">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mx-0.5 text-[#71717A]">
                   <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               )}
@@ -82,11 +82,16 @@ export function WizardStepper({
                 className={cn(
                   "rounded-full px-3.5 py-1 nova-text-label-small transition-colors",
                   step.number === currentStep
-                    ? "bg-[var(--ege-surface)] text-[var(--ege-text)]"
+                    ? "bg-[#F1ECE9] text-[#242529]"
                     : step.number < currentStep
-                      ? "text-[var(--ege-text)]"
-                      : "border border-[var(--ege-border)] text-[var(--ege-muted)]",
+                      ? "text-[#242529]"
+                      : "text-[#A1A1AA] border border-[rgba(228,228,231,0.50)]",
                 )}
+                style={
+                  step.number !== currentStep && step.number >= currentStep
+                    ? { borderRadius: "var(--Border-Radius-rounded-full, 9999px)", color: "#242529" }
+                    : undefined
+                }
               >
                 {step.number}. {step.label}
               </span>
@@ -103,7 +108,7 @@ export function WizardStepper({
             variant="plain"
             type="button"
             onClick={onBack}
-            className="flex items-center gap-1 text-[var(--ege-muted)] hover:text-[var(--ege-text)]"
+            className="flex items-center gap-1 text-[#71717A] hover:text-[#242529]"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />

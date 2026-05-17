@@ -62,7 +62,7 @@ function ReviewCard({ note, onAnswered }: ReviewCardProps) {
     try {
       const res = await answerNote(note.id, answer.trim());
       if (!res) {
-        reviewSubmitToast("Could not submit your answer. Please try again.");
+        reviewSubmitToast("Не получилось отправить ответ. Попробуй ещё раз.");
         return;
       }
       setResult(res);
@@ -70,13 +70,13 @@ function ReviewCard({ note, onAnswered }: ReviewCardProps) {
         const updated = await updateNoteStatus(note.id, "complete");
         if (!updated) {
           setResult(null);
-          reviewSubmitToast("Could not save your progress. Please try again.");
+          reviewSubmitToast("Не получилось сохранить прогресс. Попробуй ещё раз.");
           return;
         }
       }
       onAnswered(note.id, res.is_correct);
     } catch {
-      reviewSubmitToast("Something went wrong. Please try again.");
+      reviewSubmitToast("Что-то пошло не так. Попробуй ещё раз.");
     } finally {
       setSubmitting(false);
     }
@@ -111,7 +111,7 @@ function ReviewCard({ note, onAnswered }: ReviewCardProps) {
     <div className="w-full max-w-[640px]">
       <div className="rounded-[20px] border border-[#F2F2F4] p-1.5">
         <p className="mx-3.5 mt-2.5 mb-6.5 nova-text-h-small-sb text-[#242529]">
-          Let&apos;s recall :)
+          Давай вспомним :)
         </p>
 
         <div className="rounded-[16px] border border-[#F2F2F4] px-3.5 pb-3.5 pt-2.5 nova-shadow-bottom">
@@ -127,7 +127,7 @@ function ReviewCard({ note, onAnswered }: ReviewCardProps) {
           <div className="pt-3">
             <textarea
               className="pl-2 max-h-[180px] min-h-[120px] w-full resize-none overflow-y-auto border-none bg-transparent nova-text-label-medium-regular text-[#242529] placeholder:text-[#A1A1AA] outline-none"
-              placeholder="Write your answer..."
+              placeholder="Напиши ответ..."
               value={answer}
               onChange={(e) => {
                 toast.dismiss(FEEDBACK_REVIEW_SUBMIT_TOAST_ID);
@@ -144,7 +144,7 @@ function ReviewCard({ note, onAnswered }: ReviewCardProps) {
                   onClick={handleSubmit}
                   disabled={!answer.trim() || submitting}
                   isLoading={submitting}
-                  aria-label="Submit answer"
+                  aria-label="Отправить ответ"
                   className="flex shrink-0 items-center justify-center rounded-full"
                 >
                   <PaperAirplaneIcon />
@@ -172,12 +172,12 @@ function ReviewCard({ note, onAnswered }: ReviewCardProps) {
               </div>
               <div>
                 <p className="nova-text-label-tiny-sb text-[#242529]">
-                  {result.earned_marks}/{result.total_marks} marks earned
+                  {result.earned_marks}/{result.total_marks} баллов
                 </p>
                 <p className="nova-text-p-base text-[#71717A]">
                   {result.is_correct
-                    ? "Well done, you corrected this mistake!"
-                    : "This question needs more practice!"}
+                    ? "Класс, ошибка исправлена!"
+                    : "Почти! Эту тему ещё немного потренируем."}
                 </p>
               </div>
             </div>
@@ -224,7 +224,7 @@ function ReviewCard({ note, onAnswered }: ReviewCardProps) {
                   <span className="flex items-center justify-center gap-3">
                     <EyeIcon className="size-4 shrink-0 justify-center overflow-visible text-[#71717A]" />
                     <span className="nova-text-p-base">
-                      Model answer
+                      Пример ответа
                     </span>
                   </span>
                   <ChevronDownIcon
@@ -303,7 +303,7 @@ export function FeedbackReview({ notes, onNoteCompleted, completedCount, totalCo
   if (orderedNotes.length === 0) {
     return (
       <FeedbackComplete
-        message="You corrected all your mistakes!"
+        message="Ты исправил все ошибки. Очень мощно!"
         completedCount={completedCount}
         totalCount={totalCount}
         showWeekProgress={false}
@@ -355,13 +355,13 @@ export function FeedbackReview({ notes, onNoteCompleted, completedCount, totalCo
             onClick={handlePrev}
             disabled={currentIndex === 0}
             className="flex items-center justify-center"
-            aria-label="Previous"
+            aria-label="Предыдущая ошибка"
           >
             <ChevronLeftIcon className="size-3.5" />
           </Button>
 
           <span className="px-2 nova-text-label-tiny text-[#71717A]">
-            {remaining} left
+            Осталось: {remaining}
           </span>
 
           <Button
@@ -371,7 +371,7 @@ export function FeedbackReview({ notes, onNoteCompleted, completedCount, totalCo
             onClick={handleNext}
             disabled={currentIndex >= orderedNotes.length - 1 && !isCurrentAnswered}
             className="flex items-center justify-center"
-            aria-label="Next"
+            aria-label="Следующая ошибка"
           >
             <ChevronRightIcon className="size-3.5" />
           </Button>

@@ -13,13 +13,12 @@ export function FolderCard({ onClick, pressed, children, dragHandleProps }: Fold
       {...dragHandleProps}
       onClick={onClick}
       className={cn(
-        "group/card flex h-[138px] w-[230px] shrink-0",
-        "flex-col rounded-[18px] p-4 text-left",
-        "border text-[var(--ege-text)]",
-        !pressed && "bg-[var(--ege-surface-raised)] border-[var(--ege-border)] transition-[background-color,box-shadow,border-color] duration-300 ease-out",
-        !pressed && "hover:border-[var(--ege-accent)] hover:shadow-[0px_2px_8px_0px_rgba(11,15,26,0.12)]",
-        !pressed && "active:transition-none active:bg-[var(--ege-surface)] active:border-[var(--ege-accent)]",
-        pressed && "transition-none bg-[var(--ege-surface)] border-[var(--ege-accent)] shadow-[0px_0px_0px_3px_rgba(217,16,36,0.16)]",
+        "group/card flex h-[164px] w-full min-w-[210px] shrink-0",
+        "flex-col items-start justify-end rounded-[12px] p-0 text-left",
+        "text-[#0b0f1a] transition-[transform,opacity] duration-300 ease-out",
+        !pressed && "hover:-translate-y-0.5",
+        !pressed && "active:translate-y-0 active:transition-none",
+        pressed && "transition-none opacity-80",
       )}
     >
       {children}

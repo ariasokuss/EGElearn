@@ -30,7 +30,7 @@ function computeCounts(nodes: Record<string, NodeProgress>): { generated: number
 
 function formatDate(iso: string): string {
   const d = new Date(iso)
-  return `${d.getDate()} ${d.toLocaleString("ru-RU", { month: "short" }).toLowerCase()}`
+  return `${d.getDate()} ${d.toLocaleString("en-US", { month: "short" }).toLowerCase()}`
 }
 
 export function GeneratingTemplateCard({
@@ -106,7 +106,7 @@ export function GeneratingTemplateCard({
       <button
         type="button"
         onClick={undefined}
-        className="group flex w-full flex-col items-start justify-center self-stretch rounded-[16px] border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] py-1.5 pl-1.5 pr-6 text-left"
+        className="group flex w-full flex-col items-start justify-center self-stretch rounded-[16px] border border-[#F4F2F1] bg-white py-1.5 pl-1.5 pr-6 text-left"
       >
         <div className="flex w-full items-center gap-6 self-stretch">
           <div
@@ -117,19 +117,19 @@ export function GeneratingTemplateCard({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="max-w-full truncate nova-text-label-small text-[var(--ege-text)]">
+            <p className="max-w-full truncate nova-text-label-small text-[#242529]">
               {name || "Тест без названия"}
             </p>
 
             {isProcessing
-              ? <div className="mt-2.5 h-2 w-16 animate-icon-pulse rounded-full bg-[var(--ege-track)]" />
-              : <p className="mt-1 nova-text-label-small-regular text-[var(--ege-muted)]">не начат</p>
+              ? <div className="mt-2.5 w-16 h-2 bg-[#E4E4E7] rounded-full animate-icon-pulse" />
+              : <p className="mt-1 nova-text-label-small-regular text-[#A1A1AA]">не начат</p>
             }
 
-            <div className="mt-3 h-1 w-full rounded-full bg-[var(--ege-track)]" />
+            <div className="mt-3 w-full h-1 rounded-full bg-[#F4F4F5]" />
 
             <div className="mt-2.5 flex items-center justify-between">
-              <span className="nova-text-label-small-regular text-[var(--ege-muted)]">
+              <span className="nova-text-label-small-regular text-[#71717A]">
                 {formatDate(createdAt)}
               </span>
 
@@ -139,19 +139,19 @@ export function GeneratingTemplateCard({
                   onMouseEnter={() => setHoveringCancel(true)}
                   onMouseLeave={() => setHoveringCancel(false)}
                   onClick={(e) => { e.stopPropagation(); onCancel(templateId) }}
-                  className="relative nova-text-label-small-regular text-[var(--ege-muted)]"
+                  className="relative nova-text-label-small-regular text-[#71717A]"
                 >
                   <span
                     className="inline-block transition-opacity duration-200"
                     style={{ opacity: hoveringCancel ? 0 : 1 }}
                   >
-                    {`Генерация: ${counts.generated}/${counts.total}`}
+                    {`Создаётся... ${counts.generated}/${counts.total} готово`}
                   </span>
                   <span
                     className="absolute inset-0 flex items-center justify-center transition-opacity duration-200"
                     style={{ opacity: hoveringCancel ? 1 : 0 }}
                   >
-                    Отменить
+                    Отмена
                   </span>
                 </button>
               )}

@@ -42,13 +42,13 @@ function getActiveIndexFromUrl(): number {
 function FolderNavHomeLink() {
   return (
     <div>
-      <div className="border-b border-[var(--ege-border)]">
+      <div className="border-b border-[#E8E5E180]">
         <div className="w-13 h-7 flex gap-2 mt-0.5 mr-2 mb-2">
-          <div className="flex items-center text-[var(--ege-muted)]">
+          <div className="flex items-center">
             <div className="w-9 h-7 flex items-center justify-center">
               <Link
                 href={APP_PATHS.home}
-                className="transition-colors hover:text-[var(--ege-text)] focus-visible:ring-2 focus-visible:ring-[var(--ege-accent)]"
+                className="hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring/50"
                 aria-label={FOLDER_NAV_HOME_ARIA_LABEL}
                 prefetch
               >
@@ -156,7 +156,7 @@ function FolderTabsNavInner({ onPracticeTabReselect, onFolderTabChange }: Folder
         activeIndex={activeIndex}
         onTabChange={handleTabChange}
         scrollable
-        ariaLabel="Разделы папки"
+        ariaLabel="Folder sections"
       />
     </div>
   );

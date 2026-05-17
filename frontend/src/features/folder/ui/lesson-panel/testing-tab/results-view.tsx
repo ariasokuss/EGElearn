@@ -59,7 +59,7 @@ export function ResultsView({
               style={
                 resultsCloseInsetPastPaper ? { marginLeft: 20 } : undefined
               }
-              aria-label="Exit test"
+              aria-label="Выйти из теста"
             >
               <XMarkIcon className="size-4.5" />
             </Button>
@@ -100,7 +100,7 @@ export function ResultsView({
 
               <p className="nova-text-h-small text-[#242529]">{scoreMessage(percent)}</p>
               <p className="text-center nova-text-label-medium text-[#6A6B6E]">
-                {earnedMarks} / {totalMarks} marks
+                {earnedMarks} / {totalMarks} баллов
               </p>
             </div>
 
@@ -108,19 +108,19 @@ export function ResultsView({
               <Button
                 onClick={onPrimaryClick}
               >
-                {primaryButtonText ?? "See answers"}
+                {primaryButtonText ?? "Посмотреть ответы"}
               </Button>
               <Button
                 variant="plain"
                 onClick={onSecondaryClick}
               >
-                {secondaryButtonText ?? "Retry test"}
+                {secondaryButtonText ?? "Пройти заново"}
               </Button>
             </div>
           </div>
 
           <div className="mt-3 border border-[#F4F4F5] rounded-[16px] divide-y divide-[#F4F4F5]">
-            <p className="px-[14px] py-[14px] nova-text-label-tiny-sb text-[#242529]">Question breakdown</p>
+            <p className="px-[14px] py-[14px] nova-text-label-tiny-sb text-[#242529]">Разбор вопросов</p>
             {results.questions.map((result, i) => {
               const isSkipped = result.is_skipped === true;
               const qPercent = result.max_points > 0 ? Math.round(((result.points ?? 0) / result.max_points) * 100) : 0;
@@ -131,7 +131,7 @@ export function ResultsView({
                 >
                   <div className="min-w-0 flex-1">
                     <p className={`nova-text-label-tiny-sb text-[#242529] whitespace-nowrap text-ellipsis overflow-x-hidden overflow-y-hidden min-w-0${isSkipped ? " line-through" : ""}`}>
-                      Q{i + 1}.&#32;
+                      Вопрос {i + 1}.&#32;
                       <Md oneLine>{result.question}</Md>
                     </p>
                     <p className="mt-[4px] nova-text-p-base text-[#6A6B6E]">{result.relation}</p>
@@ -143,13 +143,13 @@ export function ResultsView({
                         onClick={() => onGoToQuestion(i)}
                         className="flex gap-x-1.5 items-center rounded-full px-2.5 py-1.5 nova-text-label-small transition-colors hover:bg-[#F9F9F9] nova-shadow-sm"
                       >
-                        Go to question
+                        К вопросу
                       </button>
                     ) : null}
                     {isSkipped ? (
                       <div className="flex gap-x-1.5 items-center">
                         <span className="rounded-full bg-[#F4F4F5] px-2 py-0.5 nova-text-label-tiny text-[#71717A]">
-                          Skipped
+                          Пропущено
                         </span>
                       </div>
                     ) : (

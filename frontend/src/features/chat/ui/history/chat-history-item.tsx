@@ -74,14 +74,14 @@ function ActionButtons({
       )}
     >
       {onStartRename && (
-        <ItemAction onClick={onStartRename} label="Rename conversation">
+        <ItemAction onClick={onStartRename} label="Переименовать диалог">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M1.22116 9.57278L0.699951 12.7L3.82719 12.1788C4.37025 12.0883 4.87145 11.8303 5.26075 11.441L12.3131 4.38854C12.8289 3.87277 12.8289 3.03655 12.3131 2.52079L10.8791 1.08678C10.3633 0.571001 9.52702 0.57101 9.01124 1.0868L1.95889 8.13926C1.5696 8.52855 1.31167 9.02974 1.22116 9.57278Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </ItemAction>
       )}
       {onDelete && (
-        <ItemAction onClick={() => onDelete(id)} label="Delete conversation">
+        <ItemAction onClick={() => onDelete(id)} label="Удалить диалог">
           <TrashIcon className="size-4" />
         </ItemAction>
       )}
@@ -160,7 +160,7 @@ export function ChatHistoryItem({
         <div className="flex w-full items-center gap-3 overflow-clip rounded-[9999px] px-3 py-3">
           <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
             <span className="min-w-0 flex-1 truncate nova-text-label-small-regular text-[var(--ege-text)]">
-              {title || "Untitled"}
+              {title || "Без названия"}
             </span>
 
           </div>
@@ -200,7 +200,7 @@ export function ChatHistoryItem({
               />
             ) : (
               <span className="min-w-0 flex-1 truncate nova-text-label-small-regular text-[var(--ege-text)]">
-                {title || "Untitled"}
+                {title || "Без названия"}
               </span>
             )}
             {hasActions && (
@@ -259,7 +259,7 @@ export function ChatHistoryItem({
             />
           ) : (
             <span className="min-w-0 flex-1 truncate nova-text-label-small-regular text-[var(--ege-text)]">
-              {title || "Untitled"}
+              {title || "Без названия"}
             </span>
           )}
 

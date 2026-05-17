@@ -41,10 +41,10 @@ export function OptionalQuestionSkip({
             </svg>
           )}
         </div>
-        Skip this optional question
+        Пропустить дополнительный вопрос
       </button>
       <p className="nova-text-label-tiny text-[#71717A] pl-3 select-none">
-        This question will not count towards your final mark.
+        Этот вопрос не будет учитываться в итоговом балле.
       </p>
     </div>
   );

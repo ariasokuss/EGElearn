@@ -26,7 +26,7 @@ type BlockRendererProps = {
   blockId?: string;
   answers?: Map<string, AnswerRecord>;
   onSubmitAnswer?: (blockId: string, questionIndex: number, record: AnswerRecord) => void;
-  /** Forwarded to FeynmanBlock so "Ask Nova" over Feynman chat text routes to the main chat. */
+  /** Forwarded to FeynmanBlock so selected chat text routes to the main assistant chat. */
   onAskNova?: (text: string) => void;
 };
 

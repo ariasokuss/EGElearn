@@ -51,7 +51,7 @@ export function BackendMcqQuestion({
       <div className="min-w-0 text-[#242529]">
         <Md variant="testQuestion">{question}</Md>
       </div>
-      <p className="mt-3.5 text-[#242529] nova-text-label-tiny-sb">Select one answer</p>
+      <p className="mt-3.5 text-[#242529] nova-text-label-tiny-sb">Выбери один ответ</p>
       <div className="mb-4 mt-3 flex flex-col gap-3">
         {options.map((opt, idx) => {
           const key = OPTION_KEYS[idx] ?? String(idx);

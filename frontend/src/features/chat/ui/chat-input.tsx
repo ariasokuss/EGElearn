@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "motion/react"
 
 import { cn } from "@/shared/lib"
 import type { ChatStatus, ModelOption, TaggedPart } from "@/entities/chat"
-import { getVisibleReasoningLevels } from "@/features/chat/model/reasoning-options"
 import { useVoiceInput } from "@/features/chat/model/use-voice-input"
 import { AttachmentIcon, MicIcon, PaperAirplaneIcon } from "@/shared/assets/icons"
 import { ACCEPTED_INPUT_TYPES, validateFiles } from "@/features/chat/lib"
@@ -234,7 +233,7 @@ export function ChatInput({
     if (autoFocus) textareaRef.current?.focus()
   }, [autoFocus])
 
-  // Auto-focus when a tagged part (Ask Nova quote) is set
+  // Auto-focus when a tagged part quote is set.
   // Delay accounts for panel open animation when chat was closed
   useEffect(() => {
     if (taggedPart) {
@@ -266,7 +265,6 @@ export function ChatInput({
 
   const isLoading = status === "streaming" || status === "submitted"
   const canSend = (input.trim().length > 0 || attachedFiles.length > 0) && !isLoading
-  const visibleReasoningLevels = getVisibleReasoningLevels(reasoningLevels ?? [])
 
   // Capture the pre-dictation value once when listening starts.
   useEffect(() => {
@@ -421,7 +419,7 @@ export function ChatInput({
                     }}
                     onKeyDown={handleKeyDown}
                     placeholder={
-                      isListening ? "Listening…" : "Ask Nova anything"
+                      isListening ? "Слушаю..." : "Спроси Алису AI о чём угодно"
                     }
                     readOnly={isListening}
                     minRows={1}
@@ -447,7 +445,7 @@ export function ChatInput({
                   rounded={false}
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  aria-label="Attach file"
+                  aria-label="Прикрепить файл"
                   className="flex items-center justify-center text-[var(--ege-muted)] hover:text-[var(--ege-text)]"
                 >
                   <AttachmentIcon />
@@ -474,15 +472,13 @@ export function ChatInput({
                       isLoading={modelsLoading}
                       error={modelsError}
                     />
-                    {visibleReasoningLevels.length > 1 && (
-                      <ReasoningSelector
-                        reasoningLevels={visibleReasoningLevels}
-                        selectedReasoning={selectedReasoning}
-                        onReasoningChange={onReasoningChange}
-                        isLoading={modelsLoading}
-                        error={modelsError}
-                      />
-                    )}
+                    <ReasoningSelector
+                      reasoningLevels={reasoningLevels}
+                      selectedReasoning={selectedReasoning}
+                      onReasoningChange={onReasoningChange}
+                      isLoading={modelsLoading}
+                      error={modelsError}
+                    />
                   </>
                 )
               }
@@ -496,8 +492,8 @@ export function ChatInput({
                     iconOnly
                     type="button"
                     onClick={handleCancelVoice}
-                    aria-label="Cancel voice input"
-                    title="Cancel voice input"
+                    aria-label="Отменить голосовой ввод"
+                    title="Отменить голосовой ввод"
                     className="flex items-center justify-center text-[var(--ege-text)] hover:text-[var(--ege-muted)]"
                   >
                     <svg
@@ -519,8 +515,8 @@ export function ChatInput({
                     iconOnly
                     type="button"
                     onClick={stopVoice}
-                    aria-label="Confirm voice input"
-                    title="Confirm voice input"
+                    aria-label="Подтвердить голосовой ввод"
+                    title="Подтвердить голосовой ввод"
                     className="flex items-center justify-center"
                   >
                     <svg
@@ -554,11 +550,11 @@ export function ChatInput({
                           ? "text-[#EF4444]"
                           : "text-[var(--ege-muted)] hover:text-[var(--ege-text)]",
                       )}
-                      aria-label="Voice input"
+                      aria-label="Голосовой ввод"
                       title={
                         voiceState === "error"
-                          ? "Microphone error — click to retry"
-                          : "Voice input"
+                          ? "Микрофон не сработал, нажми ещё раз"
+                          : "Голосовой ввод"
                       }
                     >
                       <MicIcon className="h-[18px] w-[18px]" />
@@ -569,7 +565,7 @@ export function ChatInput({
                     variant="outline"
                     type="button"
                     onClick={onStop}
-                    aria-label="Stop generation"
+                    aria-label="Остановить ответ"
                     className="ml-auto flex shrink-0 items-center justify-center"
                   >
                     <svg
@@ -602,11 +598,11 @@ export function ChatInput({
                           ? "text-[#EF4444]"
                           : "text-[var(--ege-muted)] hover:text-[var(--ege-text)]",
                       )}
-                      aria-label="Voice input"
+                      aria-label="Голосовой ввод"
                       title={
                         voiceState === "error"
-                          ? "Microphone error — click to retry"
-                          : "Voice input"
+                          ? "Микрофон не сработал, нажми ещё раз"
+                          : "Голосовой ввод"
                       }
                     >
                       <MicIcon className="h-[18px] w-[18px]" />
@@ -617,7 +613,7 @@ export function ChatInput({
                     type="button"
                     onClick={handleSendAction}
                     disabled={!canSend}
-                    aria-label="Send message"
+                    aria-label="Отправить сообщение"
                     className="ml-auto flex shrink-0 items-center justify-center rounded-full"
                   >
                     <PaperAirplaneIcon />

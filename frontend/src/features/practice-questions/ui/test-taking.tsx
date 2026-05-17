@@ -438,7 +438,7 @@ export function TestTaking({
         } catch { /* ignore */ }
 
         if (!submitResult) {
-          notify({ header: "Не удалось отправить ответы", content: "Попробуй еще раз." })
+          notify({ header: "Не удалось отправить", content: "Не получилось отправить ответы. Попробуй ещё раз." })
           return
         }
       }
@@ -451,7 +451,7 @@ export function TestTaking({
               setResults(normalizeSessionResultsOut(resp.data))
             }
           } catch {
-            // Results fetch failed; the fallback state handles it below.
+            // results fetch failed — view will show "Could not load results"
           }
           return
         }
@@ -466,7 +466,7 @@ export function TestTaking({
               setResults(normalizeSessionResultsOut(resp.data))
             }
           } catch {
-            // Both polling and fallback fetch failed; the fallback state handles it below.
+            // both polling and fallback fetch failed — view will show "Could not load results"
           }
         } finally {
           setGrading(false)
@@ -740,9 +740,9 @@ export function TestTaking({
     if (reviewLoading) {
       return (
         <div className="flex h-full min-h-[200px] items-center justify-center px-7">
-          <LoaderIcon className="animate-spin text-[var(--ege-muted)]" aria-hidden />
-          <span className="ml-3 nova-text-p-base text-[var(--ege-muted)]">
-            Загружаем вопросы...
+          <LoaderIcon className="animate-spin text-[#71717A]" aria-hidden />
+          <span className="ml-3 nova-text-p-base text-[#71717A]">
+            Загружаем вопросы…
           </span>
         </div>
       )
@@ -750,8 +750,8 @@ export function TestTaking({
     if (reviewRows.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center gap-4 px-7 py-16">
-          <p className="text-center nova-text-p-base text-[var(--ege-muted)]">
-            Не удалось загрузить ответы для этого теста.
+          <p className="text-center nova-text-p-base text-[#71717A]">
+            Не удалось загрузить отвеченные вопросы для этой сессии.
           </p>
           <Button
             variant="outline"
@@ -789,9 +789,9 @@ export function TestTaking({
     if (resultsLoading || grading) {
       return (
         <div className="flex h-full min-h-[200px] items-center justify-center px-7">
-          <LoaderIcon className="animate-spin text-[var(--ege-muted)]" aria-hidden />
-          <span className="ml-3 nova-text-p-base text-[var(--ege-muted)]">
-            {grading ? "Проверяем тест..." : "Загружаем результаты..."}
+          <LoaderIcon className="animate-spin text-[#71717A]" aria-hidden />
+          <span className="ml-3 nova-text-p-base text-[#71717A]">
+            {grading ? "Проверяем тест…" : "Загружаем результаты…"}
           </span>
         </div>
       )
@@ -810,7 +810,7 @@ export function TestTaking({
     }
     return (
       <div className="flex h-full min-h-[200px] items-center justify-center px-7">
-        <p className="text-center nova-text-p-base text-[var(--ege-muted)]">
+        <p className="text-center nova-text-p-base text-[#71717A]">
           Не удалось загрузить результаты.
         </p>
       </div>
@@ -820,9 +820,9 @@ export function TestTaking({
   if (submitting) {
     return (
       <div className="flex h-full min-h-[200px] items-center justify-center px-7">
-        <LoaderIcon className="animate-spin text-[var(--ege-muted)]" aria-hidden />
-        <span className="ml-3 nova-text-p-base text-[var(--ege-muted)]">
-          Отправляем ответы...
+        <LoaderIcon className="animate-spin text-[#71717A]" aria-hidden />
+        <span className="ml-3 nova-text-p-base text-[#71717A]">
+          Отправляем ответы…
         </span>
       </div>
     )
@@ -831,7 +831,7 @@ export function TestTaking({
   if (questions.length === 0) {
     return (
       <div className="flex h-full items-center justify-center px-7">
-        <p className="text-center nova-text-p-base text-[var(--ege-muted)]">Вопросы не найдены.</p>
+        <p className="text-center nova-text-p-base text-[#71717A]">Вопросы не найдены.</p>
       </div>
     )
   }
@@ -876,7 +876,7 @@ export function TestTaking({
             height={16}
             viewBox="0 0 16 16"
             fill="none"
-            className="text-[var(--ege-text)]"
+            className="text-[#242529]"
             aria-hidden="true"
           >
             <path
@@ -914,7 +914,7 @@ export function TestTaking({
     <div className="flex h-full flex-col">
       <Modal
         title="Выйти из теста?"
-        description="Прогресс сохранится, и ты сможешь продолжить из истории тестов."
+        description="Прогресс сохранится, и ты сможешь вернуться к нему через историю тестов."
         primaryButtonText="Подтвердить"
         secondaryButtonText="Отмена"
         isOpen={isModalOpen}

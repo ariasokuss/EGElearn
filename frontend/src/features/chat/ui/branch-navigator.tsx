@@ -32,7 +32,7 @@ export const BranchNavigator = memo(function BranchNavigator({
             ? "cursor-not-allowed opacity-30"
             : "hover:bg-[var(--ege-surface)] hover:text-[var(--ege-text)]",
         )}
-        aria-label="Previous version"
+        aria-label="Предыдущая версия"
       >
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M6 2L3 5L6 8" />
@@ -51,7 +51,7 @@ export const BranchNavigator = memo(function BranchNavigator({
             ? "cursor-not-allowed opacity-30"
             : "hover:bg-[var(--ege-surface)] hover:text-[var(--ege-text)]",
         )}
-        aria-label="Next version"
+        aria-label="Следующая версия"
       >
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 2L7 5L4 8" />

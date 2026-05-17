@@ -30,8 +30,8 @@ type FeynmanBlockProps = {
   miniFeynmanHistory: SessionHistoryItem[];
   /**
    * Called when the user selects text inside a Feynman chat message and
-   * clicks the in-chat "Ask Nova" toolbar. The parent routes the text into
-   * the main Nova chat (opens the chat panel + tags the selection).
+   * clicks the in-chat "Ask Alice AI" toolbar. The parent routes the text into
+   * the main Alice AI chat (opens the chat panel + tags the selection).
    */
   onAskNova?: (text: string) => void;
 };
@@ -233,7 +233,7 @@ function FeynmanChatInput({
           rounded={false}
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          aria-label="Attach file"
+          aria-label="Прикрепить файл"
           className="flex shrink-0 items-center justify-center text-[#B0ADA9] hover:text-[#6B6B6B]"
         >
           <AttachmentIcon />
@@ -246,7 +246,7 @@ function FeynmanChatInput({
           onChange={(e) => { if (!isListening) onInputChange(e.target.value); }}
           onKeyDown={handleKeyDown}
           readOnly={isListening}
-          placeholder={isListening ? "Listening…" : "Ask Nova anything"}
+          placeholder={isListening ? "Слушаю..." : "Спроси Алису AI о чём угодно"}
           className={cn(
             "min-w-0 flex-1 bg-transparent nova-text-label-medium outline-none",
             isListening
@@ -263,7 +263,7 @@ function FeynmanChatInput({
               "relative flex shrink-0 items-center justify-center transition-all duration-200",
               !isListening && "text-[#B0ADA9] hover:text-[#6B6B6B]",
             )}
-            aria-label={isListening ? "Stop recording" : "Voice input"}
+            aria-label={isListening ? "Остановить запись" : "Голосовой ввод"}
           >
             {isListening && <span className="voice-pulse absolute inset-0 rounded-full bg-[#F1ECE9]" />}
             <MicIcon className="relative z-10 h-4.5 w-4.5" />
@@ -275,7 +275,7 @@ function FeynmanChatInput({
             size="sm"
             iconOnly
             type="button"
-            aria-label="Stop generation"
+            aria-label="Остановить ответ"
             className="flex shrink-0 items-center justify-center bg-[#242529] hover:bg-[#3a3a3e]"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="white">
@@ -288,7 +288,7 @@ function FeynmanChatInput({
             type="button"
             onClick={handleSend}
             disabled={!canSend}
-            aria-label="Send message"
+            aria-label="Отправить сообщение"
             className="flex shrink-0 items-center justify-center"
           >
             <PaperAirplaneIcon />
@@ -449,7 +449,7 @@ export function FeynmanBlock({ feynmanBlock, lessonId, miniFeynmanHistory, onAsk
               onClick={handleRetry}
               className="rounded-lg bg-[#242529] text-white hover:bg-[#3a3a3e]"
             >
-              Retry
+              Попробовать ещё раз
             </Button>
           </div>
         )}

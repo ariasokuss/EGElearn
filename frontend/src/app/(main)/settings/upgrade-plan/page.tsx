@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { buildPageMetadata } from "@/shared/lib";
 
-import { UpgradePanel } from "@/features/settings";
-
 export const metadata: Metadata = buildPageMetadata({
-  title: "Тариф",
-  description: "Настройки тарифа NovaLearn.",
+  title: "Upgrade Plan",
+  description: "Private subscription and plan upgrade settings in NovaLearn.",
   path: "/settings/upgrade-plan",
   indexable: false,
 });
 
 export default function SettingsUpgradePlanPage() {
-  return (
-    <UpgradePanel />
-  );
+  redirect("/settings/profile");
 }

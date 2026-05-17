@@ -2,8 +2,6 @@ export { default as HomeIcon } from "./home.svg";
 export { default as LearningIcon } from "./learning.svg";
 export { default as NotesIcon } from "./notes.svg";
 export { default as ChatIcon } from "./chat.svg";
-export { default as SunIcon } from "./sun.svg";
-export { default as MoonIcon } from "./moon.svg";
 export { default as SettingsIcon } from "./settings.svg";
 export { default as PlusIcon } from "./plus.svg";
 export { FolderIcon } from "./folder-icon";

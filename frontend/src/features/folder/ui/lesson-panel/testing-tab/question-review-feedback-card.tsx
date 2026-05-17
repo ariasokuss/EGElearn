@@ -78,7 +78,7 @@ export function QuestionReviewFeedbackCard({
           )}
         </div>
         <p className="nova-text-label-tiny-sbd text-[#242529]">
-          {points} / {totalPoints} marks earned
+          {points} / {totalPoints} баллов
         </p>
       </div>
 
@@ -123,7 +123,7 @@ export function QuestionReviewFeedbackCard({
                 aria-hidden
               />
               <span className="nova-text-p-base text-[#242529]/68">
-                Model answer
+                Образец ответа
               </span>
             </span>
             <ChevronDownIcon

@@ -188,7 +188,7 @@ export const ChatMessages = memo(function ChatMessages({
       </div>
 
       {/* Selection floating toolbar — only render when the host actually wires
-          a tagged-part callback. Otherwise "Ask Nova" would appear but clicks
+          a tagged-part callback. Otherwise the assistant action would appear but clicks
           would silently no-op (previously the case for Feynman before FRO-26). */}
       {selection && onSetTaggedPart && (
         <SelectionToolbar

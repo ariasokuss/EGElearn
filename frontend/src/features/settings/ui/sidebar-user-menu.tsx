@@ -54,10 +54,10 @@ export function SidebarUserMenu() {
         aria-controls={menuId}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex h-[36px] w-[36px] shrink-0 items-center justify-center overflow-hidden rounded-full border p-0 transition-colors",
+          "flex h-[36px] w-[36px] shrink-0 items-center justify-center overflow-hidden rounded-full p-0 transition-colors",
           open || settingsActive
-            ? "border-[var(--ege-border)] bg-[var(--ege-surface-raised)]"
-            : "border-[var(--ege-border)] bg-[var(--ege-surface)] hover:bg-[var(--ege-surface-raised)]",
+            ? "bg-[#F1ECE9]"
+            : "bg-[#E8E5E1]/50 hover:bg-[#F1ECE999]",
         )}
       >
         {user?.avatar_url ? (
@@ -68,9 +68,9 @@ export function SidebarUserMenu() {
             className="h-[36px] w-[36px] rounded-full object-cover"
           />
         ) : (
-          <MenuUserIcon className="h-[24px] w-[24px] text-[var(--ege-text)]" />
+          <MenuUserIcon className="h-[24px] w-[24px] text-[#242529]" />
         )}
-        <span className="sr-only">Меню аккаунта</span>
+        <span className="sr-only">Account menu</span>
       </button>
 
       {open && (
@@ -78,7 +78,7 @@ export function SidebarUserMenu() {
           id={menuId}
           role="menu"
           aria-labelledby={btnId}
-          className="absolute bottom-full z-50 w-[min(260px,calc(100vw-24px))] translate-x-[116px] rounded-2xl border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-2 text-[var(--ege-text)] shadow-[0px_8px_24px_-4px_rgba(0,0,0,0.18)]"
+          className="absolute bottom-full z-50 w-[min(260px,calc(100vw-24px))] translate-x-[116px] rounded-2xl border border-[#E8E5E1]/80 bg-white p-2 shadow-[0px_8px_24px_-4px_rgba(28,40,64,0.12),0px_4px_8px_-2px_rgba(28,40,64,0.06)]"
         >
           <ul className="flex flex-col gap-0.5 p-1">
             <li role="none">
@@ -86,13 +86,13 @@ export function SidebarUserMenu() {
                 role="menuitem"
                 href="/settings/profile"
                 onClick={close}
-                className="flex items-center gap-3 rounded-xl px-[8px] py-[4px] nova-text-label-small text-[var(--ege-text)] transition-colors hover:bg-[var(--ege-surface)]"
+                className="flex items-center gap-3 rounded-xl px-[8px] py-[4px] nova-text-label-small text-[#242529] transition-colors hover:bg-[#FAF9F7]"
               >
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[var(--ege-muted)]">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[#71717A]">
                   <SettingsIcon />
                 </span>
-                <span className="flex-1">Настройки</span>
-                <kbd className="hidden font-sans nova-text-label-tiny text-[var(--ege-muted)] sm:inline">
+                <span className="flex-1">Settings</span>
+                <kbd className="hidden font-sans nova-text-label-tiny text-[#A1A1AA] sm:inline">
                   ⌘ ,
                 </kbd>
               </Link>
@@ -101,16 +101,16 @@ export function SidebarUserMenu() {
               <span
                 role="menuitem"
                 aria-disabled="true"
-                className="flex cursor-default items-center gap-3 rounded-xl px-[8px] py-[4px] nova-text-label-small text-[var(--ege-muted)] opacity-60"
+                className="flex cursor-default items-center gap-3 rounded-xl px-[8px] py-[4px] nova-text-label-small text-[#A1A1AA]"
               >
-                <MenuRibbonIcon className="h-5 w-5 shrink-0 text-[var(--ege-muted)]" />
-                <span className="flex-1">Тариф</span>
-                <span className="nova-text-label-tiny text-[var(--ege-muted)]">Скоро</span>
+                <MenuRibbonIcon className="h-5 w-5 shrink-0 text-[#D4D4D8]" />
+                <span className="flex-1">Upgrade plan</span>
+                <span className="nova-text-label-tiny text-[#D4D4D8]">Soon</span>
               </span>
             </li>
           </ul>
 
-          <div className="my-2 h-px bg-[var(--ege-border)]" role="separator" />
+          <div className="my-2 h-px bg-[#E8E5E180]" role="separator" />
 
           <div className="px-1 pb-1">
             <Button
@@ -122,7 +122,7 @@ export function SidebarUserMenu() {
               onClick={logout}
               className="w-full"
             >
-              Выйти
+              Log out
             </Button>
           </div>
         </div>

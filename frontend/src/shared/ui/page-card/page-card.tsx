@@ -9,9 +9,9 @@ type PageCardProps = {
 export function PageCard({ children, className, style }: PageCardProps) {
   return (
     <div
-      className={cn("overflow-hidden rounded-[15px] bg-[var(--ege-surface-raised)] text-[var(--ege-text)]", className)}
+      className={cn("overflow-hidden rounded-[18px] bg-white text-[var(--ege-text)]", className)}
       style={{
-        boxShadow: "0px 4px 6px -1px rgba(0,0,0,0.10), 0px 2px 4px -2px rgba(0,0,0,0.08)",
+        boxShadow: "0px 18px 42px -32px rgba(11,15,26,0.35)",
         border: "1px solid var(--ege-border)",
         ...style,
       }}

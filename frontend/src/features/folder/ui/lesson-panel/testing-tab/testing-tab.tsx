@@ -454,7 +454,7 @@ export function TestingTab({
 
     if (!result) {
       setSubmitting(false);
-      notify({ header: "Submission failed", content: "Could not submit your answers. Please try again." });
+      notify({ header: "Не удалось отправить", content: "Не получилось отправить ответы. Попробуй ещё раз." });
       return;
     }
 
@@ -501,7 +501,7 @@ export function TestingTab({
           if (!r) return;
           updateLessonProgress(lessonId, progressUpdateFromCompleteStep(r));
           markStepComplete(lessonId, 3);
-          notify({ header: "Test star earned", content: "You've earned the test star for this lesson because you scored over 70% on the test!" })
+          notify({ header: "Звезда за тест получена", content: "Ты набрал больше 70% за тест и получил звезду за этот урок." })
         });
       }
     }
@@ -640,7 +640,7 @@ export function TestingTab({
         <div className="mx-auto flex w-full max-w-[710px] min-h-[280px] flex-col items-center justify-center px-7 py-16">
           <LoaderIcon className="animate-spin text-[#71717A]" aria-hidden />
           <span className="mt-3 nova-text-p-base text-[#71717A]">
-            Loading test…
+            Загружаем тест…
           </span>
         </div>
       );
@@ -649,7 +649,7 @@ export function TestingTab({
       <div className="mx-auto w-full max-w-[710px] px-7 py-6">
         <div className="flex flex-col rounded-2xl border border-[#E8E5E1] bg-white px-2 py-2">
           <h2 className="py-[16px] pl-[16px] nova-text-h-small-sb text-[#242529]">
-            Test yourself
+            Проверь себя
           </h2>
           <div
             className="flex min-h-[280px] w-full flex-col items-center justify-center rounded-2xl border border-[#E8E5E1] bg-white px-4 py-4 shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.04),0px_2px_4px_-2px_rgba(0,0,0,0.02)]"
@@ -661,12 +661,12 @@ export function TestingTab({
                 <TestsFolderIconIcon width={155} height={118} className="mb-5" />
                 <p className="mb-6 w-3/5 text-center nova-text-label-small text-[#71717A]">
                   {canStartTest
-                    ? "A pre-authored test is available for this lesson. Test your understanding!"
+                    ? "Для этого урока доступен готовый тест. Проверь, насколько хорошо ты понял тему."
                     : availableButNoTemplateId
-                      ? "A test is marked available, but no template id was returned. Try again later or contact support."
+                      ? "Тест отмечен как доступный, но идентификатор не получен. Попробуй позже или обратись в поддержку."
                       : noTemplateForLesson
-                        ? "No pre-authored test exists for this lesson yet."
-                        : "Test availability could not be determined."}
+                        ? "Для этого урока пока нет готового теста."
+                        : "Не удалось определить доступность теста."}
                 </p>
                 <Button
                   variant="outline"
@@ -676,7 +676,7 @@ export function TestingTab({
                   onClick={handleStart}
                   className="my-[24px] disabled:cursor-not-allowed"
                 >
-                  Start test
+                  Начать тест
                 </Button>
               </>
             )}
@@ -700,7 +700,7 @@ export function TestingTab({
         <div className="flex h-full min-h-[200px] items-center justify-center px-7">
           <LoaderIcon className="animate-spin text-[#71717A]" aria-hidden />
           <span className="ml-3 nova-text-p-base text-[#71717A]">
-            Loading test…
+            Загружаем тест…
           </span>
         </div>
       );
@@ -710,7 +710,7 @@ export function TestingTab({
         <div className="flex h-full min-h-[200px] items-center justify-center px-7">
           <LoaderIcon className="animate-spin" aria-hidden />
           <span className="ml-3 nova-text-p-base text-[#71717A]">
-            Loading results…
+            Загружаем результаты…
           </span>
         </div>
       );
@@ -740,7 +740,7 @@ export function TestingTab({
         <div className="flex h-full min-h-[200px] items-center justify-center px-7">
           <LoaderIcon className="animate-spin" aria-hidden />
           <span className="ml-3 nova-text-p-base text-[#71717A]">
-            Loading questions…
+            Загружаем вопросы…
           </span>
         </div>
       );
@@ -749,7 +749,7 @@ export function TestingTab({
       return (
         <div className="flex flex-col items-center justify-center gap-4 px-7 py-16">
           <p className="text-center nova-text-p-base text-[#71717A]">
-            Could not load answered questions for this session.
+            Не удалось загрузить отвеченные вопросы для этой сессии.
           </p>
           <Button
             variant="outline"
@@ -757,7 +757,7 @@ export function TestingTab({
             type="button"
             onClick={() => setView("results")}
           >
-            Back to summary
+            К результатам
           </Button>
         </div>
       );
@@ -823,7 +823,7 @@ export function TestingTab({
         <div className="flex h-full items-center justify-center">
           <LoaderIcon className="animate-spin" />
           <span className="ml-3 nova-text-p-base text-[#71717A]">
-            {grading ? "Grading answers..." : "Submitting answers..."}
+            {grading ? "Проверяем ответы..." : "Отправляем ответы..."}
           </span>
         </div>
       );
@@ -832,7 +832,7 @@ export function TestingTab({
     if (!current) {
       return (
         <div className="flex h-full items-center justify-center px-7">
-          <p className="text-center nova-text-p-base text-[#71717A]">Could not load this question.</p>
+          <p className="text-center nova-text-p-base text-[#71717A]">Не удалось загрузить этот вопрос.</p>
         </div>
       );
     }
@@ -840,10 +840,10 @@ export function TestingTab({
     return (
       <div className="relative flex h-full flex-col">
         <Modal
-          title="Are you sure you want to exit this test?"
-          description="Your progress will be saved and you will be able access it through test history."
-          primaryButtonText="Confirm"
-          secondaryButtonText="Cancel"
+          title="Выйти из теста?"
+          description="Прогресс сохранится, и ты сможешь вернуться к нему через историю тестов."
+          primaryButtonText="Подтвердить"
+          secondaryButtonText="Отмена"
           isOpen={exitModalOpen}
           onPrimaryClick={() => { void onExitTest(); setExitModalOpen(false); }}
           onSecondaryClick={() => setExitModalOpen(false)}
@@ -869,7 +869,7 @@ export function TestingTab({
 
   return (
     <div className="flex h-full items-center justify-center px-7">
-      <p className="text-center nova-text-p-base text-[#71717A]">Could not load test questions.</p>
+      <p className="text-center nova-text-p-base text-[#71717A]">Не удалось загрузить вопросы теста.</p>
     </div>
   );
 }

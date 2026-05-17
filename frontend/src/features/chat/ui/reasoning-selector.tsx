@@ -46,15 +46,15 @@ export function ReasoningSelector({
   }, [isOpen])
 
   if (isLoading) {
-    return <span className={LABEL_CLASSES}>Загрузка…</span>
+    return <span className={LABEL_CLASSES}>Загружаем...</span>
   }
 
   if (error) {
-    return <span className={cn(LABEL_CLASSES, "text-red-400")}>Настройки недоступны</span>
+    return <span className={cn(LABEL_CLASSES, "text-red-400")}>Режим пока недоступен</span>
   }
 
   if (reasoningLevels.length === 0) {
-    return null
+    return <span className={LABEL_CLASSES}>Нет режимов</span>
   }
 
   return (

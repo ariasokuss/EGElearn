@@ -22,8 +22,8 @@ export function ChatHeader({
         type="button"
         onClick={onToggle}
         className="flex items-center justify-center transition-all duration-150"
-        aria-label={isOpen ? "Hide conversations" : "Show conversations"}
-        title={isOpen ? "Hide conversations" : "Show conversations"}
+        aria-label={isOpen ? "Скрыть историю" : "Показать историю"}
+        title={isOpen ? "Скрыть историю" : "Показать историю"}
       >
         <HideBarIcon className="h-4 w-4" />
       </Button>

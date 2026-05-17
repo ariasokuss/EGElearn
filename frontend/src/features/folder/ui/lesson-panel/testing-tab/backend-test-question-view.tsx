@@ -67,7 +67,7 @@ export function BackendTestQuestionView({
   if (!question) {
     return (
       <div className="flex h-full items-center justify-center px-7">
-        <p className="text-center nova-text-p-base text-[#71717A]">Question not found.</p>
+        <p className="text-center nova-text-p-base text-[#71717A]">Вопрос не найден.</p>
       </div>
     );
   }
@@ -113,7 +113,7 @@ export function BackendTestQuestionView({
               type="button"
               onClick={onXClick ?? onArrowsClick ?? undefined}
               className="flex shrink-0 items-center justify-center"
-              aria-label="Exit test"
+              aria-label="Выйти из теста"
             >
               <XMarkIcon className="size-4.5" />
             </Button>
@@ -126,7 +126,7 @@ export function BackendTestQuestionView({
                 type="button"
                 onClick={onArrowsClick}
                 className="flex shrink-0 items-center justify-center"
-                aria-label="Toggle fullscreen"
+                aria-label="Переключить полноэкранный режим"
               >
                 {isExpanded ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
               </Button>
@@ -136,8 +136,8 @@ export function BackendTestQuestionView({
           <div className="flex max-w-[400px] shrink-0 items-center gap-3 justify-self-center">
             <span className="shrink-0 overflow-hidden text-ellipsis nova-text-label-small text-[#72706F]">
               {question.question_number
-                ? `Question ${question.question_number} · ${questionIndex + 1} of ${total}`
-                : `Question ${questionIndex + 1} of ${total}`}
+                ? `Вопрос ${question.question_number} · ${questionIndex + 1} из ${total}`
+                : `Вопрос ${questionIndex + 1} из ${total}`}
             </span>
             <div className="h-1 w-48 rounded-full" style={{ backgroundColor: "rgba(235, 225, 218, 0.36)" }}>
               <div
@@ -157,7 +157,7 @@ export function BackendTestQuestionView({
               className="flex items-center justify-center gap-1 text-[#71717A] opacity-50 hover:opacity-100"
             >
               <ChevronLeftIcon className="h-3.5 w-3.5" />
-              Back
+              Назад
             </Button>
             <Button
               size="sm"
@@ -165,7 +165,7 @@ export function BackendTestQuestionView({
               onClick={onNext}
               className="flex items-center justify-center gap-1"
             >
-              {isLast ? "Finish" : "Next"}
+              {isLast ? "Завершить" : "Далее"}
               {!isLast && <ChevronRightIcon className="h-3.5 w-3.5" />}
             </Button>
             {headerExtra}

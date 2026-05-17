@@ -114,11 +114,8 @@ export function ExplanationResults({ lessonId, sessionId, navigateTesting, resta
 
     useEffect(() => {
         stepStatusRef.current = stepStatus
-    }, [stepStatus])
-
-    useEffect(() => {
         lessonMapRef.current = lessonMap
-    }, [lessonMap])
+    }, [stepStatus, lessonMap])
 
     const [{ results, loading }, dispatch] = useReducer(reducer, {
         results: null,

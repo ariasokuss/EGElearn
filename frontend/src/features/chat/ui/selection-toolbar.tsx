@@ -163,19 +163,19 @@ export function SelectionToolbar({
               onAskNova(selection.text, selection.messageId)
             }}
             className="gap-1"
-            aria-label="Ask Nova"
-            title="Ask Nova"
+            aria-label="Спросить Алису AI"
+            title="Спросить Алису AI"
           >
             <ChatBubbleLeftRightIcon />
-            <span>Ask Nova</span>
+            <span>Спросить Алису AI</span>
           </Button>
 
           <Divider />
-          <Button variant="outline" iconOnly disabled aria-label="Highlight">
+          <Button variant="outline" iconOnly disabled aria-label="Выделить">
             <HighlighterIcon />
           </Button>
           <Divider />
-          <Button variant="outline" iconOnly disabled aria-label="Add note">
+          <Button variant="outline" iconOnly disabled aria-label="Добавить заметку">
             <NoteAddIcon />
           </Button>
         </div>

@@ -46,7 +46,7 @@ export function ImageLightbox({ src, alt, onClose }: ImageLightboxProps) {
       {/* Image */}
       <Image
         src={src}
-        alt={alt ?? "Preview"}
+        alt={alt ?? "Предпросмотр"}
         width={1920}
         height={1080}
         className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"

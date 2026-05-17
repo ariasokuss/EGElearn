@@ -85,26 +85,26 @@ function LastAccessedLessonsBlock({
 }: LastAccessedBlockProps) {
   const { lessonMap } = useLessons();
   const [lastAccessed, setLastAccessed] = useState<{
-    folderId: string | null;
+    folderId: string;
     fetched: boolean;
     order: LessonListSchema[];
-  }>({
-    folderId: null,
-    fetched: false,
-    order: [],
-  });
+  }>({ folderId, fetched: false, order: [] });
   const fetched = lastAccessed.folderId === folderId && lastAccessed.fetched;
+  const order = useMemo(
+    () => (lastAccessed.folderId === folderId ? lastAccessed.order : []),
+    [folderId, lastAccessed],
+  );
 
   useEffect(() => {
     let cancelled = false;
     getLastAccessedLessonsApi(folderId)
       .then((rows) => {
         if (cancelled) return;
-        setLastAccessed({ folderId, fetched: true, order: rows });
+        setLastAccessed({ folderId, order: rows, fetched: true });
       })
       .catch(() => {
         if (cancelled) return;
-        setLastAccessed({ folderId, fetched: true, order: [] });
+        setLastAccessed({ folderId, order: [], fetched: true });
       });
     return () => {
       cancelled = true;
@@ -118,11 +118,11 @@ function LastAccessedLessonsBlock({
       getLastAccessedLessonsApi(folderId)
         .then((rows) => {
           if (cancelled) return;
-          setLastAccessed({ folderId, fetched: true, order: rows });
+          setLastAccessed({ folderId, order: rows, fetched: true });
         })
         .catch(() => {
           if (cancelled) return;
-          setLastAccessed({ folderId, fetched: true, order: [] });
+          setLastAccessed({ folderId, order: [], fetched: true });
         });
     }, LAST_ACCESSED_REFETCH_DELAY_MS);
     return () => {
@@ -132,7 +132,6 @@ function LastAccessedLessonsBlock({
   }, [folderId, lastAccessedRefreshNonce]);
 
   const lessons = useMemo(() => {
-    const order = fetched ? lastAccessed.order : [];
     const fromApi = pickUpToNNeededLessonsInFolder(
       order,
       lessonMap,
@@ -144,14 +143,14 @@ function LastAccessedLessonsBlock({
       selectedLessonId,
       LAST_ACCESSED_COUNT,
     );
-  }, [fetched, lastAccessed.order, lessonMap, selectedLessonId]);
+  }, [order, lessonMap, selectedLessonId]);
 
   const gridClass = variant === "list" ? "flex flex-col gap-3" : "grid grid-cols-3 gap-3";
 
   return (
     <div>
       <h2 className="mb-[10px] nova-text-label-base text-[#1D1B20]">
-        Last Accessed Lessons
+        Недавние уроки
       </h2>
       {!fetched ? (
         <div className="flex min-h-[100px] items-center justify-center">
@@ -172,9 +171,9 @@ function LastAccessedLessonsBlock({
       ) : (
         <div className="flex min-h-[140px] w-full items-center justify-center rounded-xl border border-[#E8E5E1] bg-white px-6 py-10">
           <p className="max-w-md text-center text-pretty nova-text-p-base text-[#71717A]">
-            Recently visited lessons will appear here for quick access.
+            Здесь появятся уроки, к которым удобно быстро вернуться.
             <br />
-            Start exploring your first lesson today!
+            Начни с первого урока, и мы сохраним его для тебя.
           </p>
         </div>
       )}
@@ -375,7 +374,7 @@ export function Lessons({
   if (!roadmap) {
     return (
       <div className="py-16 text-center nova-text-p-base text-[#71717A]">
-        Failed to load lessons.
+        Не получилось загрузить уроки. Чуть позже попробуем ещё раз.
       </div>
     );
   }
@@ -383,7 +382,7 @@ export function Lessons({
   if (roadmap.sections.length === 0) {
     return (
       <div className="py-16 text-center nova-text-p-base text-[#71717A]">
-        No lessons available for this folder yet.
+        Здесь пока нет уроков, но скоро будет что изучать.
       </div>
     );
   }

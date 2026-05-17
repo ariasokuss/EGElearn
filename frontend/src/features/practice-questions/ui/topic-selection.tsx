@@ -59,23 +59,23 @@ export function TopicSelection({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <LoaderIcon className="animate-spin text-[var(--ege-muted)]" />
+        <LoaderIcon className="animate-spin" />
       </div>
     )
   }
 
   if (!roadmap || roadmap.sections.length === 0) {
     return (
-      <p className="py-12 text-center nova-text-p-base text-[var(--ege-muted)]">
-        Сначала создай дорожную карту подготовки.
+      <p className="py-12 text-center nova-text-p-base text-[#A1A1AA]">
+        Дорожная карта пока недоступна. Сначала создай дорожную карту.
       </p>
     )
   }
 
   return (
     <div>
-      <h2 className="mb-4 nova-text-h-tiny text-[var(--ege-text)]">
-        Выбери темы из дорожной карты
+      <h2 className="mb-4 nova-text-h-tiny text-[#242529]">
+        Выбери нужные темы из дорожной карты
       </h2>
 
       <div className="flex flex-col gap-4">

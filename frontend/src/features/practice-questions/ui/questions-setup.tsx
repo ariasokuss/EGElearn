@@ -23,7 +23,7 @@ function CounterRow({
 }) {
   return (
     <div className="flex items-center justify-between py-2">
-      <span className="nova-text-p-medium text-[var(--ege-muted)]">
+      <span className="nova-text-p-medium text-[#71717A]">
         {label}
       </span>
       <div className="flex items-center gap-3 ml-3">
@@ -33,13 +33,13 @@ function CounterRow({
           variant="plain"
           type="button"
           onClick={() => onChange(Math.max(0, value - 1))}
-          className="flex items-center justify-center text-[var(--ege-muted)]"
+          className="flex items-center justify-center text-[#71717A]"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3.33337 8H12.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3.33337 8H12.6667" stroke="#242529" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </Button>
-        <span className="w-4 text-center nova-text-label-small text-[var(--ege-text)]">
+        <span className="w-4 text-center nova-text-label-small text-[#242529]">
           {value}
         </span>
         <Button
@@ -48,10 +48,10 @@ function CounterRow({
           variant="plain"
           type="button"
           onClick={() => onChange(value + 1)}
-          className="flex items-center justify-center text-[var(--ege-muted)]"
+          className="flex items-center justify-center text-[#71717A]"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8.62415 3.62415C8.62415 3.2789 8.34427 2.99902 7.99902 2.99902C7.65378 2.99902 7.3739 3.2789 7.3739 3.62415V7.37488H3.62317C3.27792 7.37488 2.99805 7.65475 2.99805 8C2.99805 8.34525 3.27792 8.62512 3.62317 8.62512L7.3739 8.62512V12.3759C7.3739 12.7211 7.65378 13.001 7.99902 13.001C8.34427 13.001 8.62415 12.7211 8.62415 12.3759V8.62512L12.3749 8.62512C12.7201 8.62512 13 8.34525 13 8C13 7.65476 12.7201 7.37488 12.3749 7.37488H8.62415V3.62415Z" fill="currentColor" />
+            <path d="M8.62415 3.62415C8.62415 3.2789 8.34427 2.99902 7.99902 2.99902C7.65378 2.99902 7.3739 3.2789 7.3739 3.62415V7.37488H3.62317C3.27792 7.37488 2.99805 7.65475 2.99805 8C2.99805 8.34525 3.27792 8.62512 3.62317 8.62512L7.3739 8.62512V12.3759C7.3739 12.7211 7.65378 13.001 7.99902 13.001C8.34427 13.001 8.62415 12.7211 8.62415 12.3759V8.62512L12.3749 8.62512C12.7201 8.62512 13 8.34525 13 8C13 7.65476 12.7201 7.37488 12.3749 7.37488H8.62415V3.62415Z" fill="#242529" />
           </svg>
         </Button>
       </div>
@@ -80,22 +80,20 @@ function ModeOption({
       <div
         className={cn(
           "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[10px] border transition-colors",
-          selected
-            ? "border-[var(--ege-accent)] bg-[var(--ege-accent)] text-white"
-            : "border-[var(--ege-border)] bg-transparent text-[var(--ege-muted)] hover:bg-[var(--ege-surface)]",
+          selected ? "border-[#EDE5E1] bg-[#EDE5E1]" : "border-[#E6E3DC] bg-transparent hover:border-[#D4D0CC] hover:bg-[#F4F0EE]",
         )}
       >
         {selected && (
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3 8.5L6 11.5L13 4.5" stroke="#242529" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}
       </div>
       <div>
-        <p className="nova-text-label-small text-[var(--ege-text)]">
+        <p className="nova-text-label-small text-[#242529]">
           {title}
         </p>
-        <p className="nova-text-label-small text-[var(--ege-muted)]">
+        <p className="nova-text-label-small text-[#71717A]">
           {description}
         </p>
       </div>
@@ -115,7 +113,7 @@ export function QuestionsSetup({
   if (loading) {
     return (
       <div className="max-w-sm">
-        <h2 className="mb-4 nova-text-h-tiny text-[var(--ege-text)]">
+        <h2 className="mb-4 nova-text-h-tiny text-[#242529]">
           Загружаем типы вопросов...
         </h2>
       </div>
@@ -125,8 +123,8 @@ export function QuestionsSetup({
   if (Object.keys(questionCounts).length === 0) {
     return (
       <div className="max-w-sm">
-        <h2 className="mb-4 nova-text-h-tiny text-[var(--ege-text)]">
-          Для этого предмета пока нет типов вопросов
+        <h2 className="mb-4 nova-text-h-tiny text-[#242529]">
+          Для этого предмета пока нет доступных типов вопросов
         </h2>
       </div>
     )
@@ -134,7 +132,7 @@ export function QuestionsSetup({
 
   return (
     <div className="max-w-sm">
-      <h2 className="mb-4 nova-text-h-tiny text-[var(--ege-text)]">
+      <h2 className="mb-4 nova-text-h-tiny text-[#242529]">
         Выбери типы вопросов
       </h2>
 
@@ -151,37 +149,41 @@ export function QuestionsSetup({
 
       {/* Total */}
       <div
-        className="mt-2 flex max-w-[200px] items-center gap-2.5 rounded-full border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] py-2 pr-4 pl-2.5 opacity-80"
+        className="mt-2 flex items-center gap-2.5 bg-white py-2 pr-4 pl-2.5 opacity-80 max-w-[200px]"
         style={{
           boxShadow: "0 2px 4px -2px rgba(0,0,0,0.02), 0 4px 6px -1px rgba(0,0,0,0.04)",
+          borderRadius: "100px",
+          border: "1px solid rgba(238, 237, 232, 0.50)",
           backdropFilter: "blur(4px)",
         }}
       >
-        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[10px] border border-[var(--ege-accent)] bg-[var(--ege-accent)] text-white">
+        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[10px] border border-[#EDE5E1] bg-[#EDE5E1]">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3 8.5L6 11.5L13 4.5" stroke="#242529" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <span className="nova-text-label-small text-[var(--ege-text)]">
-          Всего: {total}
+        <span className="nova-text-label-small text-[#242529]">
+          ({total}) Всего
         </span>
       </div>
-      <div className="mt-[25px] h-px w-full bg-[var(--ege-border)]" />
+      {/* Divider line */}
+      <div className="mt-[25px] h-px w-full bg-[#F4F4F5]" />
 
+      {/* Mode selection */}
       <div className="mt-[20px]">
-        <h3 className="mb-3 nova-text-label-base text-[var(--ege-text)]">
+        <h3 className="mb-3 nova-text-label-base text-[#242529]">
           Выбери режим
         </h3>
 
         <ModeOption
-          title="Режим тренировки"
+          title="Режим практики"
           description="Можно просить подсказки и проверять ответы по одному"
           selected={mode === "practice"}
           onSelect={() => onModeChange("practice")}
         />
         <ModeOption
           title="Режим экзамена"
-          description="Без подсказок, результаты только в конце"
+          description="Без подсказок, ответы видны только в конце"
           selected={mode === "exam"}
           onSelect={() => onModeChange("exam")}
         />

@@ -69,7 +69,7 @@ function TabWithHeader({ children, onArrowsClick, onXClick, isArrowIn }: TabWith
             type="button"
             onClick={onXClick}
             className="flex shrink-0 items-center justify-center"
-            aria-label="Back"
+            aria-label="Назад"
           >
             <XMarkIcon className="size-4.5" />
           </Button>
@@ -80,7 +80,7 @@ function TabWithHeader({ children, onArrowsClick, onXClick, isArrowIn }: TabWith
             type="button"
             onClick={onArrowsClick}
             className="flex shrink-0 items-center justify-center"
-            aria-label="Toggle fullscreen"
+            aria-label="Переключить полноэкранный режим"
           >
             {isArrowIn ? <ArrowsPointingInIcon /> : <ArrowsPointingOutIcon />}
           </Button>

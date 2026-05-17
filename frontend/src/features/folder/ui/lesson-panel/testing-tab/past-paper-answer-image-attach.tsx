@@ -135,7 +135,7 @@ export function PastPaperAnswerImageAttach({
           aria-hidden
         />
         <span className="nova-text-label-small font-semibold text-[#3F3C47]">
-          Attach an image (optional)
+          Прикрепить изображение (необязательно)
         </span>
       </div>
 
@@ -151,6 +151,7 @@ export function PastPaperAnswerImageAttach({
                 key={thumbKey}
                 className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-[#E8E5E1] bg-[#FAFAF8]"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
                   alt=""
@@ -162,7 +163,7 @@ export function PastPaperAnswerImageAttach({
                     type="button"
                     onClick={() => onRemoveAt(index)}
                     className="absolute top-0.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#242529]/80 text-white transition-colors hover:bg-[#242529]"
-                    aria-label={`Remove image ${index + 1}`}
+                    aria-label={`Удалить изображение ${index + 1}`}
                   >
                     <XMarkIcon className="h-3 w-3" aria-hidden />
                   </button>
@@ -176,7 +177,7 @@ export function PastPaperAnswerImageAttach({
                 type="button"
                 onClick={openFilePicker}
                 className="flex h-full w-full cursor-pointer select-none flex-col items-center justify-center rounded-lg border border-dashed border-[#E8E5E1] bg-[#FAFAF8] text-[#71717A] transition-colors hover:border-[#C0B8B0] hover:bg-[#F4F2F1] focus-visible:ring-2 focus-visible:ring-[#3F3C47] focus-visible:ring-offset-2 focus-visible:outline-none"
-                aria-label="Add more images"
+                aria-label="Добавить ещё изображения"
               >
                 <PlusIcon className="h-5 w-5" aria-hidden />
               </button>
@@ -201,17 +202,17 @@ export function PastPaperAnswerImageAttach({
               openFilePicker();
             }
           }}
-          aria-label="Attach images: drag and drop or browse files"
+          aria-label="Прикрепить изображения: перетащи сюда или выбери файл"
         >
           <FileUploadIcon
             className="h-8 w-8 shrink-0 text-[#71717A]"
             aria-hidden
           />
           <p className="nova-text-label-small font-semibold text-[#242529]">
-            Drag and drop an image here
+            Перетащи изображение сюда
           </p>
           <p className="mt-1 nova-text-label-tiny font-normal text-[#71717A]">
-            or click to browse your files
+            или нажми, чтобы выбрать файл
           </p>
         </div>
       )}
@@ -222,10 +223,10 @@ export function PastPaperAnswerImageAttach({
           aria-hidden
         >
           <p className="nova-text-label-small font-semibold text-[#242529]">
-            Drop images here
+            Отпусти изображение здесь
           </p>
           <p className="nova-text-label-tiny font-normal text-[#71717A]">
-            Release to add to your answer
+            Оно добавится к твоему ответу
           </p>
         </div>
       ) : null}
