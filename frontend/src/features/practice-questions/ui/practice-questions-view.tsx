@@ -3,13 +3,14 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import { motion } from "motion/react"
 import { cn } from "@/shared/lib"
-import { DocumentHistoryIcon, HideBarIcon, LoaderIcon, PencilEditIcon } from "@/shared/assets/icons"
-import { useTests } from "../model"
 import {
-  normalizePracticeHistoryGroup,
-  PRACTICE_HISTORY_GROUPS,
-  type TestMode,
-} from "../lib"
+  DocumentHistoryIcon,
+  HideBarIcon,
+  LoaderIcon,
+  PencilEditIcon,
+} from "@/shared/assets/icons"
+import { useTests } from "../model"
+import { type TestMode } from "../lib"
 import { getQuestionTypes, type QuestionType } from "../api/tests-api"
 import { ChatSidePanel } from "@/features/folder/ui/chat-side-panel"
 
@@ -60,16 +61,13 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
   const [viewMode, setViewMode] = useState<ViewMode>("landing")
   const [wizardStep, setWizardStep] = useState(1)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [activeGroup, setActiveGroup] = useState(
-    normalizePracticeHistoryGroup(readFolderUi(folderId)?.practiceQuestionsTestHistoryTab),
-  )
+  const [activeGroup, setActiveGroup] = useState(readFolderUi(folderId)?.practiceQuestionsTestHistoryTab ?? "")
   const [chatVisible, setChatVisible] = useState(false)
   const newChatRef = useRef<VoidFunction | null>(null)
 
   const handleActiveGroupChange = (group: string) => {
-    const normalizedGroup = normalizePracticeHistoryGroup(group)
-    writeFolderUi(folderId, { practiceQuestionsTestHistoryTab: normalizedGroup })
-    setActiveGroup(normalizedGroup)
+    writeFolderUi(folderId, { practiceQuestionsTestHistoryTab: group })
+    setActiveGroup(group)
   }
 
   const [takingExpanded, setTakingExpanded] = useState(true)
@@ -242,12 +240,12 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
 
             if (viewModeRef.current !== "wizard")
               notify({
-                header: "Тест готов",
-                content: "Он появится в разделе новых тестов.",
+                header: "Тест создан",
+                content: "Тест готов. Он появится в разделе «Не начатые тесты».",
                 button: {
                   buttonText: "Перейти к практике",
                   onButtonClick: () => {
-                    writeFolderUi(folderId, { practiceQuestionsTestHistoryTab: PRACTICE_HISTORY_GROUPS.notStarted })
+                    writeFolderUi(folderId, { practiceQuestionsTestHistoryTab: "Не начатые тесты" })
                     router.push(`/folders/${folderId}?tab=practice`)
                   }
                 }
@@ -426,7 +424,7 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
                   ? { width: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.25, delay: 0.05 } }
                   : { width: { type: "spring", stiffness: 400, damping: 35 }, opacity: { duration: 0.15 } }
               }
-              className="shrink-0 overflow-hidden border-l border-[var(--ege-border)]"
+              className="overflow-hidden border-l border-[#F4F4F5] shrink-0"
             >
               <div className="flex h-full flex-col overflow-hidden" style={{ minWidth: 418 }}>
                 {practiceChatQuestionId ? (
@@ -445,7 +443,7 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
                     }
                     hintRequestNonce={innerTakingView === "review" ? 0 : hintRequestNonce}
                     pendingHintText={innerTakingView === "review" ? null : pendingHintText}
-                    tabsClassName="border-b border-[var(--ege-border)] px-5 py-3"
+                    tabsClassName="border-b border-[#E8E5E180] px-5 py-3"
                     onNewChatRef={newChatRef}
                     headerAfter={
                       <div className="flex items-center gap-2">
@@ -461,7 +459,7 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
                         >
                           <PencilEditIcon className="h-4 w-4" />
                         </Button>
-                        <div className="h-4 w-px rounded-full bg-[var(--ege-border)]" />
+                        <div className="h-4 w-px rounded-full bg-[#F4F4F5]" />
                         <Button
                           iconOnly
                           variant="outline"
@@ -481,11 +479,11 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
                   <div
                     className="flex h-full min-h-[200px] flex-col items-center justify-center gap-2 px-4"
                     aria-busy
-                    aria-label="Загрузка чата"
+                    aria-label="Загружаем чат"
                   >
-                    <LoaderIcon className="size-8 animate-spin text-[var(--ege-muted)]" aria-hidden />
-                    <span className="text-center nova-text-p-base text-[var(--ege-muted)]">
-                      Чат загружается...
+                    <LoaderIcon className="size-8 animate-spin text-[#71717A]" aria-hidden />
+                    <span className="text-center nova-text-p-base text-[#71717A]">
+                      Загружаем чат…
                     </span>
                   </div>
                 )}
@@ -505,9 +503,9 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
               ? { width: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.25, delay: 0.05 } }
               : { width: { type: "spring", stiffness: 400, damping: 35 }, opacity: { duration: 0.15 } }
           }
-          className="shrink-0 overflow-hidden border-l border-[var(--ege-border)] bg-[var(--ege-canvas)]"
+          className="overflow-hidden border-l border-[#F4F4F5] bg-white shrink-0"
         >
-          <div className="relative flex h-full min-h-0 flex-col bg-[var(--ege-canvas)]" style={{ minWidth: 300 }}>
+          <div className="relative flex h-full min-h-0 flex-col bg-white" style={{ minWidth: 300 }}>
             <div className="absolute top-2 right-4 z-10">
               <Button
                 variant="outline"
@@ -518,7 +516,7 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
                 aria-label="Скрыть историю тестов"
               >
                 <DocumentHistoryIcon />
-                История тестов
+                Test history
               </Button>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto">
@@ -550,7 +548,7 @@ export function PracticeQuestionsView({ folderId, onFullscreenChange, onNoPaddin
           {/* Keep the wizard header visible while the user scrolls through
               a long topic/questions list (FRO-28). Stickiness is scoped to
               this call site so the shared WizardStepper stays usable elsewhere. */}
-          <div className="sticky top-0 z-10 bg-[var(--ege-canvas)]">
+          <div className="sticky top-0 z-10 bg-white">
             <WizardStepper
               currentStep={wizardStep}
               onBack={handleWizardBack}

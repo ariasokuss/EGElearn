@@ -32,7 +32,7 @@ function Calendar({
       data-exam-panel
       showOutsideDays={showOutsideDays}
       className={cn(
-        "group/calendar w-[242px] rounded-[20px] border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-4 text-[var(--ege-text)] [--cell-radius:8px] [--cell-size:--spacing(7)] shadow-[0px_8px_16px_-4px_rgba(0,0,0,0.18),0px_4px_8px_-2px_rgba(0,0,0,0.12)]",
+        "group/calendar w-[242px] rounded-[20px] border border-[#0000000D] bg-white p-4 [--cell-radius:8px] [--cell-size:--spacing(7)] shadow-[0px_8px_16px_-4px_#0000000A,0px_4px_8px_-2px_#00000008,0px_2px_4px_-1px_#00000005,0px_1px_2px_0px_#00000003]",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className,
@@ -78,20 +78,20 @@ function Calendar({
           defaultClassNames.dropdown_root,
         ),
         dropdown: cn(
-          "absolute inset-0 bg-[var(--ege-surface-raised)] opacity-0",
+          "absolute inset-0 bg-white opacity-0",
           defaultClassNames.dropdown,
         ),
         caption_label: cn(
-          "nova-text-label-small text-[var(--ege-text)] select-none",
+          "nova-text-label-small text-[#242529] select-none",
           captionLayout === "label"
             ? ""
-            : "flex items-center gap-1 rounded-(--cell-radius) [&>svg]:size-3.5 [&>svg]:text-[var(--ege-muted)]",
+            : "flex items-center gap-1 rounded-(--cell-radius) [&>svg]:size-3.5 [&>svg]:text-[#72706F]",
           defaultClassNames.caption_label,
         ),
         table: "w-full border-collapse",
         weekdays: cn("flex gap-0.5 mb-1.5", defaultClassNames.weekdays),
         weekday: cn(
-          "flex h-[24px] w-[28px] flex-1 items-center justify-center rounded-(--cell-radius) nova-text-label-tiny text-[var(--ege-muted)] select-none",
+          "flex items-center justify-center flex-1 w-[28px] h-[24px] rounded-(--cell-radius) nova-text-label-tiny text-[#A1A1AA] select-none",
           defaultClassNames.weekday,
         ),
         week: cn("mt-0.5 flex w-full gap-0.5", defaultClassNames.week),
@@ -100,7 +100,7 @@ function Calendar({
           defaultClassNames.week_number_header,
         ),
         week_number: cn(
-          "text-[0.8rem] text-[var(--ege-muted)] select-none",
+          "text-[0.8rem] text-[#72706F] select-none",
           defaultClassNames.week_number,
         ),
         day: cn(
@@ -111,23 +111,23 @@ function Calendar({
           defaultClassNames.day,
         ),
         range_start: cn(
-          "relative isolate z-0 rounded-l-(--cell-radius) bg-[var(--ege-surface)] after:absolute after:inset-y-0 after:right-0 after:w-4 after:bg-[var(--ege-surface)]",
+          "relative isolate z-0 rounded-l-(--cell-radius) bg-[#F1ECE9] after:absolute after:inset-y-0 after:right-0 after:w-4 after:bg-[#F1ECE9]",
           defaultClassNames.range_start,
         ),
         range_middle: cn("rounded-none", defaultClassNames.range_middle),
         range_end: cn(
-          "relative isolate z-0 rounded-r-(--cell-radius) bg-[var(--ege-surface)] after:absolute after:inset-y-0 after:left-0 after:w-4 after:bg-[var(--ege-surface)]",
+          "relative isolate z-0 rounded-r-(--cell-radius) bg-[#F1ECE9] after:absolute after:inset-y-0 after:left-0 after:w-4 after:bg-[#F1ECE9]",
           defaultClassNames.range_end,
         ),
         today: cn(
-          "rounded-(--cell-radius) bg-[var(--ege-surface)] text-[var(--ege-text)] data-[selected=true]:rounded-none",
+          "rounded-(--cell-radius) bg-[#F1ECE9] text-[#242529] data-[selected=true]:rounded-none",
           defaultClassNames.today,
         ),
         outside: cn(
-          "text-[var(--ege-muted)] aria-selected:text-[var(--ege-muted)]",
+          "text-[#A1A1AA] aria-selected:text-[#A1A1AA]",
           defaultClassNames.outside,
         ),
-        disabled: cn("text-[var(--ege-muted)] opacity-50", defaultClassNames.disabled),
+        disabled: cn("text-[#72706F] opacity-50", defaultClassNames.disabled),
         hidden: cn("invisible", defaultClassNames.hidden),
         ...classNames,
       }}
@@ -145,7 +145,7 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-150 hover:bg-[var(--ege-surface)] active:bg-[var(--ege-track)]">
+              <div className="flex items-center justify-center rounded-full h-7 w-7 shrink-0 transition-all duration-150 hover:bg-[#F0EFED] active:bg-[#E8E5E1]">
                 <ChevronLeftIcon
                   className={cn("cn-rtl-flip size-4", className)}
                   {...props}
@@ -156,7 +156,7 @@ function Calendar({
 
           if (orientation === "right") {
             return (
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-150 hover:bg-[var(--ege-surface)] active:bg-[var(--ege-track)]">
+              <div className="flex items-center justify-center rounded-full h-7 w-7 shrink-0 transition-all duration-150 hover:bg-[#F0EFED] active:bg-[#E8E5E1]">
                 <ChevronRightIcon
                   className={cn("cn-rtl-flip size-4", className)}
                   {...props}
@@ -216,8 +216,8 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "group/button relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) shrink-0 flex-col items-center justify-center gap-1 rounded-lg border-0 bg-clip-padding nova-text-label-tiny whitespace-nowrap outline-none transition-all select-none hover:bg-[var(--ege-surface)] active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-[var(--ege-track)] data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-[var(--ege-accent)] data-[range-end=true]:text-white data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-[var(--ege-surface)] data-[range-middle=true]:text-[var(--ege-text)] data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[range-start=true]:bg-[var(--ege-accent)] data-[range-start=true]:text-white data-[selected-single=true]:bg-[var(--ege-accent)] data-[selected-single=true]:text-white [&>span]:text-xs [&>span]:opacity-70",
-        modifiers.outside ? "text-[var(--ege-muted)]" : "text-[var(--ege-text)]",
+        "relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 border-0 nova-text-label-tiny hover:bg-[#F1ECE9] group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-[#242529] group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-[#24252940] data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-[#242529] data-[range-end=true]:text-white data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-[#F1ECE9] data-[range-middle=true]:text-[#242529] data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[range-start=true]:bg-[#242529] data-[range-start=true]:text-white data-[selected-single=true]:bg-[#E8E5E1] data-[selected-single=true]:text-[#242529] [&>span]:text-xs [&>span]:opacity-70 group/button shrink-0 items-center justify-center rounded-lg bg-clip-padding whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        modifiers.outside ? "text-[#A1A1AA]" : "text-[#242529]",
         defaultClassNames.day,
         className
       )}

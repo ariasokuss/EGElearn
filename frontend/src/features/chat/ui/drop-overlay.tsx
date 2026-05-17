@@ -61,11 +61,11 @@ export function DropOverlay({ onFilesAdded }: DropOverlayProps) {
         >
           <DropOverlayIcon />
           <p className="max-w-67.25 text-center nova-text-label-small text-[var(--ege-text)]">
-            Add something here
+            Добавь файл сюда
             <br />
-            Drag any file here to add it to the
+            Перетащи материал, чтобы прикрепить его
             <br />
-            discussion
+            к диалогу
           </p>
         </div>
       </div>

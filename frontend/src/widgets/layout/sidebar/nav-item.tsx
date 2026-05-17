@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ComponentType, SVGProps } from "react";
 
-import { cn, useTestGuard } from "@/shared/lib";
+import { useTestGuard } from "@/shared/lib";
 
 import {
   HomeIcon,
@@ -32,7 +32,7 @@ export const NAV_CONFIG: Record<NavLink, NavConfig> = {
     activePrefixes: [APP_PATHS.learning, "/folders"],
   },
   chat: { href: APP_PATHS.chat, icon: ChatIcon, label: "Чат" },
-  notes: { href: APP_PATHS.notes, icon: NotesIcon, label: "Заметки" },
+  notes: { href: APP_PATHS.notes, icon: NotesIcon, label: "Notes" },
 };
 
 type SidebarNavItemProps = {
@@ -68,17 +68,17 @@ export function SidebarNavItem({ link, hrefOverride }: SidebarNavItemProps) {
       href={href}
       data-nav={link}
       onClick={handleClick}
-      className={cn(
-        "relative flex min-h-[64px] min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-xl border px-2.5 pt-1 pb-2 transition-colors",
-        isActive
-          ? "border-[var(--ege-border)] bg-[var(--ege-surface-raised)] text-[var(--ege-text)]"
-          : "border-transparent text-[var(--ege-muted)] hover:bg-[var(--ege-surface)] hover:text-[var(--ege-text)]",
-      )}
+      className={`relative flex min-h-[62px] min-w-[72px] flex-col items-center justify-center gap-0.5 rounded-[13px] px-2.5 py-2 transition-colors ${
+        isActive ? "bg-[#eef1f5] text-[#0b0f1a]" : "text-white hover:bg-white/8"
+      }`}
     >
-      <div className="flex h-9 w-9 max-h-9 max-w-9 items-center justify-center rounded-full py-2.5">
+      {isActive && (
+        <span className="absolute left-1.5 top-3 h-9 w-1 rounded-full bg-[var(--ege-accent)]" />
+      )}
+      <div className="flex h-7 w-7 max-h-7 max-w-7 items-center justify-center rounded-full">
         <Icon />
       </div>
-      <span className="nova-text-label-tiny text-inherit">{label}</span>
+      <span className="nova-text-label-tiny">{label}</span>
     </Link>
   );
 }

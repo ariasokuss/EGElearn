@@ -39,9 +39,9 @@ export function PracticeQuestionBar({ controls }: { controls: PracticeQuestionCo
 
   const buttonLabel = hasCheckResult
     ? controls.isLast
-      ? "Finish"
-      : "Continue"
-    : "Check";
+      ? "Завершить"
+      : "Продолжить"
+    : "Проверить";
 
   const buttonDisabled = hasCheckResult
     ? false
@@ -70,7 +70,7 @@ export function PracticeQuestionBar({ controls }: { controls: PracticeQuestionCo
             className="flex cursor-pointer items-center gap-1.5 nova-text-label-small text-[#242529] transition-colors hover:text-[#3F3C47] disabled:cursor-default disabled:text-[#71717A] disabled:opacity-100 disabled:hover:text-[#71717A]"
           >
             <IdeaLampIcon className="h-4 w-4 shrink-0" aria-hidden />
-            {controls.hintUsed ? "Hint used" : "Show hint"}
+            {controls.hintUsed ? "Подсказка использована" : "Показать подсказку"}
           </button>
         ) : null}
       </div>

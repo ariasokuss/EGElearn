@@ -8,7 +8,7 @@ export function EmptyState({ onSuggestionClick }: EmptyStateProps) {
   return (
     <div className="flex items-center justify-center px-4">
       <h2 className="text-center nova-text-h-small text-[var(--ege-text)]">
-        What would you like to know today?
+        Что разберём сегодня?
       </h2>
     </div>
   )

@@ -4,8 +4,8 @@ import { buildPageMetadata } from "@/shared/lib";
 import { ProfilePanel } from "@/features/settings";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Профиль",
-  description: "Настройки профиля NovaLearn.",
+  title: "Profile Settings",
+  description: "Private profile settings in NovaLearn.",
   path: "/settings/profile",
   indexable: false,
 });

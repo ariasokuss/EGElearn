@@ -1,6 +1,5 @@
 import { FoldersProvider } from "@/features/home";
 import { PaywallModalHost } from "@/features/paywall";
-import { OnboardingPopup } from "@/features/onboarding-popup/ui/onboarding-popup";
 import { TestGuardProvider } from "@/shared/lib";
 import { Notifications } from "@/shared/ui";
 
@@ -22,7 +21,6 @@ export function MainAppChrome({ children, isPhoneFromUa }: MainAppChromeProps) {
           <AppLayout>{children}</AppLayout>
           <Notifications />
           <PaywallModalHost />
-          <OnboardingPopup />
         </TestGuardProvider>
       </FoldersProvider>
     </MainAppMobileGate>

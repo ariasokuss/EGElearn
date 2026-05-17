@@ -1,20 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import "@/shared/styles/globals.css";
 import { dmSans, ibmPlexMono, inter, roboto } from "@/shared/config/fonts";
-import { buildOrganizationSchema, buildWebsiteSchema, getPublicBaseUrl, THEME_STORAGE_KEY } from "@/shared/lib";
+import { buildOrganizationSchema, buildWebsiteSchema, getPublicBaseUrl } from "@/shared/lib";
 import { Providers } from "./providers";
 
 const russianDescription =
   "NovaLearn помогает готовиться к ЕГЭ: предметы, уроки, практика, разбор ошибок и YandexGPT-помощник.";
-
-const themeInitScript = `
-try {
-  var theme = localStorage.getItem("${THEME_STORAGE_KEY}");
-  if (theme === "light" || theme === "dark") {
-    document.documentElement.dataset.theme = theme;
-  }
-} catch (_) {}
-`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(getPublicBaseUrl()),
@@ -58,11 +49,10 @@ export default function RootLayout({
   const websiteSchema = buildWebsiteSchema();
 
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="ru">
       <body
         className={`${roboto.variable} ${inter.variable} ${dmSans.variable} ${ibmPlexMono.variable} bg-[var(--ege-canvas)] antialiased`}
       >
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

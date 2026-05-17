@@ -77,12 +77,12 @@ export function MobileChatHeader({
       {/* Tabs — always show both */}
       <div className="flex items-center gap-3">
         <TabButton
-          label="Chat"
+          label="Чат"
           active={activeTab === "chat"}
           onClick={() => onTabChange("chat")}
         />
         <TabButton
-          label="History"
+          label="История"
           active={activeTab === "history"}
           onClick={() => onTabChange("history")}
         />
@@ -90,11 +90,11 @@ export function MobileChatHeader({
 
       {/* Icon buttons */}
       <div className="flex items-center gap-2">
-        <HeaderIconButton onClick={onNewChat} label="New chat">
+        <HeaderIconButton onClick={onNewChat} label="Новый чат">
           <PencilEditIcon className="h-4 w-4" />
         </HeaderIconButton>
         {onCollapse && (
-          <HeaderIconButton onClick={onCollapse} label="Collapse panel">
+          <HeaderIconButton onClick={onCollapse} label="Свернуть панель">
             <HideBarIcon className="h-4 w-4" />
           </HeaderIconButton>
         )}

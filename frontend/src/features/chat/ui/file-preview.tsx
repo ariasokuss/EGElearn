@@ -143,7 +143,7 @@ export function FilePreview({ files, onRemove }: FilePreviewProps) {
               type="button"
               variant="outline"
               onClick={() => onRemove(i)}
-              aria-label="Remove file"
+              aria-label="Убрать файл"
               className="absolute flex items-center justify-center opacity-0 group-hover:opacity-100"
               style={{
                 top: 2,

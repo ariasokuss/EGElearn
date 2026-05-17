@@ -123,7 +123,7 @@ function parseAvailableModelsResponse(data: unknown): {
 }
 
 function parseModelItem(item: unknown): ModelOption | null {
-  // Plain string: "YandexGPT" → { id: "YandexGPT", name: "YandexGPT" }
+  // Plain string: "ChatGPT 5.4" → { id: "ChatGPT 5.4", name: "ChatGPT 5.4" }
   if (typeof item === "string" && item.length > 0) {
     return { id: item, name: item, provider: "" }
   }

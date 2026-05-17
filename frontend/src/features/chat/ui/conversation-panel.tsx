@@ -70,7 +70,7 @@ export function ConversationPanel({
           <Button
             type="button"
           >
-            History
+            История
           </Button>
           {/* Active indicator */}
           <span
@@ -79,7 +79,7 @@ export function ConversationPanel({
         </div>
 
         <div className="flex items-center gap-[8px]">
-          <PanelIconButton onClick={onNewChat} label="New chat">
+          <PanelIconButton onClick={onNewChat} label="Новый чат">
             <PencilEditIcon className="h-4 w-4" />
           </PanelIconButton>
 
@@ -99,7 +99,7 @@ export function ConversationPanel({
                   fill="var(--ege-border)"
                 />
               </svg>
-              <PanelIconButton onClick={onCollapse} label="Collapse panel">
+              <PanelIconButton onClick={onCollapse} label="Свернуть панель">
                 <HideBarIcon className="h-4 w-4" />
               </PanelIconButton>
             </>

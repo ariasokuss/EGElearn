@@ -10,4 +10,3 @@ export { TabButton } from "./tab-button";
 export { Modal } from "./modal"
 export { Tippy } from "./tippy"
 export { Notifications } from "./notifications"
-export { ThemeToggleButton } from "./theme-toggle-button"

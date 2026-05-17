@@ -5,7 +5,7 @@ export type DateGroup = {
   items: ConversationSummary[]
 }
 
-const GROUP_ORDER = ["Today", "Yesterday", "This Week", "This Month", "Older"] as const
+const GROUP_ORDER = ["Сегодня", "Вчера", "На этой неделе", "В этом месяце", "Раньше"] as const
 
 function getGroupLabel(dateStr: string): string {
   const date = new Date(dateStr)
@@ -23,11 +23,11 @@ function getGroupLabel(dateStr: string): string {
 
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
-  if (date >= startOfToday) return "Today"
-  if (date >= startOfYesterday) return "Yesterday"
-  if (date >= startOfWeek) return "This Week"
-  if (date >= startOfMonth) return "This Month"
-  return "Older"
+  if (date >= startOfToday) return "Сегодня"
+  if (date >= startOfYesterday) return "Вчера"
+  if (date >= startOfWeek) return "На этой неделе"
+  if (date >= startOfMonth) return "В этом месяце"
+  return "Раньше"
 }
 
 export function groupConversations(conversations: ConversationSummary[]): DateGroup[] {
@@ -51,6 +51,6 @@ export function groupConversations(conversations: ConversationSummary[]): DateGr
 export function formatConversationDate(dateStr: string): string {
   const date = new Date(dateStr)
   const day = date.getDate()
-  const month = date.toLocaleString("en-US", { month: "long" })
+  const month = date.toLocaleString("ru-RU", { month: "long" })
   return `${day} ${month}`
 }

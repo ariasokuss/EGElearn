@@ -16,9 +16,20 @@ type TestGenerationProps = {
   allDone: boolean
 }
 
+/**
+ * ProgressRing — static arc that fills based on progress (0–1).
+ * Beige track (#F1ECE9) + dark fill (#72706F).
+ * circumference = 2π × 8.5 ≈ 53.4
+ */
 const RING_R = 8.5
 const RING_C = 2 * Math.PI * RING_R
 
+/**
+ * ProgressRing — spinning arc that grows with progress.
+ *  - At progress=0: small arc (~15%) spins continuously
+ *  - As progress increases: arc grows, still spinning
+ *  - At progress=1: full ring, stops spinning → replaced by CheckRing
+ */
 const MIN_ARC = 0.12 // minimum visible arc when progress=0
 
 function ProgressRing({ progress = 0 }: { progress?: number }) {
@@ -36,13 +47,13 @@ function ProgressRing({ progress = 0 }: { progress?: number }) {
       className={cn("shrink-0", clamped < 1 && "animate-spin")}
       style={clamped < 1 ? { animationDuration: "1.2s" } : undefined}
     >
-      <circle cx="10.5" cy="10.5" r={RING_R} fill="none" stroke="var(--ege-track)" strokeWidth="3" />
+      <circle cx="10.5" cy="10.5" r={RING_R} fill="none" stroke="#F1ECE9" strokeWidth="3" />
       <circle
         cx="10.5"
         cy="10.5"
         r={RING_R}
         fill="none"
-        stroke="var(--ege-accent)"
+        stroke="#72706F"
         strokeWidth="3"
         strokeLinecap="round"
         strokeDasharray={`${filled} ${RING_C - filled}`}
@@ -53,6 +64,7 @@ function ProgressRing({ progress = 0 }: { progress?: number }) {
   )
 }
 
+/** EmptyRing — also spins with a tiny arc to show "waiting" state */
 function EmptyRing() {
   return (
     <svg
@@ -63,13 +75,13 @@ function EmptyRing() {
       className="shrink-0 animate-spin"
       style={{ animationDuration: "1.4s" }}
     >
-      <circle cx="10.5" cy="10.5" r={RING_R} fill="none" stroke="var(--ege-track)" strokeWidth="3" />
+      <circle cx="10.5" cy="10.5" r={RING_R} fill="none" stroke="#F1ECE9" strokeWidth="3" />
       <circle
         cx="10.5"
         cy="10.5"
         r={RING_R}
         fill="none"
-        stroke="var(--ege-accent)"
+        stroke="#72706F"
         strokeWidth="3"
         strokeLinecap="round"
         strokeDasharray={`${MIN_ARC * RING_C} ${(1 - MIN_ARC) * RING_C}`}
@@ -82,8 +94,8 @@ function EmptyRing() {
 function CheckRing() {
   return (
     <svg width="21" height="21" viewBox="0 0 21 21" fill="none" className="shrink-0">
-      <circle cx="10.5" cy="10.5" r="9.5" fill="var(--ege-accent)" />
-      <path d="M7 10.75L9.5 13.25L14 8.75" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="10.5" cy="10.5" r="9.5" fill="#F1ECE9" />
+      <path d="M7 10.75L9.5 13.25L14 8.75" stroke="#242529" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -95,21 +107,21 @@ export function TestGeneration({ items, onStartTest, allDone }: TestGenerationPr
 
   return (
     <div className="max-w-md">
-      <h2 className="mb-6 nova-text-h-small text-[var(--ege-text)]">
-        Создаем тест
+      <h2 className="mb-6 nova-text-h-small text-[#242529]">
+        Создаём тест
       </h2>
 
       {/* Main status */}
       <div className="flex items-center gap-3">
         {allDone ? <CheckRing /> : <ProgressRing progress={overallProgress} />}
-        <span className="nova-text-label-medium text-[var(--ege-text)]">
+        <span className="nova-text-label-medium text-[#242529]">
           Генерация теста
         </span>
       </div>
 
       <div className="relative ml-2.5">
         <div
-          className="absolute left-0 top-0 w-px bg-[var(--ege-border)]"
+          className="absolute left-0 top-0 w-px bg-[#E8E5E1]"
           style={{ height: `calc(100% - ${onStartTest ? "auto" : "0px"})` }}
           ref={(el) => {
             if (!el) return
@@ -140,11 +152,11 @@ export function TestGeneration({ items, onStartTest, allDone }: TestGenerationPr
                 <span
                   className={cn(
                     "nova-text-label-small",
-                    item.status === "done" ? "text-[var(--ege-text)]" : "text-[var(--ege-muted)]",
+                    item.status === "done" ? "text-[#242529]" : "text-[#71717A]",
                   )}
                 >
                   {item.label}
-                  <span className="ml-1 text-[var(--ege-muted)]">
+                  <span className="ml-1 text-[#A1A1AA]">
                     {item.ready}/{item.requested}
                   </span>
                 </span>

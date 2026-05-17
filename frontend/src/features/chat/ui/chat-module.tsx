@@ -7,11 +7,6 @@ import {
   useChat,
   useFileDrop,
 } from "@/features/chat/model"
-import {
-  getEffectiveReasoning,
-  getReasoningToSend,
-  getVisibleReasoningLevels,
-} from "@/features/chat/model/reasoning-options"
 import { useAvailableModels } from "@/features/chat/model/use-available-models"
 import { usePanelResize } from "@/features/chat/model/use-panel-resize"
 import { Button, PageCard } from "@/shared/ui"
@@ -143,15 +138,14 @@ export function ChatModule({
 
   /* ── Derived model ── */
   const selectedModelId = userSelectedModelId ?? (models.length > 0 ? models[0].id : "")
-  const visibleReasoningLevels = getVisibleReasoningLevels(reasoningLevels)
-  const selectedReasoning = getEffectiveReasoning(visibleReasoningLevels, userSelectedReasoning)
-  const reasoningToSend = getReasoningToSend(visibleReasoningLevels, selectedReasoning)
+  const selectedReasoning =
+    userSelectedReasoning ?? (reasoningLevels.length > 0 ? reasoningLevels[0] : "")
   useEffect(() => {
     if (selectedModelId) setSelectedModel(selectedModelId)
   }, [selectedModelId, setSelectedModel])
   useEffect(() => {
-    setSelectedReasoning(reasoningToSend)
-  }, [reasoningToSend, setSelectedReasoning])
+    if (selectedReasoning) setSelectedReasoning(selectedReasoning)
+  }, [selectedReasoning, setSelectedReasoning])
 
   /* ── Handlers ── */
   const startNewChat = useCallback(() => {
@@ -260,7 +254,7 @@ export function ChatModule({
           onClick={() => reload()}
           className="ml-auto shrink-0 bg-red-100 text-red-700 hover:bg-red-200"
         >
-          Retry
+          Попробовать ещё раз
         </Button>
       </div>
     </div>
@@ -316,7 +310,7 @@ export function ChatModule({
                 models={models}
                 selectedModelId={selectedModelId}
                 onModelChange={setUserSelectedModelId}
-                reasoningLevels={visibleReasoningLevels}
+                reasoningLevels={reasoningLevels}
                 selectedReasoning={selectedReasoning}
                 onReasoningChange={setUserSelectedReasoning}
                 modelsLoading={modelsLoading}
@@ -357,7 +351,7 @@ export function ChatModule({
                   models={models}
                   selectedModelId={selectedModelId}
                   onModelChange={setUserSelectedModelId}
-                  reasoningLevels={visibleReasoningLevels}
+                  reasoningLevels={reasoningLevels}
                   selectedReasoning={selectedReasoning}
                   onReasoningChange={setUserSelectedReasoning}
                   modelsLoading={modelsLoading}

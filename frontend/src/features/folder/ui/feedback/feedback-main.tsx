@@ -36,7 +36,7 @@ function CoveredMistake({ note }: CoveredMistakeProps) {
               <div className="flex items-start gap-0 rounded-[12px] bg-[#F4F4F5] px-2 py-0.5 nova-text-label-tiny text-[#A1A1AA]">
                 <SourceArrowIcon className="size-4 shrink-0 translate-y-0.75 [&_path]:stroke-current" />
                 <MarkdownContent
-                  content={`${note.source_type === "test" ? "Test" : "Feynman"} — ${note.topic}`}
+                  content={`${note.source_type === "test" ? "Тест" : "Объяснение"} — ${note.topic}`}
                   remarkPlugins={REMARK_PLUGINS}
                   rehypePlugins={REHYPE_PLUGINS}
                   className="nova-text-label-tiny text-[#A1A1AA] [&_p]:m-0"
@@ -61,7 +61,7 @@ function CoveredMistake({ note }: CoveredMistakeProps) {
               )}
             />
           </div>
-          My mistake
+          Моя ошибка
         </button>
 
         <div
@@ -105,22 +105,24 @@ export function FeedbackMain({
         <Button
           onClick={navigateSee}
         >
-          See mistakes ({seeCount})
+          Посмотреть ошибки ({seeCount})
         </Button>
         <Button
           variant="plain"
           onClick={navigateReview}
         >
-          Review mistakes ({reviewCount})
+          Закрепить ошибки ({reviewCount})
         </Button>
       </div>
 
       <div className="flex max-w-176 flex-col gap-y-1.5 rounded-[16px] border border-[#F2F2F4] p-1.5">
         <p className="mb-2.5 ml-2.5 nova-text-h-small-sb text-[#242529]">
-          Covered mistakes
+          Уже разобрали
         </p>
         {coveredNotes.length === 0 ? (
-          <p className="pb-2 px-2.5 nova-text-label-medium text-[#A1A1AA]">Once you review and verify a mistake it will be shown here.</p>
+          <p className="pb-2 px-2.5 nova-text-label-medium text-[#A1A1AA]">
+            Когда разберёшь ошибку и закрепишь её, она появится здесь.
+          </p>
         ) : (
           coveredNotes.map((note) => (
             <CoveredMistake key={note.id} note={note} />

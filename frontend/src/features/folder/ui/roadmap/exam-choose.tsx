@@ -1,5 +1,5 @@
 import { Button, cn } from "@/shared"
-import { useEffect, useReducer } from "react"
+import { useState } from "react"
 import { createPortal } from "react-dom"
 
 type SectionInfo = {
@@ -19,29 +19,10 @@ export type ExamChooseProps = {
     initialSelection?: string[]
 }
 
-type ChosenSectionsAction =
-    | { type: "reset", sections: string[] }
-    | { type: "toggle", index: number, sectionId: string }
-
-function chosenSectionsReducer(state: string[], action: ChosenSectionsAction): string[] {
-    if (action.type === "reset") return action.sections
-    return state.map((value, index) =>
-        index !== action.index ? value : value === action.sectionId ? "" : action.sectionId
-    )
-}
-
 export function ExamChoose({ isOpen, blocks, onClose, title, submiting, initialSelection }: ExamChooseProps) {
-    const [chosenSections, dispatchChosenSections] = useReducer(
-        chosenSectionsReducer,
+    const [chosenSections, setChosenSections] = useState<string[]>(
         initialSelection ?? blocks.map(() => "")
     )
-
-    // Keep internal state in sync with saved selection while modal is closed
-    useEffect(() => {
-        if (!isOpen) {
-            dispatchChosenSections({ type: "reset", sections: initialSelection ?? blocks.map(() => "") })
-        }
-    }, [isOpen, initialSelection, blocks])
 
     const handleClose = async (ids?: string[]) => {
         await onClose(ids)
@@ -52,22 +33,22 @@ export function ExamChoose({ isOpen, blocks, onClose, title, submiting, initialS
     return createPortal(
         <div
             className={cn(
-                "z-[1000] fixed flex justify-center items-center inset-0 bg-black/55 transition-all",
+                "z-[1000] fixed flex justify-center items-center inset-0 bg-black/50 transition-all",
                 isOpen
                     ? "visible opacity-100"
                     : "invisible opacity-0"
             )}
         >
-            <div className="w-full max-w-150 rounded-[20px] border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-1.5 text-[var(--ege-text)]">
-                <div className="flex flex-col gap-5 rounded-[14px] bg-[var(--ege-surface-raised)] p-5">
+            <div className="p-1.5 w-full max-w-150 bg-white border border-[#F4F4F5] rounded-[20px]">
+                <div className="flex flex-col gap-5 p-5 nova-shadow-sm rounded-[14px]">
 
                     <div className="flex flex-col gap-1.5">
-                        <p className="nova-text-h-tiny">Темы по выбору для {title}</p>
-                        <p className="nova-text-label-medium-regular text-[var(--ege-muted)]">
-                            Выбери по одной теме
+                        <p className="nova-text-h-tiny">Выбери дополнительные темы для «{title}»</p>
+                        <p className="nova-text-label-medium-regular text-[#72706F]">
+                            Для «{title}» нужно выбрать по одной теме из
                             {blocks.length > 1
-                                ? ` в каждом из ${blocks.length} блоков`
-                                : " в этом блоке"
+                                ? ` каждого из ${blocks.length} блоков`
+                                : " этого блока"
                             }
                         </p>
                     </div>
@@ -75,10 +56,10 @@ export function ExamChoose({ isOpen, blocks, onClose, title, submiting, initialS
                     {blocks.map((block, ind) => (
                         <div key={ind} className="flex flex-col gap-2.5">
                             <div className="flex items-center gap-2">
-                                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--ege-surface)] nova-text-label-small text-[var(--ege-muted)]">
+                                <span className="flex items-center justify-center size-5 shrink-0 rounded-full bg-[#F4F0EE] nova-text-label-small text-[#72706F]">
                                     {ind + 1}
                                 </span>
-                                <p className="nova-text-label-medium text-[var(--ege-text)]">Выбери одну тему</p>
+                                <p className="nova-text-label-medium text-[#242529]">Выбери одну тему</p>
                             </div>
 
                             <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(block.length, 3)}, 1fr)` }}>
@@ -90,10 +71,12 @@ export function ExamChoose({ isOpen, blocks, onClose, title, submiting, initialS
                                             className={cn(
                                                 "px-4 py-2.5 h-15 rounded-full nova-text-label-small text-center flex items-center justify-center transition-all border",
                                                 selected
-                                                    ? "border-[var(--ege-accent)] bg-[var(--ege-surface)] text-[var(--ege-text)]"
-                                                    : "border-[var(--ege-border)] text-[var(--ege-muted)] hover:bg-[var(--ege-surface)] hover:text-[var(--ege-text)]"
+                                                    ? "bg-[#F4F0EE] text-[#242529] border-transparent"
+                                                    : "text-[#72706F] border-transparent hover:bg-white hover:text-[#242529] hover:border-[#E2DDD9] hover:nova-shadow-sm"
                                             )}
-                                            onClick={() => dispatchChosenSections({ type: "toggle", index: ind, sectionId: sect.id })}
+                                            onClick={() => setChosenSections(prev => prev.map((v, i) =>
+                                                i !== ind ? v : v === sect.id ? "" : sect.id
+                                            ))}
                                         >
                                             {sect.name}
                                         </button>
@@ -115,7 +98,7 @@ export function ExamChoose({ isOpen, blocks, onClose, title, submiting, initialS
                             isLoading={submiting}
                             onClick={() => handleClose(chosenSections)}
                         >
-                            Сохранить
+                            Сохранить выбор
                         </Button>
                     </div>
                 </div>

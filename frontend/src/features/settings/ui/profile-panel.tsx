@@ -14,10 +14,10 @@ function displayNameFromEmail(email: string): string {
 }
 
 const fieldClass =
-  "min-w-0 flex-1 rounded-full border border-[var(--ege-border)] bg-[var(--ege-surface)] px-5 py-3 nova-text-label-small text-[var(--ege-text)] transition-shadow placeholder:text-[var(--ege-muted)]";
+  "min-w-0 flex-1 rounded-full border border-[#E8E5E180] bg-white px-5 py-3 nova-text-label-small text-[#242529] transition-shadow";
 
 const fieldClassEditAndChange =
-  "min-w-0 flex-1 rounded-full border border-[var(--ege-border)] bg-[var(--ege-surface)] px-5 py-3 nova-text-label-small text-[var(--ege-muted)] transition-shadow";
+  "min-w-0 flex-1 rounded-full border border-[#E8E5E180] bg-white px-5 py-3 nova-text-label-small text-[#A1A1AA] transition-shadow";
 
 async function apiFetch(path: string, init?: RequestInit) {
   const token = getAccessToken();
@@ -81,7 +81,7 @@ export function ProfilePanel() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!ACCEPTED_TYPES.includes(file.type)) {
-      setError("Выбери изображение JPEG, PNG или WebP.");
+      setError("Выбери изображение в формате JPEG, PNG или WebP.");
       return;
     }
     if (file.size > MAX_SIZE) {
@@ -105,7 +105,7 @@ export function ProfilePanel() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ display_name: displayName || null }),
         });
-        if (!res.ok) throw new Error("Не удалось обновить имя");
+        if (!res.ok) throw new Error("Не получилось обновить имя");
       }
 
       if (pendingFile) {
@@ -115,7 +115,7 @@ export function ProfilePanel() {
           method: "POST",
           body: formData,
         });
-        if (!uploadRes.ok) throw new Error("Не удалось загрузить аватар");
+        if (!uploadRes.ok) throw new Error("Не получилось загрузить аватар");
       }
 
       window.dispatchEvent(new CustomEvent("auth:tokens-updated"));
@@ -125,7 +125,7 @@ export function ProfilePanel() {
         URL.revokeObjectURL(avatarPreview);
         setAvatarPreview(null);
       }
-      setSuccess("Профиль обновлен");
+      setSuccess("Профиль обновлён");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Что-то пошло не так");
     } finally {
@@ -145,10 +145,10 @@ export function ProfilePanel() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.detail ?? "Не удалось отправить код");
+        throw new Error(data?.detail ?? "Не получилось отправить код");
       }
       setEmailCodeSent(true);
-      setSuccess("Код отправлен на " + newEmail);
+      setSuccess("Код подтверждения отправлен на " + newEmail);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Что-то пошло не так");
     } finally {
@@ -167,7 +167,7 @@ export function ProfilePanel() {
         const data = await res.json().catch(() => null);
         throw new Error(data?.detail ?? "Неверный код");
       }
-      setSuccess("Email изменен");
+      setSuccess("Почта изменена");
       setEditMode(null);
       setNewEmail("");
       setEmailPassword("");
@@ -193,9 +193,9 @@ export function ProfilePanel() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.detail ?? "Не удалось изменить пароль");
+        throw new Error(data?.detail ?? "Не получилось изменить пароль");
       }
-      setSuccess("Пароль изменен");
+      setSuccess("Пароль изменён");
       setEditMode(null);
       setCurrentPassword("");
       setNewPassword("");
@@ -221,23 +221,23 @@ export function ProfilePanel() {
 
   return (
     <div className="mx-auto max-w-[760px] px-6 py-8">
-      <div className="mt-8 rounded-3xl border border-[var(--ege-border)] bg-[var(--ege-surface)] px-6 py-6 sm:px-8 sm:py-8">
-        <h1 className="nova-text-h-xss text-[var(--ege-text)]">
+      <div className="rounded-3xl border border-[#E8E5E180] bg-white px-6 py-6 mt-8 shadow-[0px_4px_6px_-1px_#0000000A,0px_2px_4px_-2px_#00000005] sm:px-8 sm:py-8">
+        <h1 className="nova-text-h-xss text-[#1D1B20]">
           Профиль
         </h1>
-        <div className="mt-4 h-px w-full bg-[var(--ege-border)]" />
+        <div className="mt-4 h-px w-full bg-[#E8E5E180]" />
 
         <div className="mt-6 flex items-center gap-4">
           {avatarSrc ? (
             // eslint-disable-next-line @next/next/no-img-element -- blob preview or user avatar URL
             <img
               src={avatarSrc}
-              alt="Avatar"
+              alt="Аватар"
               className="h-16 w-16 shrink-0 rounded-full object-cover"
             />
           ) : (
             <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[var(--ege-surface-raised)] nova-text-h-xss text-[var(--ege-text)]"
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#F1ECE9] nova-text-h-xss text-[#242529]"
               aria-hidden
             >
               {email ? email[0]?.toUpperCase() : "?"}
@@ -254,7 +254,7 @@ export function ProfilePanel() {
             variant="plain"
             size="l"
             type="button"
-            className="text-[var(--ege-text)] hover:underline"
+            className="text-[#242529] hover:text-[#1D1B20] hover:underline"
             onClick={() => fileInputRef.current?.click()}
           >
             Загрузить
@@ -273,15 +273,15 @@ export function ProfilePanel() {
             type="text"
             value={currentName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className={fieldClass}
+            className={`${fieldClass} text-[#242529]`}
             aria-label="Имя"
             placeholder="Имя"
           />
 
           {/* ---- Email section ---- */}
           {editMode === "email" ? (
-            <div className="flex flex-col gap-3 rounded-2xl border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-4">
-              <p className="nova-text-label-small text-[var(--ege-muted)]">Изменить email</p>
+            <div className="flex flex-col gap-3 rounded-2xl border border-[#E8E5E180] bg-[#FAF9F7] p-4">
+              <p className="nova-text-label-small text-[#71717A]">Изменить почту</p>
               {!emailCodeSent ? (
                 <>
                   <input
@@ -289,8 +289,8 @@ export function ProfilePanel() {
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     className={fieldClass}
-                    placeholder="Новый email"
-                    aria-label="Новый email"
+                    placeholder="Новая почта"
+                    aria-label="Новая почта"
                   />
                   <input
                     type="password"
@@ -298,7 +298,7 @@ export function ProfilePanel() {
                     onChange={(e) => setEmailPassword(e.target.value)}
                     className={fieldClass}
                     placeholder="Текущий пароль"
-                    aria-label="Текущий пароль для смены email"
+                    aria-label="Текущий пароль для смены почты"
                   />
                   <div className="flex gap-2">
                     <Button
@@ -318,8 +318,8 @@ export function ProfilePanel() {
                 </>
               ) : (
                 <>
-                  <p className="nova-text-label-small-regular text-[var(--ege-muted)]">
-                    Введи 6-значный код, отправленный на <strong>{newEmail}</strong>
+                  <p className="nova-text-label-small-regular text-[#71717A]">
+                    Введи код из 6 цифр, который отправили на <strong>{newEmail}</strong>
                   </p>
                   <input
                     type="text"
@@ -356,7 +356,7 @@ export function ProfilePanel() {
                 type="email"
                 value={email || "—"}
                 className={fieldClassEditAndChange}
-                aria-label="Email"
+                aria-label="Почта"
               />
               <Button
                 variant="outline"
@@ -372,8 +372,8 @@ export function ProfilePanel() {
 
           {/* ---- Password section ---- */}
           {editMode === "password" ? (
-            <div className="flex flex-col gap-3 rounded-2xl border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-4">
-              <p className="nova-text-label-small text-[var(--ege-muted)]">Изменить пароль</p>
+            <div className="flex flex-col gap-3 rounded-2xl border border-[#E8E5E180] bg-[#FAF9F7] p-4">
+              <p className="nova-text-label-small text-[#71717A]">Изменить пароль</p>
               <input
                 type="password"
                 value={currentPassword}
@@ -387,7 +387,7 @@ export function ProfilePanel() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className={fieldClass}
-                placeholder="Новый пароль (минимум 8 символов)"
+                placeholder="Новый пароль, минимум 8 символов"
                 aria-label="Новый пароль"
               />
               <div className="flex gap-2">
@@ -422,15 +422,15 @@ export function ProfilePanel() {
                 className="w-[98px] shrink-0"
                 onClick={() => { cancelEdit(); setEditMode("password"); }}
               >
-                Изменить
+                Сменить
               </Button>
             </div>
           )}
 
-          <div className="mt-4 h-px bg-[var(--ege-border)]" />
+          <div className="mt-4 h-px bg-[#E8E5E180]" />
 
           <div className="flex items-stretch gap-3">
-            <div className={`${fieldClass} flex items-center`}>
+            <div className={`${fieldClass} flex items-center text-[#242529]`}>
               Выйти на этом устройстве
             </div>
             <Button

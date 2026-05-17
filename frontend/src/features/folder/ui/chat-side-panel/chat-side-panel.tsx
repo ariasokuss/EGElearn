@@ -8,11 +8,6 @@ import { useChat, ChatInput } from "@/features/chat";
 import { ChatThread, type ChatThreadHandle } from "@/features/chat/ui/chat-thread";
 import type { PracticeChatScope } from "@/features/chat/model";
 import { useFileDrop } from "@/features/chat/model";
-import {
-  getEffectiveReasoning,
-  getReasoningToSend,
-  getVisibleReasoningLevels,
-} from "@/features/chat/model/reasoning-options";
 import type { AnswerRecord } from "../lesson-panel/use-inline-quiz";
 import { useAvailableModels } from "@/features/chat/model/use-available-models";
 import { DropOverlay } from "@/features/chat/ui/drop-overlay";
@@ -171,16 +166,14 @@ export function ChatSidePanel({
   const [userSelectedModelId, setUserSelectedModelId] = useState<string | null>(null);
   const [userSelectedReasoning, setUserSelectedReasoning] = useState<string | null>(null);
   const selectedModelId = userSelectedModelId ?? (models.length > 0 ? models[0].id : "");
-  const visibleReasoningLevels = getVisibleReasoningLevels(reasoningLevels);
-  const selectedReasoning = getEffectiveReasoning(visibleReasoningLevels, userSelectedReasoning);
-  const reasoningToSend = getReasoningToSend(visibleReasoningLevels, selectedReasoning);
+  const selectedReasoning = userSelectedReasoning ?? (reasoningLevels.length > 0 ? reasoningLevels[0] : "");
 
   useEffect(() => {
     if (selectedModelId) setSelectedModel(selectedModelId);
   }, [selectedModelId, setSelectedModel]);
   useEffect(() => {
-    setSelectedReasoning(reasoningToSend);
-  }, [reasoningToSend, setSelectedReasoning]);
+    if (selectedReasoning) setSelectedReasoning(selectedReasoning);
+  }, [selectedReasoning, setSelectedReasoning]);
 
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const { isDragging } = useFileDrop();
@@ -411,7 +404,7 @@ export function ChatSidePanel({
             models={models}
             selectedModelId={selectedModelId}
             onModelChange={setUserSelectedModelId}
-            reasoningLevels={visibleReasoningLevels}
+            reasoningLevels={reasoningLevels}
             selectedReasoning={selectedReasoning}
             onReasoningChange={setUserSelectedReasoning}
             modelsLoading={modelsLoading}

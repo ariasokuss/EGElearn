@@ -44,10 +44,10 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
   if (notes.length === 0) {
     return (
       <FeedbackComplete
-        message={"You have reviewed all the\nfeedback for today!"}
+        message={"На сегодня все ошибки разобраны.\nОтличная работа!"}
         completedCount={completedCount}
         totalCount={totalCount}
-        actionLabel="Verify mistakes"
+        actionLabel="Закрепить ошибки"
         onAction={onNavigateReview}
       />
     );
@@ -79,7 +79,7 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
         <div className="w-full max-w-[640px]">
           <div className="rounded-[20px] border border-[#F2F2F4] p-1.5 nova-shadow-bottom">
             <p className="m-4 mb-6.5 nova-text-h-small-sb text-[#242529]">
-              Mistakes not yet covered
+              Ошибки, которые ещё нужно разобрать
             </p>
   
             <div className="rounded-[16px] border border-[#F2F2F4] p-3.5 pb-6 nova-shadow-bottom">
@@ -96,7 +96,7 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
                     <div className="flex items-start gap-0 rounded-[12px] bg-[#F4F4F5] px-2 py-0.5 nova-text-label-tiny text-[#A1A1AA]">
                       <SourceArrowIcon className="size-4 shrink-0 translate-y-0.75 [&_path]:stroke-current" />
                       <MarkdownContent
-                        content={`${note.source_type === "test" ? "Test" : "Feynman"} — ${note.topic}`}
+                        content={`${note.source_type === "test" ? "Тест" : "Объяснение"} — ${note.topic}`}
                         remarkPlugins={REMARK_PLUGINS}
                         rehypePlugins={REHYPE_PLUGINS}
                         className="nova-text-label-tiny text-[#A1A1AA] [&_p]:m-0"
@@ -108,7 +108,7 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
   
               <div className="border-t border-[#F4F4F5] pt-2.5">
                 <p className="mb-2 nova-text-label-small text-[#242529]">
-                  Explanation
+                  Объяснение
                 </p>
                 <MarkdownContent
                   content={note.correction}
@@ -130,7 +130,7 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
             type="button"
             onClick={onRefresh}
             className="flex items-center justify-center"
-            aria-label="Return to last mistake"
+            aria-label="Вернуться к последней ошибке"
           >
             <RetryIcon className="size-4" />
           </Button>
@@ -144,13 +144,13 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
             onClick={handlePrev}
             disabled={safeIndex === 0}
             className="flex items-center justify-center"
-            aria-label="Previous"
+            aria-label="Предыдущая ошибка"
           >
             <ChevronLeftIcon className="size-3.5" />
           </Button>
 
           <span className="px-2 nova-text-label-tiny text-[#71717A]">
-            {remaining} left
+            Осталось: {remaining}
           </span>
 
           <Button
@@ -160,7 +160,7 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
             onClick={handleNext}
             disabled={safeIndex >= notes.length - 1}
             className="flex items-center justify-center"
-            aria-label="Next"
+            aria-label="Следующая ошибка"
           >
             <ChevronRightIcon className="size-3.5" />
           </Button>
@@ -176,7 +176,7 @@ export function FeedbackSee({ notes, onNoteCompleted, onRefresh, completedCount,
             isLoading={submitting}
             className="flex items-center gap-1"
           >
-            Got it
+            Понял
             <CheckedIcon className="size-5.5" />
           </Button>
 

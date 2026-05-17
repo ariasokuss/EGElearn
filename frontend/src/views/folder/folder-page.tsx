@@ -58,6 +58,34 @@ type FolderPageProps = {
   folderId: string;
 };
 
+function FolderAmbientDecor() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+    >
+      <svg
+        viewBox="0 0 620 330"
+        fill="none"
+        className="absolute -right-34 -bottom-12 h-[300px] w-[660px] text-[#c46b72]"
+      >
+        <path
+          d="M78 332C134 276 190 280 234 234C264 202 246 174 288 152C357 116 459 110 535 50C584 11 596 -19 588 -60"
+          stroke="currentColor"
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+        <path
+          d="M210 358C264 306 313 302 358 256C389 224 371 198 414 176C482 141 564 128 637 70C684 33 696 4 690 -36"
+          stroke="currentColor"
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+      </svg>
+    </div>
+  );
+}
+
 type LessonWithChatPanelProps = {
   lesson: RoadmapLessonOut;
   folderId: string;
@@ -117,7 +145,7 @@ function LessonWithChatPanelInner({
   }, [chatVisible, onToggleChat]);
 
   return (
-    <div className="flex flex-1 overflow-hidden">
+    <div className="folder-visual-heavy flex flex-1 overflow-hidden">
       <PageCard className="relative flex min-w-0 flex-1 overflow-hidden">
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <LessonPanel
@@ -584,6 +612,11 @@ function FolderContent({ folderId }: FolderPageProps) {
     : !lessonsListVisible
       ? { width: 0, opacity: 0 }
       : { width: 384, opacity: 1 };
+  const isImmersiveTab =
+    (tab === "practice" && practiceFullscreen) ||
+    (tab === "feedback" && feedbackFullscreen);
+  const showFolderAmbientDecor =
+    !isImmersiveTab && !(tab === "practice" && practiceNoPadding);
 
   return (
     <div className="flex flex-1 gap-2 overflow-hidden">
@@ -604,17 +637,11 @@ function FolderContent({ folderId }: FolderPageProps) {
         <PageCard
           className={cn(
             "flex h-full flex-col overflow-hidden",
-            !(
-              (tab === "practice" && practiceFullscreen) ||
-              (tab === "feedback" && feedbackFullscreen)
-            ) && "pt-5.5",
+            !isImmersiveTab && "pt-5.5",
           )}
           style={{ minWidth: 384 }}
         >
-          {!(
-            (tab === "practice" && practiceFullscreen) ||
-            (tab === "feedback" && feedbackFullscreen)
-          ) && (
+          {!isImmersiveTab && (
             <div className="px-7">
               <FolderTabsNav
                 onFolderTabChange={(param) => {
@@ -629,10 +656,11 @@ function FolderContent({ folderId }: FolderPageProps) {
           )}
 
           <div className="relative flex-1 h-full min-h-0">
+            {showFolderAmbientDecor && <FolderAmbientDecor />}
             <div
               ref={mainScrollRef}
               className={cn(
-                "h-full overflow-y-auto auto-hide-scrollbar",
+                "relative z-10 h-full overflow-y-auto auto-hide-scrollbar",
                 tab === "practice" && practiceNoPadding ? "p-0" : "px-7 pb-7",
               )}
             >

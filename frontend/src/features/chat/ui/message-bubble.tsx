@@ -271,7 +271,7 @@ export const MessageBubble = memo(
                 onClick={handleCancelEdit}
                 className="text-[var(--ege-muted)] hover:text-[var(--ege-text)]"
               >
-                Cancel
+                Отмена
               </Button>
               <Button //No button variant
                 rounded={false}
@@ -280,7 +280,7 @@ export const MessageBubble = memo(
                 disabled={!editContent.trim()}
                 className="bg-[var(--ege-accent)] text-white hover:bg-[var(--ege-accent-strong)] disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Done
+                Готово
               </Button>
             </div>
           )}
@@ -304,11 +304,11 @@ export const MessageBubble = memo(
                     />
                   )}
                   {onEdit && (
-                    <ActionButton onClick={handleStartEdit} label="Edit">
+                    <ActionButton onClick={handleStartEdit} label="Редактировать">
                       <EditIcon />
                     </ActionButton>
                   )}
-                  <ActionButton onClick={handleCopy} label="Copy">
+                  <ActionButton onClick={handleCopy} label="Скопировать">
                     {showCopyCheck ? (
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M2 6.5l3 3 5-6.5" />
@@ -321,11 +321,11 @@ export const MessageBubble = memo(
               ) : (
                 <>
                   {onRegenerate && !message.metadata?.practice_hint && (
-                    <ActionButton onClick={() => onRegenerate(index)} label="Regenerate">
+                    <ActionButton onClick={() => onRegenerate(index)} label="Ответить заново">
                       <RedoIcon />
                     </ActionButton>
                   )}
-                  <ActionButton onClick={handleCopy} label="Copy">
+                  <ActionButton onClick={handleCopy} label="Скопировать">
                     {showCopyCheck ? (
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M2 6.5l3 3 5-6.5" />

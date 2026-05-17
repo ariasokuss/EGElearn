@@ -28,7 +28,7 @@ export function FeedbackComplete({
       <div className="w-full max-w-[640px]">
         <div className="rounded-[20px] border border-[#F2F2F4] p-1.5">
           <p className="m-2.5 mb-6.5 nova-text-h-small-sb text-[#242529]">
-            Collected feedback for the week
+            Итоги недели по ошибкам
           </p>
 
           <div className="flex flex-col items-center rounded-[12px] border border-[#F2F2F4] px-6 py-4 nova-shadow-bottom">
@@ -59,7 +59,7 @@ export function FeedbackComplete({
               />
             </div>
             <span className="shrink-0 nova-text-label-tiny text-[#A1A1AA]">
-              {completedCount} of {totalCount}
+              {completedCount} из {totalCount}
             </span>
           </div>
         ) : null}

@@ -173,7 +173,7 @@ function TabsNavInner({
   const indicatorEl = indicator && (
     <div
       ref={indicatorRef}
-      className="pointer-events-none absolute -bottom-px h-px rounded-full bg-[var(--ege-text)]"
+      className="pointer-events-none absolute -bottom-px h-px rounded-full bg-[#242529]"
       style={{
         left: 0,
         width: indicator.width,
@@ -193,11 +193,11 @@ function TabsNavInner({
       >
         <div
           ref={scrollRef}
-          className="overflow-x-auto [scrollbar-color:var(--ege-track)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[var(--ege-track)] [&::-webkit-scrollbar-track]:bg-transparent"
+          className="overflow-x-auto [scrollbar-color:#D4CFC9_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#D4CFC9] [&::-webkit-scrollbar-track]:bg-transparent"
         >
           <div
             ref={containerRef}
-            className="relative flex w-max min-w-full items-center gap-2 border-b border-[var(--ege-border)] pt-0.5 pb-2"
+            className="relative flex items-center gap-2 border-b border-[#E8E5E180] pt-0.5 pb-2 w-max min-w-full"
           >
             {tabElements}
             {indicatorEl}

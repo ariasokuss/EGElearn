@@ -548,7 +548,7 @@ export function useChat({
       if (cachedConvs.length === 0) {
         setConversations([]);
       }
-      setConversationsError("Failed to load conversations");
+      setConversationsError("Не получилось загрузить историю чатов");
     } finally {
       if (chatScopeKeyRef.current === scopeAtStart) {
         setIsLoading(false);
@@ -648,7 +648,7 @@ export function useChat({
           if (prev.some((c) => c.id === realId)) return prev;
           const newConv: ConversationSummary = {
             id: realId,
-            title: "New Chat",
+            title: "Новый чат",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             message_count: 0,
@@ -922,7 +922,7 @@ export function useChat({
                             manualTitle?.title ??
                             backendTitle ??
                             c.title ??
-                            "New Chat",
+                            "Новый чат",
                           updated_at: new Date().toISOString(),
                         }
                       : c,
@@ -936,7 +936,7 @@ export function useChat({
                   if (exists) return prev;
                   const newConv: ConversationSummary = {
                     id: realId,
-                    title: manualTitle?.title ?? backendTitle ?? "New Chat",
+                    title: manualTitle?.title ?? backendTitle ?? "Новый чат",
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
                     message_count: 1,
@@ -1108,12 +1108,12 @@ export function useChat({
           }
         } else if (err instanceof Error && err.message === "AUTH_EXPIRED") {
           cleanupOptimistic();
-          setError("Session expired. Please log in again.");
+          setError("Сессия закончилась. Войди заново, и продолжим.");
           setStatus("error");
           return;
         } else {
           cleanupOptimistic();
-          setError(err instanceof Error ? err.message : "Error occurred");
+          setError(err instanceof Error ? err.message : "Что-то пошло не так");
           setStatus("error");
           return;
         }
@@ -1144,7 +1144,7 @@ export function useChat({
         attachmentPayloads = await filesToAttachments(files);
       }
     } catch {
-      setError("Failed to process attached files");
+      setError("Не получилось обработать прикреплённые файлы");
       setStatus("error");
       return;
     }
@@ -1193,11 +1193,11 @@ export function useChat({
 
       const optimisticConv: ConversationSummary = {
         id: tempId,
-        title: "New Chat",
+        title: "Новый чат",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         message_count: 1,
-        last_message_preview: "New Chat",
+        last_message_preview: "Новый чат",
         ...(lessonId && !practiceChatScope ? { lesson_id: lessonId } : {}),
       };
 
@@ -1402,7 +1402,7 @@ export function useChat({
 
       } catch (err) {
         if (!(err instanceof DOMException && err.name === "AbortError")) {
-          setError(err instanceof Error ? err.message : "Error occurred");
+          setError(err instanceof Error ? err.message : "Что-то пошло не так");
           setStatus("error");
           return;
         }
@@ -1504,7 +1504,7 @@ export function useChat({
         setMessages(newMessages);
         cacheMessages(convId, newMessages);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to switch branch");
+        setError(err instanceof Error ? err.message : "Не получилось переключить версию ответа");
       }
     },
     [status],

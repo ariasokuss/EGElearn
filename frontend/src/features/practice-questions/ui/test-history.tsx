@@ -50,15 +50,15 @@ function groupByDate(sessions: TestSessionOut[]): DateGroup[] {
 
 function formatDate(iso: string): string {
   const d = new Date(iso)
-  return `${d.getDate()} ${d.toLocaleString("ru-RU", { month: "short" }).toLowerCase()}`
+  return `${d.getDate()} ${d.toLocaleString("ru-RU", { month: "short" }).toLowerCase().replace(".", "")}`
 }
 
 function getStatusLabel(session: TestSessionOut): string {
-  if (session.status === "graded" && session.score != null) return "завершен"
-  if (session.status === "grading" || session.status === "submitted") return "проверяется"
+  if (session.status === "graded" && session.score != null) return "завершён"
+  if (session.status === "grading" || session.status === "submitted") return "проверяется..."
   if (session.status === "active") return "в процессе"
   if (session.status === "not_started") return "не начат"
-  return "частично завершен"
+  return "частично завершён"
 }
 
 function sessionIsIncompleteForScore(session: TestSessionOut): boolean {
@@ -84,7 +84,7 @@ function TestHistoryCard({
     <button
       type="button"
       onClick={() => onSelect(session)}
-      className="group flex w-full flex-col items-start justify-center self-stretch rounded-[16px] border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] py-1.5 pl-1.5 pr-6 text-left transition-colors hover:border-[var(--ege-accent)] hover:nova-shadow-triple active:bg-[var(--ege-surface)]"
+      className="group flex w-full flex-col items-start justify-center self-stretch rounded-[16px] border border-[#F4F2F1] hover:border-[#E4DFDD] bg-white py-1.5 pl-1.5 pr-6 text-left transition-colors active:bg-[#FAF8F7] hover:nova-shadow-triple"
     >
       <div className="flex w-full items-center gap-6 self-stretch">
         <div className="shrink-0 self-stretch">
@@ -93,30 +93,30 @@ function TestHistoryCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <span className="min-w-0 flex-1 truncate nova-text-label-small text-[var(--ege-text)]">
+            <span className="min-w-0 flex-1 truncate nova-text-label-small text-[#242529]">
               {session.template_name || "Тест без названия"}
             </span>
             {showScore ? (
-              <span className="shrink-0 nova-text-label-small text-[var(--ege-text)]">
+              <span className="shrink-0 nova-text-label-small text-[#242529]">
                 {scoreLabel}
               </span>
             ) : null}
           </div>
 
           {showScore && session.score != null && (
-            <div className="mt-4 h-[5px] w-full overflow-hidden rounded-full bg-[var(--ege-track)]">
+            <div className="mt-4 h-[5px] w-full overflow-hidden rounded-full bg-[#F4F4F5]">
               <div
-                className="h-full rounded-full bg-[var(--ege-accent)] transition-all duration-300"
+                className="h-full rounded-full bg-[#E8C9B0] transition-all duration-300"
                 style={{ width: `${progressWidth}%` }}
               />
             </div>
           )}
 
           <div className="mt-2.5 flex items-center justify-between">
-            <span className="nova-text-label-small-regular text-[var(--ege-muted)]">
+            <span className="nova-text-label-small-regular text-[#71717A]">
               {formatDate(session.created_at)}
             </span>
-            <span className="nova-text-label-small-regular text-[var(--ege-muted)]">
+            <span className="nova-text-label-small-regular text-[#71717A]">
               {getStatusLabel(session)}
             </span>
           </div>
@@ -142,9 +142,9 @@ export function TestHistory({
     return (
       <div className="flex justify-center py-8">
         <div className="flex gap-1.5">
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--ege-muted)]" style={{ animationDelay: "0ms" }} />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--ege-muted)]" style={{ animationDelay: "150ms" }} />
-          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--ege-muted)]" style={{ animationDelay: "300ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#B0ADA9]" style={{ animationDelay: "0ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#B0ADA9]" style={{ animationDelay: "150ms" }} />
+          <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#B0ADA9]" style={{ animationDelay: "300ms" }} />
         </div>
       </div>
     )
@@ -158,8 +158,8 @@ export function TestHistory({
   return (
     <div className="p-4 space-y-4">
       {groups.length === 0 && processingTemplates.length === 0 && (
-        <p className="py-8 text-center nova-text-label-small-regular text-[var(--ege-muted)]">
-          Пока нет записей: <span className="lowercase">{historyName || "история тестов"}</span>
+        <p className="py-8 text-center nova-text-label-small-regular text-[#A1A1AA]">
+          Пока нет: <span className="lowercase">{historyName || "история тестов"}</span>
         </p>
       )}
 
@@ -185,7 +185,7 @@ export function TestHistory({
 
       {groups.map((group) => (
         <div key={group.label} >
-          <p className="mb-2.5 nova-text-label-tiny-sb text-[var(--ege-text)]">
+          <p className="mb-2.5 nova-text-label-tiny-sb text-[#242529]">
             {group.label}
           </p>
           <div className="space-y-4">

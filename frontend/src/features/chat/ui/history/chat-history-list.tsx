@@ -67,7 +67,7 @@ export function ChatHistoryList({
             onClick={onRetry}
             className="bg-red-50 text-red-600 hover:bg-red-100"
           >
-            Retry
+            Попробовать ещё раз
           </Button>
         )}
       </div>
@@ -77,7 +77,7 @@ export function ChatHistoryList({
   if (conversations.length === 0) {
     return (
       <p className="pt-8 text-center nova-text-label-tiny text-[var(--ege-muted)]">
-        No conversations yet
+        Пока нет диалогов
       </p>
     )
   }

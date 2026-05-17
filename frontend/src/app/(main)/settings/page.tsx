@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { buildPageMetadata } from "@/shared/lib";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Настройки",
-  description: "Личные настройки аккаунта NovaLearn.",
+  title: "Settings",
+  description: "Private account settings in NovaLearn.",
   path: "/settings",
   indexable: false,
 });

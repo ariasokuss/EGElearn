@@ -32,18 +32,19 @@ function getDaysLeft(examDate: string): number {
   return Math.ceil((parseISO(examDate).getTime() - Date.now()) / 86400000);
 }
 
-function pluralizeDays(days: number): string {
-  const mod10 = days % 10;
-  const mod100 = days % 100;
-  if (mod10 === 1 && mod100 !== 11) return "день";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "дня";
-  return "дней";
+function pluralRu(value: number, one: string, few: string, many: string): string {
+  const mod10 = Math.abs(value) % 10;
+  const mod100 = Math.abs(value) % 100;
+  if (mod100 >= 11 && mod100 <= 14) return many;
+  if (mod10 === 1) return one;
+  if (mod10 >= 2 && mod10 <= 4) return few;
+  return many;
 }
 
 function formatDaysLeft(days: number): string {
-  if (days < 0) return "экзамен прошел";
+  if (days < 0) return "уже прошёл";
   if (days === 0) return "сегодня";
-  return `${days} ${pluralizeDays(days)} до экзамена`;
+  return `${days} ${pluralRu(days, "день", "дня", "дней")} осталось`;
 }
 
 type ExamCardProps = {
@@ -60,8 +61,8 @@ function ExamCard({ exam, onEdit, uneditable }: ExamCardProps) {
   return (
     <div
       className={cn(
-        "rounded-[17px] border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-[14px_20px_14px_14px] backdrop-blur-xs transition-colors",
-        editable && "group/exam-card cursor-pointer hover:bg-[var(--ege-surface)]",
+        "rounded-[17px] bg-white p-[14px_20px_14px_14px] backdrop-blur-xs transition-colors",
+        editable && "group/exam-card cursor-pointer hover:bg-[#F4F0EEA3]",
       )}
       style={{ minWidth: 340 }}
       onClick={editable ? () => onEdit(exam) : undefined}
@@ -69,34 +70,34 @@ function ExamCard({ exam, onEdit, uneditable }: ExamCardProps) {
       <div className="flex items-center gap-3">
         <LessonGenerateIcon
           className={cn(
-            "shrink-0 text-[var(--ege-muted)] transition-opacity",
+            "shrink-0 text-[#71717A] transition-opacity",
             editable
-              ? "opacity-60 group-hover/exam-card:opacity-100"
-              : "opacity-60",
+              ? "opacity-32 group-hover/exam-card:opacity-100"
+              : "opacity-32",
           )}
         />
         <div className="flex min-w-0 flex-1 items-center justify-between gap-2.5">
-          <span className="min-w-0 truncate nova-text-label-small text-[var(--ege-text)]">
+          <span className="min-w-0 truncate nova-text-label-small text-[#242529]">
             {exam.name}
           </span>
-          <span className="shrink-0 nova-text-label-small text-[var(--ege-text)]">
+          <span className="shrink-0 nova-text-label-small text-[#242529]">
             {exam.progress ?? 0}%
           </span>
         </div>
       </div>
       <div className="ml-10">
-        <div className="relative mt-4.5 h-1 w-full rounded-full bg-[var(--ege-track)]">
+        <div className="relative mt-4.5 h-1 w-full rounded-full bg-[#F1ECE98F]">
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-[var(--ege-accent)]"
+            className="absolute inset-y-0 left-0 rounded-full bg-[#D2CAC5]"
             style={{ width: `${exam.progress ?? 0}%` }}
           />
         </div>
 
         <div className="mt-2.5 flex items-center justify-between gap-2.5">
-          <span className="nova-text-label-small-regular text-[var(--ege-muted)]">
+          <span className="nova-text-label-small-regular text-[#72706F]">
             {format(parseISO(exam.exam_date), "d MMM yyyy", { locale: ru })}
           </span>
-          <span className="shrink-0 nova-text-label-small-regular text-[var(--ege-muted)]">
+          <span className="shrink-0 nova-text-label-small-regular text-[#72706F]">
             {formatDaysLeft(daysLeft)}
           </span>
         </div>
@@ -149,12 +150,12 @@ function ExamCreate({
 
   return (
     <div
-      className="rounded-[17px] border border-dashed border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-[14px_20px_14px_14px]"
+      className="rounded-[17px] border border-dashed border-[#E4E4E7] bg-white p-[14px_20px_14px_14px]"
       style={{ minWidth: 340 }}
       onKeyDown={handleKeyDown}
     >
       <div className="flex items-center gap-3">
-        <LessonGenerateIcon className="text-[var(--ege-muted)]" />
+        <LessonGenerateIcon />
         <div className="flex min-w-0 flex-1 items-center justify-between gap-2.5">
           <input
             ref={inputRef}
@@ -162,11 +163,11 @@ function ExamCreate({
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             placeholder="Название экзамена"
-            className="min-w-0 flex-1 bg-transparent nova-text-label-small text-[var(--ege-text)] outline-none placeholder:text-[var(--ege-muted)]"
+            className="min-w-0 flex-1 bg-transparent nova-text-label-small text-[#242529] outline-none placeholder:text-[#72706F]"
           />
           {selectedCount > 0 && (
-            <span className="shrink-0 nova-text-label-small text-[var(--ege-text)]">
-              ({selectedCount} тем выбрано)
+            <span className="shrink-0 nova-text-label-small text-[#242529]">
+              ({selectedCount} {pluralRu(selectedCount, "тема выбрана", "темы выбраны", "тем выбрано")})
             </span>
           )}
         </div>
@@ -176,22 +177,21 @@ function ExamCreate({
           <PopoverTrigger asChild>
             <Button
               variant="plain"
-              className="h-7 w-42.75 cursor-pointer justify-start gap-1 rounded-2xl border border-[var(--ege-border)] bg-[var(--ege-surface)] py-1 pr-2 pl-1.5 nova-text-label-medium text-[var(--ege-text)] transition-colors hover:bg-[var(--ege-surface-raised)] active:translate-y-px"
+              className="h-7 w-42.75 cursor-pointer justify-start gap-1 rounded-2xl py-1 pr-2 pl-1.5 nova-text-label-medium text-[#242529] bg-white shadow-[0px_1px_3px_0px_#1C28400A,0px_0px_2px_0px_#1C28402E] transition-colors hover:bg-[#F9F9F9] active:translate-y-px"
             >
               <CalendarIcon />
-              {date ? format(date, "d MMM yyyy", { locale: ru }) : <span>Дата экзамена</span>}
+              {date ? format(date, "d MMM yyyy", { locale: ru }) : <span>Выбрать дату экзамена</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent
             data-exam-panel
-            className="w-auto border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-0 text-[var(--ege-text)]"
+            className="w-auto p-0"
             align="start"
             sideOffset={6}
             onClick={(e) => e.stopPropagation()}
           >
             <Calendar
               mode="single"
-              locale={ru}
               selected={date}
               onSelect={onDateChange}
               defaultMonth={date}
@@ -205,7 +205,7 @@ function ExamCreate({
             variant="plain"
             type="button"
             onClick={onDelete}
-            className="flex items-center justify-center text-[var(--ege-muted)] hover:text-[var(--ege-text)]"
+            className="flex items-center justify-center text-[#72706F] hover:text-[#242529]"
           >
             <TrashIcon className="size-4" />
           </Button>
@@ -243,7 +243,6 @@ type ExamsPanelProps = {
   canConfirm: boolean;
   optionalExam?: OptionalExam
   initialOptionalSelection?: string[]
-  onUpdateExam: (examName: string, selectedIds: Iterable<string> | ArrayLike<string>, mode: ExamMode, examDate?: Date | string) => Promise<void>
   onSaveOptionalSelection: (optionIds: string[]) => Promise<void>
 };
 
@@ -266,7 +265,6 @@ function ExamsPanel({
   onCalendarOpenChange,
   optionalExam,
   initialOptionalSelection,
-  onUpdateExam,
   onSaveOptionalSelection
 }: ExamsPanelProps) {
   const hasExams = exams.length > 0;
@@ -306,10 +304,11 @@ function ExamsPanel({
   return (
     <div
       data-exam-panel
-      className="sticky top-6 z-10 flex w-98 shrink-0 flex-col gap-3 self-start rounded-[17px] border border-[var(--ege-border)] bg-[var(--ege-surface)] p-3"
+      className="sticky top-6 z-10 flex w-98 shrink-0 flex-col gap-3 self-start rounded-[17px] border border-[#0000000D] bg-white p-3 shadow-[0px_2px_4px_-2px_#00000005]"
     >
       {optionalExam &&
         <ExamChoose
+          key={`${open ? "open" : "closed"}-${initialOptionalSelection?.join("|") ?? "empty"}`}
           isOpen={open}
           onClose={handleSaveExamChoose}
           title={optionalExam.name}
@@ -353,10 +352,10 @@ function ExamsPanel({
               disabled={isEditing || (!!optionalExamId && !optionalExam)}
               onClick={() => setOpen(true)}
             >
-              {optionalExamId ? "Изменить темы по выбору" : "Выбрать темы по выбору"}
+              {optionalExamId ? "Изменить дополнительные темы" : "Выбрать дополнительные темы"}
             </Button>
           }
-          <div className="h-px w-full rounded-full bg-[var(--ege-border)]" />
+          <div className="h-px w-full rounded-full bg-[#F1ECE9]" />
         </div>
       )}
       {isEditing ? (
@@ -390,41 +389,22 @@ function ExamsPanel({
 function ExamCardSkeleton() {
   return (
     <div
-      className="rounded-[17px] border border-[var(--ege-border)] bg-[var(--ege-surface-raised)] p-[14px_20px_14px_14px]"
+      className="rounded-[17px] bg-white p-[14px_20px_14px_14px]"
       style={{ minWidth: 340 }}
     >
       <div className="flex items-center gap-3">
-        <div className="h-7 w-7 shrink-0 animate-pulse rounded bg-[var(--ege-track)]" />
+        <div className="h-7 w-7 shrink-0 animate-pulse rounded bg-[#F4F4F5]" />
         <div className="flex min-w-0 flex-1 items-center justify-between gap-2.5">
-          <div className="h-4 w-32 animate-pulse rounded bg-[var(--ege-track)]" />
-          <div className="h-4 w-8 shrink-0 animate-pulse rounded bg-[var(--ege-track)]" />
+          <div className="h-4 w-32 animate-pulse rounded bg-[#F4F4F5]" />
+          <div className="h-4 w-8 shrink-0 animate-pulse rounded bg-[#F4F4F5]" />
         </div>
       </div>
       <div className="ml-10">
-        <div className="mt-4.5 h-1 w-full animate-pulse rounded-full bg-[var(--ege-track)]" />
+        <div className="mt-4.5 h-1 w-full animate-pulse rounded-full bg-[#F4F4F5]" />
         <div className="mt-2.5 flex items-center justify-between gap-2.5">
-          <div className="h-4 w-20 animate-pulse rounded bg-[var(--ege-track)]" />
-          <div className="h-4 w-16 shrink-0 animate-pulse rounded bg-[var(--ege-track)]" />
+          <div className="h-4 w-20 animate-pulse rounded bg-[#F4F4F5]" />
+          <div className="h-4 w-16 shrink-0 animate-pulse rounded bg-[#F4F4F5]" />
         </div>
-      </div>
-    </div>
-  );
-}
-
-function RoadmapEmptyState({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex w-full justify-center py-20">
-      <div className="max-w-96 rounded-[18px] border border-[var(--ege-border)] bg-[var(--ege-surface)] px-6 py-5 text-center">
-        <p className="nova-text-label-base text-[var(--ege-text)]">{title}</p>
-        <p className="mt-2 nova-text-p-base text-[var(--ege-muted)]">
-          {description}
-        </p>
       </div>
     </div>
   );
@@ -446,14 +426,16 @@ export function Roadmap({ folderId }: RoadmapProps) {
   const [submitting, setSubmitting] = useState(false);
   const [optionalThemesData, setOptionalThemesData] = useState<OptionalThemesOut | null | undefined>(undefined);
 
-  const OptionalExam = optionalThemesData
-    ? {
+  const OptionalExam = useMemo(() => (
+    optionalThemesData
+      ? {
         name: optionalThemesData.title,
         folder_id: folderId,
         exam_date: optionalThemesData.exam_date,
         blocks: optionalThemesData.blocks,
       }
-    : undefined;
+      : undefined
+  ), [folderId, optionalThemesData]);
 
   // Derive which block options are currently selected from the saved optional exam
   const currentOptionalSelection = useMemo<string[] | undefined>(() => {
@@ -651,18 +633,16 @@ export function Roadmap({ folderId }: RoadmapProps) {
       <div className="flex flex-1 flex-col gap-4 items-start">
         {loading ? (
           <div className="flex w-full items-center justify-center py-16">
-            <LoaderIcon className="animate-spin text-[var(--ege-muted)]" />
+            <LoaderIcon className="animate-spin" />
           </div>
         ) : !roadmap ? (
-          <RoadmapEmptyState
-            title="Дорожная карта пока недоступна"
-            description="Мы оставили предметы пустыми, чтобы позже наполнить их структурой ФИПИ."
-          />
+          <div className="py-16 text-center nova-text-p-base text-[#71717A] w-full">
+            Не получилось загрузить подготовку. Немного позже попробуем ещё раз.
+          </div>
         ) : roadmap.sections.length === 0 ? (
-          <RoadmapEmptyState
-            title="Дорожная карта пока пустая"
-            description="Контент для этого предмета добавим следующим этапом."
-          />
+          <div className="py-16 text-center nova-text-p-base text-[#71717A] w-full">
+            План подготовки пока пустой. Скоро здесь появятся темы.
+          </div>
         ) : (
           roadmap.sections.map((section) => (
             <RoadmapSectionBlock
@@ -677,14 +657,14 @@ export function Roadmap({ folderId }: RoadmapProps) {
         )}
       </div>
       {examsLoading ? (
-        <div className="sticky top-6 z-10 flex w-98 shrink-0 flex-col gap-3 self-start rounded-[17px] border border-[var(--ege-border)] bg-[var(--ege-surface)] p-3">
+        <div className="sticky top-6 z-10 flex w-98 shrink-0 flex-col gap-3 self-start rounded-[17px] border border-[#0000000D] bg-white p-3 shadow-[0px_2px_4px_-2px_#00000005]">
           <div className="flex flex-col gap-3.5">
             <ExamCardSkeleton />
             <ExamCardSkeleton />
             <ExamCardSkeleton />
-            <div className="h-px w-full rounded-full bg-[var(--ege-border)]" />
+            <div className="h-px w-full rounded-full bg-nova-100" />
           </div>
-          <div className="h-9 w-26 animate-pulse rounded-full bg-[var(--ege-track)]" />
+          <div className="h-9 w-21.5 animate-pulse rounded-full bg-[#F4F4F5]" />
         </div>
       ) : (
         <ExamsPanel
@@ -706,7 +686,6 @@ export function Roadmap({ folderId }: RoadmapProps) {
           canConfirm={canConfirm}
           optionalExam={OptionalExam}
           initialOptionalSelection={currentOptionalSelection}
-          onUpdateExam={handleUpdateExam}
           onSaveOptionalSelection={handleSaveOptionalSelection}
         />
       )}

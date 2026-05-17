@@ -34,16 +34,6 @@ export { useAutoHideScrollbar } from "./use-auto-hide-scrollbar";
 export { TestGuardProvider, useTestGuard } from "./test-guard-context";
 
 export {
-  THEME_STORAGE_KEY,
-  applyThemePreference,
-  getNextThemePreference,
-  getSystemTheme,
-  normalizeThemePreference,
-  resolveThemePreference,
-  type ThemePreference,
-} from "./theme-preference";
-
-export {
   getPublicBaseUrl,
   toAbsoluteUrl,
   buildRobotsPolicy,

@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { buildPageMetadata } from "@/shared/lib";
 
-import { TermsPanel } from "@/features/settings";
-
 export const metadata: Metadata = buildPageMetadata({
-  title: "Условия и приватность",
-  description: "Правовые условия и приватность NovaLearn.",
+  title: "Terms and Privacy",
+  description: "Private legal and privacy settings in NovaLearn.",
   path: "/settings/terms",
   indexable: false,
 });
 
 export default function SettingsTermsPage() {
-  return (
-    <TermsPanel />
-  );
+  redirect("/settings/profile");
 }

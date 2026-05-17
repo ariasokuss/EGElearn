@@ -10,8 +10,8 @@
   --ege-border: #c5ccd6;
   --ege-text: #0b0f1a;
   --ege-muted: #5b6472;
-  --ege-accent: #d91024;
-  --ege-accent-strong: #b40819;
+  --ege-accent: #b40819;
+  --ege-accent-strong: #8f0614;
   --ege-track: #c5ceda;
   --font-roboto: "Roboto", "Segoe UI", Arial, sans-serif;
   --font-inter: "Inter", "Segoe UI", Arial, sans-serif;
@@ -21,46 +21,18 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #15171d;
-    --foreground: #f7f8fb;
-    --ege-canvas: #15171d;
-    --ege-surface: #1d2129;
-    --ege-surface-raised: #262b35;
-    --ege-border: #3b4250;
-    --ege-text: #f7f8fb;
-    --ege-muted: #b9c1cc;
-    --ege-accent: #ef1f36;
-    --ege-accent-strong: #ff4052;
-    --ege-track: #485160;
+    --background: #e7e9ed;
+    --foreground: #0b0f1a;
+    --ege-canvas: #e7e9ed;
+    --ege-surface: #ffffff;
+    --ege-surface-raised: #ffffff;
+    --ege-border: #c5ccd6;
+    --ege-text: #0b0f1a;
+    --ege-muted: #5b6472;
+    --ege-accent: #b40819;
+    --ege-accent-strong: #8f0614;
+    --ege-track: #c5ceda;
   }
-}
-
-:root[data-theme="light"] {
-  --background: #e7e9ed;
-  --foreground: #0b0f1a;
-  --ege-canvas: #e7e9ed;
-  --ege-surface: #dfe2e7;
-  --ege-surface-raised: #f1f3f6;
-  --ege-border: #c5ccd6;
-  --ege-text: #0b0f1a;
-  --ege-muted: #5b6472;
-  --ege-accent: #d91024;
-  --ege-accent-strong: #b40819;
-  --ege-track: #c5ceda;
-}
-
-:root[data-theme="dark"] {
-  --background: #15171d;
-  --foreground: #f7f8fb;
-  --ege-canvas: #15171d;
-  --ege-surface: #1d2129;
-  --ege-surface-raised: #262b35;
-  --ege-border: #3b4250;
-  --ege-text: #f7f8fb;
-  --ege-muted: #b9c1cc;
-  --ege-accent: #ef1f36;
-  --ege-accent-strong: #ff4052;
-  --ege-track: #485160;
 }
 
 @theme inline {
@@ -79,6 +51,34 @@ body {
 }
 .lesson-content[data-has-selection] *::selection {
   background-color: transparent;
+}
+
+.folder-visual-heavy :is(.border, .border-t, .border-b, .border-l, .border-r) {
+  border-color: var(--ege-border) !important;
+}
+
+.folder-visual-heavy .border {
+  border-width: 1.5px;
+}
+
+.folder-visual-heavy .border-t {
+  border-top-width: 1.5px;
+}
+
+.folder-visual-heavy .border-b {
+  border-bottom-width: 1.5px;
+}
+
+.folder-visual-heavy .border-l {
+  border-left-width: 1.5px;
+}
+
+.folder-visual-heavy .border-r {
+  border-right-width: 1.5px;
+}
+
+.folder-visual-heavy :is(.bg-\[\#F2F2F4\], .bg-\[\#F4F4F5\], .bg-\[\#FAFAFA\]) {
+  background-color: var(--ege-surface-raised) !important;
 }
 
 .lesson-content .katex-display {

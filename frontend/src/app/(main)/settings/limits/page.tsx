@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { buildPageMetadata } from "@/shared/lib";
 
-import { LimitsPanel } from "@/features/settings";
-
 export const metadata: Metadata = buildPageMetadata({
-  title: "Лимиты",
-  description: "Лимиты использования NovaLearn.",
+  title: "Usage Limits",
+  description: "Private usage limits and quota details in NovaLearn.",
   path: "/settings/limits",
   indexable: false,
 });
 
 export default function SettingsLimitsPage() {
-  return (
-      <LimitsPanel />
-  );
+  redirect("/settings/profile");
 }

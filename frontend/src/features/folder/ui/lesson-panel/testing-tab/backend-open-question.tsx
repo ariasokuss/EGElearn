@@ -39,7 +39,7 @@ const BackendOpenQuestionStem = memo(function BackendOpenQuestionStem({
   hint,
   practiceMode,
 }: StemProps) {
-  const marksLabel = `${points} mark${points !== 1 ? "s" : ""}`;
+  const marksLabel = `${points} ${points === 1 ? "балл" : points >= 2 && points <= 4 ? "балла" : "баллов"}`;
 
   return (
     <>
@@ -58,7 +58,7 @@ const BackendOpenQuestionStem = memo(function BackendOpenQuestionStem({
       </div>
 
       {hint && !practiceMode ? (
-        <p className="nova-text-label-tiny italic text-[#9B97A3]">Hint: {hint}</p>
+        <p className="nova-text-label-tiny italic text-[#9B97A3]">Подсказка: {hint}</p>
       ) : null}
     </>
   );
@@ -106,7 +106,7 @@ export function BackendOpenQuestion({
         onChange={(e) =>
           onAnswerChange(e.target.value.slice(0, OPEN_ANSWER_MAX_LENGTH))
         }
-        placeholder="Write your answer here…"
+        placeholder="Напиши ответ здесь…"
         minRows={6}
         maxRows={OPEN_ANSWER_TEXTAREA_MAX_ROWS}
         maxLength={OPEN_ANSWER_MAX_LENGTH}
